@@ -1,0 +1,567 @@
+/* General Styles */
+body {
+  min-width: 100vh;
+  margin-left: 50px;
+  margin-right: 50px;
+  font-size: 15px;
+  color: #222222;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* General Styles */
+body.admin-bg-light {
+  background-color: #f8f9fa;
+}
+
+/* Admin Container */
+.admin-container {
+  margin-top: 5%;
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Admin Card */
+.admin-card {
+  width: 100%;
+  max-width: 400px;
+  border: none;
+  border-radius: 10px;
+}
+
+.admin-card-header {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 1rem;
+}
+
+.admin-card-body {
+  padding: 1.5rem;
+}
+
+.admin-card-footer {
+  padding: 0.5rem;
+}
+
+/* Form Controls */
+.admin-form-label {
+  font-weight: bold;
+}
+
+.admin-form-control {
+  height: calc(2.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+}
+
+/* Admin Login Button */
+.admin-login-btn {
+  margin-top: 1rem;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 5px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.admin-login-btn:hover {
+  background-color: #004085;
+  color: #fff;
+}
+
+/* Modern Sidebar Styling */
+/* Sidebar Styles */
+.sidebar {
+  width: 250px;
+  transition: width 0.3s ease;
+  background-color: #f9d8e0; /* Light gray background */
+  position: fixed; /* Fixed position */
+  height: 100%; /* Full height */
+  transform: translateX(0); /* Default position */
+  top: 0;
+  left: 0; /* Initially hidden (offscreen) */
+  transition: all 0.3s ease; /* Smooth transition */
+  z-index: 1000; /* Ensure it appears above other content */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensure spacing between the links */
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%); /* Hide the sidebar */
+}
+
+.sidebar.active {
+  width: 0; /* Collapse the sidebar */
+  overflow: hidden; /* Hide overflow */
+}
+
+.sidebar .nav-link:hover {
+  background-color: #e9ecef; /* Hover background */
+  color: #007bff; /* Hover text color */
+}
+
+.logout {
+  margin-top: auto; /* Push the logout button to the bottom */
+  text-align: center;
+  width: 100%;
+}
+
+#main {
+  transition: margin-left 0.3s ease; /* Smooth transition for margin */
+  /* Default margin when sidebar is open */
+  width: 100;
+  padding: 10px;
+  margin-right: 10px;
+  margin-left: 250px;
+}
+
+#main-content {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* margin-left: 250px; */
+  padding: 20px;
+  /* transition: all 0.3s ease; */
+}
+
+.main-content.shifted {
+  margin-left: 0; /* Shift to the left when sidebar is hidden */
+}
+
+/* Main content when sidebar is visible */
+#main.active {
+  width: 100%;
+  margin-left: 0;
+  /* transition: margin-left 0.3s ease; */
+}
+
+/* Adjustments for small screens */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px; /* Smaller sidebar for mobile */
+  }
+
+  #main.active {
+    margin-left: 200px;
+  }
+}
+
+.sidebar .nav-link {
+  color: #333;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 5px;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  background-color: #ffdde1;
+  color: #333;
+}
+
+.sidebar .nav-link i {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.sidebar .dropdown-container {
+  padding-left: 20px;
+  display: none;
+}
+
+.sidebar .dropdown-container .nav-link {
+  font-size: 0.9rem;
+}
+
+nav.navbar {
+  padding: 10px;
+  position: sticky;
+  height: 65px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: top 0.3s ease-in-out;
+}
+
+.brand-name {
+  font-size: 1.5rem; /* Adjust size */
+  font-weight: bold; /* Make the text bold */
+  color: #333; /* Adjust the text color */
+}
+
+img {
+  border-radius: 8px; /* Optional: Add rounded corners to the logo */
+}
+
+@media (max-width: 768px) {
+  nav.navbar {
+    justify-content: center; /* Center the content */
+  }
+
+  .brand-name {
+    font-size: 1.2rem; /* Reduce text size */
+  }
+
+  img {
+    width: 40px; /* Adjust logo size */
+  }
+}
+
+.container {
+  margin: 0 auto;
+  padding: 20px;
+}
+
+#openNav {
+  background-color: white;
+  color: #333;
+  border: none;
+}
+
+#openNav:hover {
+  background-color: #f1f1f1;
+}
+
+.brand-name {
+  /* font-size: 1.25rem; */
+  font-weight: 500;
+  margin-left: 10px;
+  color: black;
+}
+
+.search {
+  border: none;
+  background-color: transparent;
+}
+
+.search:hover {
+  size: 40px;
+  color: rgb(235, 114, 134);
+  transition: color 0.3s ease, transform 0.3s ease;
+  transform: scale(1.1); /* Slightly enlarges the icon */
+  cursor: pointer; /* Changes the cursor to a pointer */
+}
+
+.w3-bar-item.active {
+  background-color: pink; /* Choose your desired color */
+  color: black; /* Text color for better contrast */
+}
+
+.notification-bell {
+  color: rgb(235, 114, 134);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.notification-bell:hover {
+  color: rgb(235, 114, 134);
+  transform: scale(1.1); /* Slightly enlarges the icon */
+  cursor: pointer; /* Changes the cursor to a pointer */
+}
+
+#viewProdutsTable {
+  table-layout: fixed;
+  width: 100%;
+}
+
+#viewProdutsTable img {
+  width: 1000px; /* Adjust as needed */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover;
+}
+
+#viewProdutsTable .carousel-inner {
+  max-width: 500px; /* Match the image width */
+  margin: auto;
+}
+
+#viewProdutsTable .carousel-item {
+  text-align: center;
+}
+
+.thead {
+  text-align: center;
+}
+
+#products td {
+  align-content: center;
+  text-align: center;
+}
+
+#products .btn btn-link {
+  color: #870f55;
+}
+
+#viewProdutsTable th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.custom-edit {
+  color: black; /* Change to your desired color */
+}
+
+.custom-edit:hover {
+  color: rgb(119, 176, 233); /* Change to your desired color */
+  transform: scale(1.1);
+}
+
+.custom-delete {
+  color: black; /* Change to your desired color */
+}
+
+.custom-delete:hover {
+  color: rgb(235, 114, 134); /* Change to your desired color */
+  transform: scale(1.2);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(1); /* Inverts the default white arrow to black */
+}
+
+/* Optional: Add hover effect to make them stand out */
+.carousel-control-prev-icon:hover,
+.carousel-control-next-icon:hover {
+  filter: invert(0.5); /* Makes them slightly lighter on hover */
+}
+
+h2,
+h5,
+.order-header h5 {
+  color: #d97cb3; /* Luxurious Light Pink for headers */
+}
+
+.orders-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+  width: 100%; /* Ensure the container takes up the full width */
+}
+
+.order-card {
+  border-radius: 15px;
+  padding: 30px; /* Increased padding for more space inside */
+  width: 80%; /* Increase the width of each card (adjust as needed) */
+  max-width: 1000px; /* Set a max width to prevent it from being too wide */
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  margin-bottom: 30px; /* Increased margin for more vertical space */
+}
+
+.order-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.order-header h5 {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.order-header .order-status {
+  font-size: 14px;
+  color: green; /* Bright Pink for Status */
+  font-weight: bold;
+}
+
+.order-details p,
+.order-products .product-item {
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding-bottom: 10px; /* Added space between product details */
+}
+
+.order-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.order-footer button {
+  padding: 10px 5px; /* Increase padding for more space inside the button */
+  background-color: black; /* Bright Pink Button */
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  width: 100%; /* Make buttons stretch horizontally */
+  max-width: 200px; /* Optionally set a max-width for the button */
+}
+
+.order-footer button:hover {
+  background-color: #d97cb3; /* Softer Pink Hover */
+}
+
+/* Make the table container responsive */
+.view-orders-table-container {
+  overflow-x: auto; /* Enable horizontal scrolling if necessary */
+  -webkit-overflow-scrolling: touch; /* For smoother scrolling on mobile */
+  width: 100%; /* Make sure the container takes up full width */
+  margin: 0 auto; /* Center the container */
+}
+
+/* Make the table responsive */
+.view-orders-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%; /* Ensure the table doesn't exceed its container */
+  border-radius: 10px; /* Apply border-radius to the table */
+  overflow: hidden; /* Ensure rounded corners are visible */
+}
+
+/* Style for table header to make it visible */
+.view-orders-table thead {
+  background-color: #343a40; /* Dark background for the header */
+  color: white; /* White text color for the header */
+}
+
+/* Add padding and rounded corners to the cells */
+.view-orders-table th,
+.view-orders-table td {
+  padding: 10px;
+  border: 1px solid #ddd; /* Add a light border to each cell */
+  text-align: center;
+}
+
+/* Apply border-radius to individual cells for a smoother effect */
+.view-orders-table th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.view-orders-table th:last-child {
+  border-top-right-radius: 10px;
+}
+
+.view-orders-table td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.view-orders-table td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+/* Optional: Add hover effect for rows */
+.view-orders-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.view-orders-status-buttons {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.view-orders-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 0 10px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.view-orders-btn:hover {
+  background-color: #3e8e41;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.view-orders-btn:active {
+  background-color: #2e6d31;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Unique styles for manageDelivery */
+.managedelivery-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.managedelivery-card:hover {
+  background-color: #f8f9fa;
+}
+
+.managedelivery-modal .modal-content {
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.managedelivery-modal .modal-header {
+  background-color: #e9ecef;
+  border-bottom: 1px solid #dee 2e6;
+}
+
+.managedelivery-modal .modal-footer {
+  border-top: 1px solid #dee2e6;
+}
+
+#customer-list .list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+#customer-list .list-group-item:hover {
+  background-color: #e9ecef;
+}
+
+#chat-box {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#admin-message,
+#send-message {
+  border-radius: 10px;
+}
+
+.badge {
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+}
