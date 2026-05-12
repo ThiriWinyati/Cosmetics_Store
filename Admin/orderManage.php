@@ -2,24 +2,6 @@
 session_start();
 require_once "../db_connect.php";
 
-// Database credentials
-$server = getenv('DB_HOST');
-$user = getenv('DB_USER');
-$password = getenv('DB_PASS');
-$database = getenv('DB_NAME');
-$port = getenv('DB_PORT') ?: 3306;
-
-// Create connection
-try {
-    $conn = new PDO(
-        "mysql:host=$server;port=$port;dbname=$database;charset=utf8mb4",
-        $user,
-        $password
-    );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
 
 if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
     // If not logged in, redirect to login page
@@ -154,7 +136,7 @@ if (isset($_GET['delete_order_id'])) {
 
         <form method="POST" action="orderManage.php" class="mb-3">
             <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Search by customer name, email, or order ID" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                <input type="text" name="searchTerm" class="form-control" placeholder="Search by customer name, email, or order ID" value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
                 <button class="btn btn-primary" type="submit">Search</button>
             </div>
         </form>
@@ -162,25 +144,27 @@ if (isset($_GET['delete_order_id'])) {
         <div class="orders-container">
             <?php
             foreach ($orders as $order) {
-                $orderID = htmlspecialchars($order['Order_ID']);
-                $orderDate = date("F j, Y", strtotime($order['Order_Date']));
-                $totalAmount = number_format($order['Total_Price'], 2);
-                $customerName = htmlspecialchars($order['Customer_Name']);
-                $customerEmail = htmlspecialchars($order['Customer_Email']);
-                $shippingMethod = htmlspecialchars($order['Shipping_Method']);
-                $paymentMethod = htmlspecialchars($order['Payment_Method_Name']);
-                $couponApplied = $order['cupon_id'] ? 'Yes' : 'No';
+                $orderID = htmlspecialchars($order['Order_ID'] ?? '');
+                $orderDate = !empty($order['Order_Date']) ? date("F j, Y", strtotime($order['Order_Date'])) : 'Not available';
+                $totalAmount = number_format((float)($order['Total_Price'] ?? 0), 2);
 
-                // Get product details from grouped result
-                $productNames = explode(',', $order['Product_Names']);
-                $productPrices = explode(',', $order['Product_Prices']);
-                $quantities = explode(',', $order['Quantities']);
+                $customerName = htmlspecialchars($order['Customer_Name'] ?? 'Unknown customer');
+                $customerEmail = htmlspecialchars($order['Customer_Email'] ?? 'No email');
+                $shippingMethod = htmlspecialchars($order['Shipping_Method'] ?? 'Not selected');
+                $paymentMethod = htmlspecialchars($order['Payment_Method_Name'] ?? 'Not selected');
+                $orderStatus = htmlspecialchars($order['Status'] ?? 'Pending');
+                $couponApplied = !empty($order['cupon_id']) ? 'Yes' : 'No';
+
+                // Get product details safely
+                $productNames = !empty($order['Product_Names']) ? explode(',', $order['Product_Names']) : [];
+                $productPrices = !empty($order['Product_Prices']) ? explode(',', $order['Product_Prices']) : [];
+                $quantities = !empty($order['Quantities']) ? explode(',', $order['Quantities']) : [];
 
                 echo "
             <div class='order-card'>
                 <div class='order-header'>
                     <h5>Order #{$orderID}</h5>
-                    <div class='order-status'>Status: {$order['Status']}</div>
+                    <div class='order-status'>Status: {$orderStatus}</div>
                 </div>
         
                 <div class='order-details'>
@@ -196,31 +180,39 @@ if (isset($_GET['delete_order_id'])) {
                     ";
 
 
-                if ($order['Coupon_Code']) {
+                if (!empty($order['Coupon_Code'])) {
                     echo "<p><strong>Coupon Applied:</strong> {$couponApplied}</p>";
-                    $couponCode = htmlspecialchars($order['Coupon_Code']);
+                    $couponCode = htmlspecialchars($order['Coupon_Code'] ?? '');
                     echo "<p><strong>Coupon Code:</strong> {$couponCode}</p>";
+                } else {
+                    echo "<p><strong>Coupon Applied:</strong> No</p>";
                 }
                 echo "<p>Products</p>";
 
                 /// Loop through products and display them
-                for ($i = 0; $i < count($productNames); $i++) {
+                if (!empty($productNames)) {
+                    for ($i = 0; $i < count($productNames); $i++) {
+                        $productName = htmlspecialchars($productNames[$i] ?? 'Unknown product');
 
-                    $productName = htmlspecialchars($productNames[$i]);
+                        $productPrice = isset($productPrices[$i]) && is_numeric($productPrices[$i])
+                            ? (float)$productPrices[$i]
+                            : 0;
 
-                    // Ensure both $productPrice and $quantity are numeric
-                    $productPrice = isset($productPrices[$i]) && is_numeric($productPrices[$i]) ? (float)$productPrices[$i] : 0;
-                    $quantity = isset($quantities[$i]) && is_numeric($quantities[$i]) ? (int)$quantities[$i] : 0;
+                        $quantity = isset($quantities[$i]) && is_numeric($quantities[$i])
+                            ? (int)$quantities[$i]
+                            : 0;
 
-                    // Calculate subtotal only if both values are valid numbers
-                    $subtotal = $productPrice * $quantity;
-                    $subtotalFormatted = number_format($subtotal, 2);
+                        $subtotal = $productPrice * $quantity;
+                        $subtotalFormatted = number_format($subtotal, 2);
 
-
-                    echo "
-                                <div class='product-item'>
-                                    <span>{$productName} x {$quantity}</span><span>\${$subtotalFormatted}</span>
-                                </div>";
+                        echo "
+                            <div class='product-item'>
+                                <span>{$productName} x {$quantity}</span>
+                                <span>\${$subtotalFormatted}</span>
+                            </div>";
+                    }
+                } else {
+                    echo "<p>No products found for this order.</p>";
                 }
 
                 echo "
