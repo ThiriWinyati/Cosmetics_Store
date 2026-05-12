@@ -121,8 +121,15 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['login'])) {
             <!-- Login Form -->
             <div class="col-lg-6">
                 <div class="signin-form mx-auto">
-                    <h2>Log In</h2>
-                    <form action="user_login.php" method="post">
+                <h2>Log In</h2>
+
+                <?php
+                if (isset($_GET['logout']) && $_GET['logout'] === 'success') {
+                    echo "<div class='alert alert-success'>You logged out of the system. Please login again if you want to.</div>";
+                }
+                ?>
+
+                <form action="/Customer/user_login.php" method="post">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>

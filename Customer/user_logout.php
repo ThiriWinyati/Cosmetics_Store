@@ -1,7 +1,8 @@
 <?php
 session_start();
+session_unset();
 session_destroy();
-echo "You logged out of the system. Please Login again if you want to.";
-header("Location: user_homeIndex.php");
+
+header("Location: /Customer/user_login.php?logout=success");
 exit();
 ?>
