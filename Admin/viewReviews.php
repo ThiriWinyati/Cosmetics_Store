@@ -3,25 +3,6 @@ session_start();
 require_once "../db_connect.php";
 require_once "starRatingForReview.php";
 
-// Database credentials
-$server = getenv('DB_HOST');
-$user = getenv('DB_USER');
-$password = getenv('DB_PASS');
-$database = getenv('DB_NAME');
-$port = getenv('DB_PORT') ?: 3306;
-
-// Create connection
-try {
-    $conn = new PDO(
-        "mysql:host=$server;port=$port;dbname=$database;charset=utf8mb4",
-        $user,
-        $password
-    );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
-
 // Check if the user is logged in as an admin
 if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
     echo "<script>alert('Please log in as an admin.');</script>";
@@ -31,15 +12,26 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
 
 // Fetch all reviews
 try {
-    $reviewsQuery = "SELECT r.Review_ID, p.Name AS Product_Name, c.Name AS Customer_Name, r.Rating, r.Review_Text, r.Review_Date, pi.image_path
+    $reviewsQuery = "SELECT 
+                    r.Review_ID, 
+                    p.Name AS Product_Name, 
+                    c.Name AS Customer_Name, 
+                    r.Rating, 
+                    r.Review_Text, 
+                    r.Review_Date, 
+                    MIN(pi.image_path) AS image_path
                  FROM reviews r 
                  JOIN products p ON r.Product_ID = p.Product_ID 
                  JOIN customers c ON r.Customer_ID = c.Customer_ID
-                 LEFT JOIN (
-                     SELECT product_id, image_path
-                     FROM product_images
-                     GROUP BY product_id
-                 ) pi ON p.Product_ID = pi.product_id";
+                 LEFT JOIN product_images pi ON p.Product_ID = pi.product_id
+                 GROUP BY 
+                    r.Review_ID,
+                    p.Name,
+                    c.Name,
+                    r.Rating,
+                    r.Review_Text,
+                    r.Review_Date
+                 ORDER BY r.Review_Date DESC";
     $reviewsStmt = $conn->prepare($reviewsQuery);
     $reviewsStmt->execute();
     $reviews = $reviewsStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -84,7 +76,16 @@ try {
                             <h5><?php echo htmlspecialchars($review['Product_Name']); ?> - <?php echo htmlspecialchars($review['Customer_Name']); ?></h5>
                         </div>
                         <div class="card mb-4">
-                            <img src="<?php echo htmlspecialchars($review['image_path'] ?? 'default-image.jpg'); ?>" class="card-img-top img-thumbnail" alt="Product Image" style="width: 100px; height: 100px;">
+                            <?php
+                            $imagePath = !empty($review['image_path'])
+                                ? str_replace('../', '/', $review['image_path'])
+                                : '/images/default-image.jpg';
+                            ?>
+
+                            <img src="<?php echo htmlspecialchars($imagePath); ?>" 
+                                class="card-img-top img-thumbnail" 
+                                alt="Product Image" 
+                                style="width: 100px; height: 100px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo htmlspecialchars($review['Product_Name']); ?></h5>
                                 <p class="card-text"><strong>Rating:</strong> <?php echo displayRatingStars($review['Rating']); ?></p>
@@ -109,8 +110,8 @@ try {
                                     <h6>Product: <?php echo htmlspecialchars($review['Product_Name']); ?></h6>
                                     <h6>Customer: <?php echo htmlspecialchars($review['Customer_Name']); ?></h6>
                                     <h6>Rating: <?php echo htmlspecialchars($review['Rating']); ?></h6>
-                                    <p><?php echo nl2br(htmlspecialchars($review['Review_Text'])); ?></p>
-                                    <small>Date: <?php echo htmlspecialchars($review['Review_Date']); ?></small>
+                                    <p><?php echo nl2br(htmlspecialchars($review['Review_Text'] ?? 'No review text')); ?></p>
+                                    <small>Date: <?php echo htmlspecialchars($review['Review_Date'] ?? 'Not available'); ?></small>
                                 </div>
                                 <div class="modal-footer">
                                     <!-- Delete Button -->
