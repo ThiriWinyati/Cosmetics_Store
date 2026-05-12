@@ -84,6 +84,26 @@ if (isset($_GET['deleteCustomerId'])) {
     }
 }
 
+function getProfilePicturePath($path)
+{
+    if (empty($path)) {
+        return "";
+    }
+
+    // Convert Windows/Mac slashes safely
+    $path = str_replace("\\", "/", $path);
+
+    // If database stored ../uploads/profile_pictures/image.jpg
+    $path = str_replace("../", "/", $path);
+
+    // If database stored uploads/profile_pictures/image.jpg
+    if (strpos($path, "uploads/") === 0) {
+        $path = "/" . $path;
+    }
+
+    return $path;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -266,8 +286,14 @@ if (isset($_GET['deleteCustomerId'])) {
                     <?php foreach ($customers as $customer): ?>
                         <tr>
                             <td>
-                                <?php if (!empty($customer['Profile_Picture'])): ?>
-                                    <img src="<?= htmlspecialchars($customer['Profile_Picture']); ?>" alt="Profile Picture" class="rounded-circle profile-image">
+                                <?php
+                                $profilePic = getProfilePicturePath($customer['Profile_Picture'] ?? '');
+                                ?>
+
+                                <?php if (!empty($profilePic)): ?>
+                                    <img src="<?= htmlspecialchars($profilePic); ?>" 
+                                        alt="Profile Picture" 
+                                        class="rounded-circle profile-image">
                                 <?php else: ?>
                                     <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>
                                 <?php endif; ?>
@@ -295,8 +321,14 @@ if (isset($_GET['deleteCustomerId'])) {
                                         <p><strong>Email:</strong> <?php echo htmlspecialchars($customer['Email']); ?></p>
                                         <p><strong>Signup Time:</strong> <?php echo htmlspecialchars($customer['Signup_time']); ?></p>
                                         <p><strong>Profile Picture:</strong></p>
-                                        <?php if (!empty($customer['Profile_Picture'])): ?>
-                                            <img src="<?= htmlspecialchars($customer['Profile_Picture']); ?>" alt="Profile Picture" class="rounded-circle profile-image">
+                                        <?php
+                                        $modalProfilePic = getProfilePicturePath($customer['Profile_Picture'] ?? '');
+                                        ?>
+
+                                        <?php if (!empty($modalProfilePic)): ?>
+                                            <img src="<?= htmlspecialchars($modalProfilePic); ?>" 
+                                                alt="Profile Picture" 
+                                                class="rounded-circle profile-image">
                                         <?php else: ?>
                                             <i class="fa fa-user-circle fa-5x" aria-hidden="true"></i>
                                         <?php endif; ?>
