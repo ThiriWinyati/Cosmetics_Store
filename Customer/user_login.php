@@ -149,7 +149,7 @@ if (isset($_POST['login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
                         </div>
                         <button type="submit" class="btn btn-primary signin-btn" name="login">Log In</button>
                     </form>
-                    <a href="forgotPassword.php" class="forgot-password-link">Forgot Password?</a>
+                    <a href="/Customer/forgotPassword.php" class="forgot-password-link">Forgot Password?</a>
                     <p class="mt-3 text-center">Don't have an account? <a href="/Customer/user_signup.php" style="color: #e91e63;">Sign up here</a></p>
                 </div>
             </div>

@@ -1,4 +1,4 @@
 <?php
-header("Location: /Applications/XAMPP/xamppfiles/htdocs/Charm&Grace_Website/Customer/user_homeIndex.php");
+header("Location: /Customer/user_homeIndex.php");
 exit();
 ?>
