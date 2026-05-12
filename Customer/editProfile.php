@@ -2,56 +2,66 @@
 session_start();
 require_once "../db_connect.php";
 
-// Ensure the user is logged in
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
     echo "<script>alert('Please log in to edit your profile.');</script>";
-    echo "<script>window.location.href = 'user_login.php';</script>";
+    echo "<script>window.location.href = '/Customer/user_login.php';</script>";
     exit();
 }
 
-// Assuming the customer ID is stored in session
 $customer_id = $_SESSION['customer_id'];
 
-// Fetch user details from the database using PDO
-$query = "SELECT Customer_ID, Name, Email, Phone, Address, Profile_Picture FROM customers WHERE Customer_ID = :customer_id";
+$query = "SELECT Customer_ID, Name, Email, Phone, Address, Profile_Picture 
+          FROM customers 
+          WHERE Customer_ID = :customer_id";
+
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
 $stmt->execute();
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Check if the user is found in the database
-if (!$user) {
+$customer = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$customer) {
     echo "<script>alert('User not found.');</script>";
+    echo "<script>window.location.href = '/Customer/user_login.php';</script>";
     exit();
 }
 
-// Handle profile update on form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Sanitize input data
     $name = htmlspecialchars($_POST['name']);
     $email = htmlspecialchars($_POST['email']);
     $phone = htmlspecialchars($_POST['phone']);
     $address = htmlspecialchars($_POST['address']);
 
-    // Handle profile picture upload
-    $profile_picture = $user['Profile_Picture']; // Default to existing picture
+    $profile_picture = $customer['Profile_Picture'];
+
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 0) {
         $upload_dir = '../uploads/profile_pictures/';
-        $file_name = time() . '_' . $_FILES['profile_picture']['name'];
+
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
+        $file_name = time() . '_' . basename($_FILES['profile_picture']['name']);
         $file_path = $upload_dir . $file_name;
 
-        // Check file type (e.g., only allow images)
         $file_type = mime_content_type($_FILES['profile_picture']['tmp_name']);
+
         if (strpos($file_type, 'image') !== false) {
-            move_uploaded_file($_FILES['profile_picture']['tmp_name'], $file_path);
-            $profile_picture = $file_path; // Store the full path
+            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $file_path)) {
+                $profile_picture = $file_path;
+            }
         } else {
             echo "<script>alert('Only image files are allowed.');</script>";
         }
     }
 
-    // Update query
-    $updateQuery = "UPDATE customers SET Name = :name, Email = :email, Phone = :phone, Address = :address, Profile_Picture = :profile_picture WHERE Customer_ID = :customer_id";
+    $updateQuery = "UPDATE customers 
+                    SET Name = :name, 
+                        Email = :email, 
+                        Phone = :phone, 
+                        Address = :address, 
+                        Profile_Picture = :profile_picture 
+                    WHERE Customer_ID = :customer_id";
 
     $updateStmt = $conn->prepare($updateQuery);
     $updateStmt->bindParam(':name', $name);
@@ -61,15 +71,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $updateStmt->bindParam(':profile_picture', $profile_picture);
     $updateStmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
 
-    // Execute the update query
     if ($updateStmt->execute()) {
         echo "<script>alert('Profile updated successfully.');</script>";
-        echo "<script>window.location.href = 'userProfile.php';</script>";
+        echo "<script>window.location.href = '/Customer/userProfile.php';</script>";
+        exit();
     } else {
         echo "<script>alert('An error occurred while updating the profile.');</script>";
     }
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -167,8 +179,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="edit-profile-form-container">
             <!-- Profile Picture Section -->
             <div class="profile-image-container">
-                <?php if ($user['Profile_Picture']): ?>
-                    <img src="<?= $user['Profile_Picture']; ?>" class="rounded-circle profile-image" alt="Profile Picture">
+                <?php if ($customer['Profile_Picture']): ?>
+                    <img src="<?= $customer['Profile_Picture']; ?>" class="rounded-circle profile-image" alt="Profile Picture">
                 <?php else: ?>
                     <i class="fa fa-user-circle fa-5x" aria-hidden="true"></i>
                 <?php endif; ?>
@@ -183,24 +195,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="edit-profile-field">
                     <label for="name" class="edit-profile-label">Name</label>
                     <input type="text" id="name" name="name" class="edit-profile-input-text"
-                        value="<?= htmlspecialchars($user['Name']); ?>" required>
+                        value="<?= htmlspecialchars($customer['Name']); ?>" required>
                 </div>
 
                 <div class="edit-profile-field">
                     <label for="email" class="edit-profile-label">Email</label>
                     <input type="email" id="email" name="email" class="edit-profile-input-text"
-                        value="<?= htmlspecialchars($user['Email']); ?>" required>
+                        value="<?= htmlspecialchars($customer['Email']); ?>" required>
                 </div>
 
                 <div class="edit-profile-field">
                     <label for="phone" class="edit-profile-label">Phone</label>
                     <input type="text" id="phone" name="phone" class="edit-profile-input-text"
-                        value="<?= htmlspecialchars($user['Phone']); ?>" required>
+                        value="<?= htmlspecialchars($customer['Phone']); ?>" required>
                 </div>
 
                 <div class="edit-profile-field">
                     <label for="address" class="edit-profile-label">Address</label>
-                    <textarea id="address" name="address" class="edit-profile-textarea" rows="4" required><?= htmlspecialchars($user['Address']); ?></textarea>
+                    <textarea id="address" name="address" class="edit-profile-textarea" rows="4" required><?= htmlspecialchars($customer['Address']); ?></textarea>
                 </div>
 
                 <div class="edit-profile-field">
