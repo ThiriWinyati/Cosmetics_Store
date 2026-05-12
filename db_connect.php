@@ -5,8 +5,6 @@ $password = getenv('DB_PASS') ?: '';
 $database = getenv('DB_NAME') ?: 'cosmetics_store';
 $port = getenv('DB_PORT') ?: 3306;
 
-die("DB_HOST is: " . $server);
-
 // PDO connection
 try {
     $conn = new PDO(
