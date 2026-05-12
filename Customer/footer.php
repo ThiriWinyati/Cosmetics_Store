@@ -46,10 +46,14 @@
                 <!-- Contact Information -->
                 <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
                     <h6 class="text-black fw-bold mb-4">Contact</h6>
-                    <p><i class="fa fa-map-marker me-3"></i> 298, 11th Street, 1 Quarter, Mayangone Township, Yangon.</p>
+                    <p><i class="fa fa-map-marker me-3"></i> Junction City Tower,
+                        Corner of Bogyoke Aung San Road and 27th Street,
+                        Pabedan Township,
+                        Yangon, Myanmar
+                    </p>
                     <p><i class="fa fa-envelope me-3"></i> charmandgrace@gmail.com</p>
-                    <p><i class="fa fa-phone me-3"></i> +959 967 894 494</p>
-                    <p><i class="fa fa-clock-o me-3"></i> Mon-Fri: 9AM - 5PM</p>
+                    <p><i class="fa fa-phone me-3"></i> +959 123 456 789</p>
+                    <p><i class="fa fa-clock-o me-3"></i> Mon-Sat: 9AM - 5PM</p>
                 </div>
             </div>
 

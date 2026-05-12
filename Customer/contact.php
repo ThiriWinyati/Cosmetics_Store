@@ -126,11 +126,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name'])) {
 
                 <div class="mt-4">
                     <h4>Store Location</h4>
-                    <p><i class="fa fa-map-marker me-2"></i> 298, 11th Street, 1 Quarter, Mayangone Township, Yangon.</p>
-                    <p><i class="fa fa-clock-o me-2"></i> Mon-Fri: 9AM - 5PM</p>
+                    <p><i class="fa fa-map-marker me-2"></i> Junction City Tower,
+                        Corner of Bogyoke Aung San Road and 27th Street,
+                        Pabedan Township,
+                        Yangon, Myanmar
+                    </p>
+                    <p><i class="fa fa-clock-o me-2"></i> Mon-Sat: 9AM - 5PM</p>
                     <div class="map-container">
                         <iframe
-                            src=" https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30546.318844178164!2d96.1079719347656!3d16.86155010005379!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30c1948e78bf147f%3A0x15e50b9976b35317!2z4YCZ4YCb4YCZ4YC64YC44YCA4YCv4YCU4YC64YC4IOGAmeGAvOGAreGAr-GAt-GAlOGAmuGAuiwg4YCb4YCU4YC64YCA4YCv4YCU4YC6!5e0!3m2!1smy!2smm!4v1736781138549!5m2!1smy!2smm"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30546.318844178164!2d96.1079719347656!3d16.86155010005379!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30c1948e78bf147f%3A0x15e50b9976b35317!2z4YCZ4YCb4YCZ4YC64YC44YCA4YCv4YCU4YC64YC4IOGAmeGAvOGAreGAr-GAt-GAlOGAmuGAuiwg4YCb4YCU4YC64YCA4YCv4YCU4YC6!5e0!3m2!1smy!2smm!4v1736781138549!5m2!1smy!2smm"
                             width="600"
                             height="450"
                             style="border:0;"
@@ -142,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name'])) {
 
                 <div class="mt-4">
                     <h4>Contact Information</h4>
-                    <p><i class="fa fa-phone me-2"></i> +959 967 894 494</p>
+                    <p><i class="fa fa-phone me-2"></i> +959 123 456 789</p>
                     <p><i class="fa fa-envelope me-2"></i> charmandgrace@gmail.com</p>
                 </div>
 
