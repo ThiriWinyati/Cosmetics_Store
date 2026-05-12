@@ -1,48 +1,36 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once "../db_connect.php";
 
 if (!isset($_SESSION)) {
-    session_start(); 
+    session_start();
 }
 
-function isPasswordStrong($password)
-{
-    if (strlen($password) < 8) {
-        return false;
-    }
-    return isPasswordStrong($password);
-}
-
-if (isset($_POST['login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
-    $email = $_POST["email"];
+if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['login'])) {
+    $email = trim($_POST["email"]);
     $password = $_POST["password"];
 
-    if (strlen($password) > 7) {
-        try {
-            $sql = "SELECT Customer_ID, name, password FROM customers WHERE email = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$email]);
-            $info = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($info) {
-                $name = $info['name'];
-                $password_hash = $info['password'];
-                if (password_verify($password, $password_hash)) {
-                    $_SESSION['customer_id'] = $info['Customer_ID'];
-                    $_SESSION['cname'] = $info['name'];
-                    $_SESSION['cLoginSuccess'] = "Login Success";
-                    $_SESSION['is_logged_in'] = true;
-                    header("Location: user_homeIndex.php");
-                } else {
-                    $password_err = "Email or Password is incorrect";
-                }
-            } else {
-                $password_err = "Email or Password is incorrect";
-            }
-        } catch (PDOException $e) {
-            echo $e->getMessage();
+    try {
+        $sql = "SELECT Customer_ID, Name, Email, Password FROM customers WHERE Email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$email]);
+        $customer = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($customer && password_verify($password, $customer['Password'])) {
+            $_SESSION['customer_id'] = $customer['Customer_ID'];
+            $_SESSION['cname'] = $customer['Name'];
+            $_SESSION['cLoginSuccess'] = "Login Success";
+            $_SESSION['is_logged_in'] = true;
+
+            header("Location: /Customer/user_homeIndex.php");
+            exit();
+        } else {
+            $password_err = "Email or password is incorrect.";
         }
-    } else {
-        $password_err = "Email or Password is incorrect";
+    } catch (PDOException $e) {
+        echo "Login error: " . $e->getMessage();
     }
 }
 ?>

@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once "../db_connect.php";
 
 if (!isset($_SESSION)) {
@@ -10,9 +13,11 @@ function isPasswordStrong($password)
     if (strlen($password) < 8) {
         return false;
     }
+
     $digitCount = 0;
     $capitalCount = 0;
     $specCount = 0;
+
     foreach (str_split($password) as $char) {
         if (is_numeric($char)) {
             $digitCount++;
@@ -22,35 +27,44 @@ function isPasswordStrong($password)
             $specCount++;
         }
     }
+
     return $digitCount >= 1 && $capitalCount >= 1 && $specCount >= 1;
 }
 
-if (isset($_POST['signUp']) && $_SERVER['REQUEST_METHOD'] == "POST") {
-    $name = $_POST["name"];
-    $email = $_POST["email"];
+if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['signUp'])) {
+    $name = trim($_POST["name"]);
+    $email = trim($_POST["email"]);
     $password = $_POST["password"];
     $confirmPassword = $_POST["confirmPassword"];
 
-    if ($password == $confirmPassword) {
-        if (isPasswordStrong($password)) {
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    if ($password !== $confirmPassword) {
+        $passwordError = "Passwords do not match.";
+    } elseif (!isPasswordStrong($password)) {
+        $passwordError = "Password must be at least 8 characters and contain one digit, one capital letter, and one special character.";
+    } else {
+        try {
+            $checkSql = "SELECT Customer_ID FROM customers WHERE Email = ?";
+            $checkStmt = $conn->prepare($checkSql);
+            $checkStmt->execute([$email]);
 
-            try {
-                $sql = "INSERT INTO customers (name, email, password) VALUES (?, ?, ?)";
+            if ($checkStmt->rowCount() > 0) {
+                $passwordError = "This email is already registered. Please log in instead.";
+            } else {
+                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+                $sql = "INSERT INTO customers (Name, Email, Password) VALUES (?, ?, ?)";
                 $stmt = $conn->prepare($sql);
                 $status = $stmt->execute([$name, $email, $hashedPassword]);
+
                 if ($status) {
-                    $_SESSION['signUpSuccess'] = "SignUp Successfully!";
-                    header("Location: user_login.php");
+                    $_SESSION['signUpSuccess'] = "Sign up successful. Please log in.";
+                    header("Location: /Customer/user_login.php");
+                    exit();
                 }
-            } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
             }
-        } else {
-            $passwordError = "Password must contain at least one digit, one capital letter, and one special character.";
+        } catch (PDOException $e) {
+            echo "Signup error: " . $e->getMessage();
         }
-    } else {
-        $passwordError = "Password must be at least 8 characters long.";
     }
 }
 ?>
