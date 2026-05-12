@@ -6,8 +6,6 @@ if (isset($_GET['start_date']) && isset($_GET['end_date'])) {
     $endDate = $_GET['end_date'];
 
     try {
-        $conn = new PDO("mysql:host=localhost;dbname=cosmetics_store", 'root', '');
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $dailySalesQuery = $conn->prepare("SELECT DATE_FORMAT(Order_Date, '%Y-%m-%d') as date, SUM(Total_Price) as total 
                                            FROM orders 

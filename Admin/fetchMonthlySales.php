@@ -5,8 +5,6 @@ if (isset($_GET['year'])) {
     $year = $_GET['year'];
 
     try {
-        $conn = new PDO("mysql:host=localhost;dbname=cosmetics_store", 'root', '');
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $monthlySalesQuery = $conn->prepare("SELECT DATE_FORMAT(Order_Date, '%Y-%m') as month, SUM(Total_Price) as total 
                                              FROM orders 

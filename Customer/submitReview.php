@@ -1,4 +1,6 @@
 <?php
+require_once "../db_connect.php";
+
 // submit_review.php
 session_start();
 $customer_id = $_SESSION['customer_id'];
@@ -7,7 +9,6 @@ $review_text = $_POST['review_text'];
 $rating = $_POST['rating'];
 
 // Database connection
-$pdo = new PDO("mysql:host=localhost;dbname=cosmetics_store", "root", "");
 
 // Insert the review into the database
 $insert_stmt = $pdo->prepare("INSERT INTO reviews (Product_ID, Customer_ID, Rating, Review_Text)

@@ -10,8 +10,6 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
 }
 
 try {
-    $conn = new PDO("mysql:host=localhost;dbname=cosmetics_store", 'root', '');
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Fetch total sales
     $totalSalesQuery = "SELECT SUM(Total_Price) as total_sales FROM orders";

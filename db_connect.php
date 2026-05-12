@@ -1,9 +1,13 @@
 <?php
-$server = getenv('DB_HOST') ?: 'localhost';
-$user = getenv('DB_USER') ?: 'root';
-$password = getenv('DB_PASS') ?: '';
-$database = getenv('DB_NAME') ?: 'cosmetics_store';
-$port = getenv('DB_PORT') ?: 3306;
+$server = getenv('DB_HOST');
+$user = getenv('DB_USER');
+$password = getenv('DB_PASS');
+$database = getenv('DB_NAME');
+$port = getenv('DB_PORT');
+
+if (!$server || !$user || !$password || !$database || !$port) {
+    die("Database environment variables are missing. Please check Render Environment settings.");
+}
 
 // PDO connection
 try {
@@ -21,6 +25,6 @@ try {
 $mysqli = new mysqli($server, $user, $password, $database, (int)$port);
 
 if ($mysqli->connect_error) {
-    die("Database connection error. Check server logs.");
+    die("Database connection error: " . $mysqli->connect_error);
 }
 ?>
