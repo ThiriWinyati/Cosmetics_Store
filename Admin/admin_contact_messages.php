@@ -2,11 +2,10 @@
 require_once "../db_connect.php";
 
 // Fetch all contact messages
-$sql = "SELECT * FROM contactMessages";
+$sql = "SELECT * FROM contactmessages";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $messagesList = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -69,10 +68,21 @@ $messagesList = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php foreach ($messagesList as $message): ?>
                 <div class="message-card align-items-center">
                     <div class="message-body">
-                        <h5 class="message-title"><?php echo htmlspecialchars($message['name']); ?></h5>
-                        <p class="message-text"><strong>Email:</strong> <?php echo htmlspecialchars($message['email']); ?></p>
-                        <p class="message-text"><strong>Subject:</strong> <?php echo htmlspecialchars($message['subject']); ?></p>
-                        <p class="message-text"><?php echo htmlspecialchars($message['message']); ?></p>
+                        <h5 class="message-title">
+                            <?php echo htmlspecialchars($message['name'] ?? 'Unknown sender'); ?>
+                        </h5>
+
+                        <p class="message-text">
+                            <strong>Email:</strong> <?php echo htmlspecialchars($message['email'] ?? 'No email provided'); ?>
+                        </p>
+
+                        <p class="message-text">
+                            <strong>Subject:</strong> <?php echo htmlspecialchars($message['subject'] ?? 'No subject'); ?>
+                        </p>
+
+                        <p class="message-text">
+                            <?php echo htmlspecialchars($message['message'] ?? 'No message'); ?>
+                        </p>
                     </div>
                 </div>
             <?php endforeach; ?>
