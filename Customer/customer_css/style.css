@@ -108,7 +108,6 @@ body {
 }
 
 .navbar {
-  /* border-radius: 30px; */
   padding: 10px;
   position: sticky;
   height: 65px;
@@ -1608,4 +1607,185 @@ footer .fab:hover {
 .clear-all-btn:hover {
   background-color: white;
   border: 1px solid black;
+}
+
+/* ===== Global Responsive Fix ===== */
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+img,
+video {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Prevent sections from becoming wider than screen */
+.container,
+.row,
+section,
+main {
+    max-width: 100%;
+}
+
+/* Fix long text overflow */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+span {
+    word-wrap: break-word;
+}
+
+/* ===== Hero Banner Responsive ===== */
+.hero,
+.banner,
+.home-banner,
+.carousel,
+.carousel-inner,
+.carousel-item {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.hero img,
+.banner img,
+.home-banner img,
+.carousel-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Mobile hero adjustments */
+@media (max-width: 768px) {
+    .hero,
+    .banner,
+    .home-banner {
+        min-height: auto;
+        padding: 20px 10px;
+    }
+
+    .hero h1,
+    .banner h1,
+    .home-banner h1 {
+        font-size: 28px;
+        line-height: 1.2;
+        text-align: center;
+    }
+
+    .hero p,
+    .banner p,
+    .home-banner p {
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .hero .btn,
+    .banner .btn,
+    .home-banner .btn {
+        width: auto;
+        padding: 10px 24px;
+        font-size: 14px;
+    }
+}
+
+/* ===== Brand Section Responsive ===== */
+.brand-section,
+.brands-section,
+.brand-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.brand-card,
+.brand-item {
+    max-width: 180px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.brand-card img,
+.brand-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+    .brand-card,
+    .brand-item {
+        max-width: 150px;
+    }
+
+    .brand-card img,
+    .brand-item img {
+        height: 100px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    .brand-card,
+    .brand-item {
+        max-width: 120px;
+    }
+
+    .brand-card img,
+    .brand-item img {
+        height: 80px;
+    }
+}
+
+/* ===== Navbar Responsive ===== */
+.navbar {
+    width: 100%;
+    max-width: 100%;
+}
+
+.navbar-brand {
+    font-size: 24px;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 20px;
+    }
+
+    .navbar .container,
+    .navbar .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .navbar-nav {
+        text-align: center;
+    }
+}
+
+/* ===== Product Grid Responsive ===== */
+.product-card,
+.card {
+    max-width: 100%;
+}
+
+.product-card img,
+.card img {
+    max-width: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .product-card,
+    .card {
+        margin-bottom: 20px;
+    }
 }
