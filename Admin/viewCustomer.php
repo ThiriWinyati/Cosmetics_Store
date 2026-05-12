@@ -289,14 +289,7 @@ function getProfilePicturePath($path)
                                 <?php
                                 $profilePic = getProfilePicturePath($customer['Profile_Picture'] ?? '');
                                 ?>
-
-                                <?php if (!empty($profilePic)): ?>
-                                    <img src="<?= htmlspecialchars($profilePic); ?>" 
-                                        alt="Profile Picture" 
-                                        class="rounded-circle profile-image">
-                                <?php else: ?>
-                                    <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>
-                                <?php endif; ?>
+                                <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>
                             </td>
                             <td><?php echo htmlspecialchars($customer['Name']); ?></td>
                             <td><?php echo htmlspecialchars($customer['Email']); ?></td>
@@ -325,13 +318,7 @@ function getProfilePicturePath($path)
                                         $modalProfilePic = getProfilePicturePath($customer['Profile_Picture'] ?? '');
                                         ?>
 
-                                        <?php if (!empty($modalProfilePic)): ?>
-                                            <img src="<?= htmlspecialchars($modalProfilePic); ?>" 
-                                                alt="Profile Picture" 
-                                                class="rounded-circle profile-image">
-                                        <?php else: ?>
-                                            <i class="fa fa-user-circle fa-5x" aria-hidden="true"></i>
-                                        <?php endif; ?>
+                                        <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>
                                     </div>
                                 </div>
                             </div>
