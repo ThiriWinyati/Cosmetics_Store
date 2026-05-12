@@ -1,6 +1,8 @@
 <?php
 session_start();
+session_unset();
 session_destroy();
-echo "You logged out of the system. Please Login again if you want to.";
-header("Location: adminHome.php");
+
+header("Location: /Admin/adminLogin.php?logout=success");
 exit();
+?>

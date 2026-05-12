@@ -179,6 +179,11 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
         <div class="login-form">
             <div class="text-center mb-4">
                 <h4>Admin Login</h4>
+                <?php
+                if (isset($_GET['logout']) && $_GET['logout'] === 'success') {
+                    echo "<div class='alert alert-success'>You logged out of the system. Please login again if you want to.</div>";
+                }
+                ?>
             </div>
             <form action="" method="POST">
                 <?php if (isset($password_err)) {
