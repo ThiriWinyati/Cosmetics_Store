@@ -1,32 +1,35 @@
 <?php
 session_start();
-require_once "../db_connect.php"; // Make sure the path to your DB connection is correct
+require_once "../db_connect.php";
 
-// Ensure the user is logged in
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
     echo "<script>alert('Please log in to view your profile.');</script>";
-    echo "<script>window.location.href = 'user_login.php';</script>";
+    echo "<script>window.location.href = '/Customer/user_login.php';</script>";
     exit();
 }
 
-// Assuming the customer ID is stored in session
 $customer_id = $_SESSION['customer_id'];
 
-// Fetch user details from the database using PDO
-$query = "SELECT Customer_ID, Name, Email, Phone, Address, Profile_Picture FROM customers WHERE Customer_ID = :customer_id";
+$query = "SELECT Customer_ID, Name, Email, Phone, Address, Profile_Picture 
+          FROM customers 
+          WHERE Customer_ID = :customer_id";
+
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
 $stmt->execute();
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$profile_picture = $user['Profile_Picture'] ? $user['Profile_Picture'] : null; // Null if no profile picture
+$customer = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Check if the user is found in the database
-if (!$user) {
+if (!$customer) {
     echo "<script>alert('User not found.');</script>";
+    echo "<script>window.location.href = '/Customer/user_login.php';</script>";
     exit();
 }
+
+$profile_picture = !empty($customer['Profile_Picture']) ? $customer['Profile_Picture'] : null;
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -108,14 +111,14 @@ if (!$user) {
 
                     <div class="profile-info mt-3">
                         <h4 class="mb-3">Profile Information</h4>
-                        <p><strong>Name:</strong> <?= htmlspecialchars($user['Name']); ?></p>
-                        <p><strong>Email:</strong> <?= htmlspecialchars($user['Email']); ?></p>
-                        <p><strong>Phone:</strong> <?= htmlspecialchars($user['Phone']); ?></p>
-                        <p><strong>Address:</strong> <?= htmlspecialchars($user['Address']); ?></p>
+                        <p><strong>Name:</strong> <?= htmlspecialchars($customer['Name']); ?></p>
+                        <p><strong>Email:</strong> <?= htmlspecialchars($customer['Email']); ?></p>
+                        <p><strong>Phone:</strong> <?= htmlspecialchars($customer['Phone']); ?></p>
+                        <p><strong>Address:</strong> <?= htmlspecialchars($customer['Address']); ?></p>
                     </div>
 
                     <div class="text-center">
-                        <a href="editProfile.php" class="btn btn-primary btn-update">Edit Profile</a>
+                        <a href="/Customer/editProfile.php" class="btn btn-primary btn-update">Edit Profile</a>
                     </div>
                 </div>
             </div>
