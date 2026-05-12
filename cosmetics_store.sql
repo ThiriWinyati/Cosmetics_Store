@@ -7,6 +7,8 @@
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
+SET FOREIGN_KEY_CHECKS=0;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -1228,6 +1230,7 @@ INSERT INTO `shippingmethods` (`Shipping_Method_ID`, `Shipping_Method`, `Deliver
 (5, 'Same-Day Delivery', 'Same day (if ordered before 12 PM)', 20.00),
 (6, 'Pick Up at Store', 'Same day or scheduled pickup', 0.00);
 
+
 -- --------------------------------------------------------
 
 --
@@ -1570,3 +1573,5 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+SET FOREIGN_KEY_CHECKS=1;

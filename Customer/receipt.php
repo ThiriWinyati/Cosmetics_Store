@@ -4,14 +4,19 @@ session_start();
 require_once "../db_connect.php";
 
 // Database credentials
-$servername = 'localhost';
-$username = 'root';
-$password = '';
-$database = 'cosmetics_store';
+$server = getenv('DB_HOST');
+$user = getenv('DB_USER');
+$password = getenv('DB_PASS');
+$database = getenv('DB_NAME');
+$port = getenv('DB_PORT') ?: 3306;
 
 // Create connection
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
+    $conn = new PDO(
+        "mysql:host=$server;port=$port;dbname=$database;charset=utf8mb4",
+        $user,
+        $password
+    );
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
