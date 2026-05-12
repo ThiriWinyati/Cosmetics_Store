@@ -12,20 +12,39 @@ if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
 $customerID = $_SESSION['customer_id'];
 
 // Fetch previous orders with shipping status
-$orderQuery = "SELECT o.Order_ID, o.Order_Date, o.Status AS OrderStatus, o.Total_Price, o.Shipping_Address, o.Phone, 
-                      o.Cupon_ID, o.Shipping_ID, o.Payment_Method_ID, 
-                      s.Shipping_Status, s.Shipping_Date, s.Shipping_Method_ID,
-                      GROUP_CONCAT(DISTINCT oi.Product_ID ORDER BY oi.Order_Item_ID ASC) AS Product_IDs,
-                      GROUP_CONCAT(DISTINCT oi.Quantity ORDER BY oi.Order_Item_ID ASC) AS Quantities,
-                      GROUP_CONCAT(DISTINCT oi.Unit_Price ORDER BY oi.Order_Item_ID ASC) AS Unit_Prices,
-                      GROUP_CONCAT(DISTINCT oi.Subtotal ORDER BY oi.Order_Item_ID ASC) AS Subtotals,
-                      GROUP_CONCAT(DISTINCT p.Name ORDER BY oi.Order_Item_ID ASC) AS Product_Names
+$orderQuery = "SELECT 
+                    o.Order_ID, 
+                    o.Order_Date, 
+                    o.Status AS OrderStatus, 
+                    o.Total_Price, 
+                    o.Shipping_Address, 
+                    o.Phone, 
+                    o.Cupon_ID, 
+                    o.Shipping_ID, 
+                    o.Payment_Method_ID, 
+                    MAX(s.Shipping_Status) AS Shipping_Status, 
+                    MAX(s.Shipping_Date) AS Shipping_Date, 
+                    MAX(s.Shipping_Method_ID) AS Shipping_Method_ID,
+                    GROUP_CONCAT(oi.Product_ID ORDER BY oi.Order_Item_ID ASC) AS Product_IDs,
+                    GROUP_CONCAT(oi.Quantity ORDER BY oi.Order_Item_ID ASC) AS Quantities,
+                    GROUP_CONCAT(oi.Unit_Price ORDER BY oi.Order_Item_ID ASC) AS Unit_Prices,
+                    GROUP_CONCAT(oi.Subtotal ORDER BY oi.Order_Item_ID ASC) AS Subtotals,
+                    GROUP_CONCAT(p.Name ORDER BY oi.Order_Item_ID ASC) AS Product_Names
                FROM orders o
-               LEFT JOIN (SELECT * FROM shipping ORDER BY Shipping_Date DESC) s ON o.Order_ID = s.Order_ID
+               LEFT JOIN shipping s ON o.Order_ID = s.Order_ID
                LEFT JOIN order_items oi ON o.Order_ID = oi.Order_ID
                LEFT JOIN products p ON oi.Product_ID = p.Product_ID
                WHERE o.Customer_ID = ?
-               GROUP BY o.Order_ID
+               GROUP BY 
+                    o.Order_ID, 
+                    o.Order_Date, 
+                    o.Status, 
+                    o.Total_Price, 
+                    o.Shipping_Address, 
+                    o.Phone, 
+                    o.Cupon_ID, 
+                    o.Shipping_ID, 
+                    o.Payment_Method_ID
                ORDER BY o.Order_Date DESC";
 
 $stmt = $conn->prepare($orderQuery);
