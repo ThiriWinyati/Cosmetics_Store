@@ -2,24 +2,6 @@
 session_start();
 require_once "../db_connect.php";
 
-// Database credentials
-$server = getenv('DB_HOST');
-$user = getenv('DB_USER');
-$password = getenv('DB_PASS');
-$database = getenv('DB_NAME');
-$port = getenv('DB_PORT') ?: 3306;
-
-// Create connection
-try {
-    $conn = new PDO(
-        "mysql:host=$server;port=$port;dbname=$database;charset=utf8mb4",
-        $user,
-        $password
-    );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
 
 if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
     // If not logged in, redirect to login page
@@ -310,7 +292,7 @@ error_log("Orders: " . print_r($orders, true));
 
         <form method="POST" action="viewOrders.php" class="mb-3">
             <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Search for orders..." value="<?php echo htmlspecialchars($searchTerm); ?>">
+                <input type="text" name="searchTerm" class="form-control" placeholder="Search for orders..." value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
                 <button type="submit" class="btn btn-dark">Search</button>
             </div>
         </form>
@@ -334,15 +316,15 @@ error_log("Orders: " . print_r($orders, true));
                     <?php if (!empty($orders)): ?>
                         <?php foreach ($orders as $order): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($order['Order_ID']); ?></td>
-                                <td><?php echo htmlspecialchars($order['Customer_Name']); ?></td>
-                                <td><?php echo htmlspecialchars($order['Customer_Email']); ?></td>
-                                <td><?php echo htmlspecialchars($order['Shipping_Method']); ?></td>
-                                <td><?php echo htmlspecialchars($order['Payment_Method_Name']); ?></td>
-                                <td><?php echo htmlspecialchars($order['Status']); ?></td>
-                                <td><?php echo htmlspecialchars($order['Product_Names']); ?></td>
-                                <td><?php echo htmlspecialchars($order['Quantities']); ?></td>
-                                <td><?php echo htmlspecialchars($order['Coupon_Code']); ?></td>
+                                <td><?php echo htmlspecialchars($order['Order_ID'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($order['Customer_Name'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($order['Customer_Email'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($order['Shipping_Method'] ?? 'Not selected'); ?></td>
+                                <td><?php echo htmlspecialchars($order['Payment_Method_Name'] ?? 'Not selected'); ?></td>
+                                <td><?php echo htmlspecialchars($order['Status'] ?? 'Pending'); ?></td>
+                                <td><?php echo htmlspecialchars($order['Product_Names'] ?? 'No products'); ?></td>
+                                <td><?php echo htmlspecialchars($order['Quantities'] ?? '0'); ?></td>
+                                <td><?php echo htmlspecialchars($order['Coupon_Code'] ?? 'No coupon'); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
