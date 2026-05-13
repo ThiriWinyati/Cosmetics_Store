@@ -89,7 +89,8 @@ if (!empty($cartItems)) {
 
                     <!-- Wishlist -->
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a href="/Customer/wishlist.php" class="nav-link customer-mobile-page-link"
+                            data-mobile-href="/Customer/wishlist.php" data-bs-toggle="dropdown" aria-expanded="false">
                             <div class="wishlist-icon position-relative">
                                 <i class="fa fa-heart"></i>
 
@@ -122,8 +123,9 @@ if (!empty($cartItems)) {
 
                     <!-- Cart -->
                     <li class="nav-item dropdown">
-                        <button id="cart" type="button" class="btn btn-outline-dark position-relative dropdown-toggle"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <button id="cart" type="button"
+                            class="btn btn-outline-dark position-relative dropdown-toggle customer-mobile-page-link"
+                            data-mobile-href="/Customer/cart.php" data-bs-toggle="dropdown" aria-expanded="false">
 
                             <i class="fa fa-shopping-cart me-2"></i>
 
@@ -217,6 +219,17 @@ if (!empty($cartItems)) {
                     toggler.setAttribute('aria-expanded', 'true');
                 }
             }, true);
+
+            navbar.querySelectorAll('.customer-mobile-page-link').forEach(function (link) {
+                link.addEventListener('click', function (event) {
+                    if (window.matchMedia('(max-width: 991px)').matches) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
+                        window.location.href = link.dataset.mobileHref;
+                    }
+                }, true);
+            });
         }
 
         if (document.readyState === 'loading') {
