@@ -192,24 +192,18 @@ if (!empty($cartItems)) {
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const navbarToggler = document.querySelector(".navbar-toggler");
-            const navbarCollapse = document.querySelector("#mainNavbar");
-
-            if (navbarToggler && navbarCollapse) {
-                navbarToggler.addEventListener("click", function () {
-                    navbarCollapse.classList.toggle("show");
-                });
-            }
+            const navbarCollapse = document.getElementById("mainNavbar");
 
             document.querySelectorAll("#mainNavbar .nav-link").forEach(function (link) {
                 link.addEventListener("click", function () {
-                    if (window.innerWidth < 992) {
-                        navbarCollapse.classList.remove("show");
+                    if (window.innerWidth < 992 && navbarCollapse.classList.contains("show")) {
+                        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navbarCollapse);
+                        bsCollapse.hide();
                     }
                 });
             });
         });
-        </script>                           
+        </script>                        
 </body>
 
 </html>
