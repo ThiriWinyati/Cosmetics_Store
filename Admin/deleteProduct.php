@@ -1,9 +1,8 @@
 <?php
 require_once "../db_connect.php";
+require_once "admin_auth.php";
 
-if (isset($_SESSION)) {
-    session_start();
-}
+admin_require_login('viewProduct.php');
 
 if (isset($_GET['id'])) {
     $productId = $_GET['id'];

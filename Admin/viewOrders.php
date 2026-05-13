@@ -1,14 +1,7 @@
 <?php
 session_start();
 require_once "../db_connect.php";
-
-
-if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-    // If not logged in, redirect to login page
-    echo "<script>alert('Please log in as an admin.');</script>";
-    echo "<script>window.location.href = 'adminLogin.php';</script>";
-    exit();
-}
+require_once "admin_auth.php";
 
 // Fetch all orders or search orders
 $searchTerm = $_POST['searchTerm'] ?? '';

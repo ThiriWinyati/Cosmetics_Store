@@ -1,3 +1,6 @@
+<?php
+require_once __DIR__ . "/admin_auth.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -84,10 +87,17 @@
         </nav>
 
         <div class="admin-logout">
-            <a href="adminLogout.php" class="admin-nav-link">
-                <i class="fa fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </a>
+            <?php if (admin_is_logged_in()): ?>
+                <a href="adminLogout.php" class="admin-nav-link">
+                    <i class="fa fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            <?php else: ?>
+                <a href="adminLogin.php" class="admin-nav-link">
+                    <i class="fa fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+            <?php endif; ?>
         </div>
     </aside>
 

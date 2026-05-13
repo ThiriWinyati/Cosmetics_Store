@@ -1,12 +1,10 @@
 <?php
 session_start();
 require_once "../db_connect.php";
+require_once "admin_auth.php";
 
-// Check if the user is logged in as an admin
-if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-    echo "<script>alert('Please log in as an admin.');</script>";
-    echo "<script>window.location.href = 'adminLogin.php';</script>";
-    exit();
+if (isset($_POST['insertBrand']) || isset($_POST['editBrand']) || isset($_GET['deleteBrandId'])) {
+    admin_require_login('viewBrands.php');
 }
 
 // Fetch all brands or search brands

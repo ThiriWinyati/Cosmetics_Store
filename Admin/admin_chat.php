@@ -1,7 +1,6 @@
 <?php
 require_once "../db_connect.php";
-
-session_start();
+require_once "admin_auth.php";
 
 // Clear previous chat messages when a new session starts
 if (!isset($_SESSION['customer_id'])) {
@@ -16,16 +15,12 @@ function addMessage($message)
 
 // Example usage
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['message'])) {
+    admin_require_login('admin_chat.php');
     $message = $_POST['message'];
     addMessage($message);
 }
 
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: adminLogin.php");
-    exit();
-}
-
-$adminId = $_SESSION['admin_id'];
+$adminId = $_SESSION['admin_id'] ?? null;
 
 // Fetch distinct customer chats
 $sql = "SELECT cm.customer_id, c.name AS customer_name, COUNT(cm.message) AS new_messages

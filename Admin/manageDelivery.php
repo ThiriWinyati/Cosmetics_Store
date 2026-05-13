@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "../db_connect.php";
+require_once "admin_auth.php";
 
 $server = getenv('DB_HOST');
 $user = getenv('DB_USER');
@@ -19,11 +20,8 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-    // If not logged in, redirect to login page
-    echo "<script>alert('Please log in as an admin.');</script>";
-    echo "<script>window.location.href = 'adminLogin.php';</script>";
-    exit();
+if (isset($_GET['shipping_id'], $_GET['action'])) {
+    admin_require_login('manageDelivery.php');
 }
 
 // Fetch delivery records or filter by status

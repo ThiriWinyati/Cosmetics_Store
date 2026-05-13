@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "../db_connect.php";
+require_once "admin_auth.php";
 
 // Database credentials
 $server = getenv('DB_HOST');
@@ -21,11 +22,8 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Check if the user is logged in as an admin
-if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-    echo "<script>alert('Please log in as an admin.');</script>";
-    echo "<script>window.location.href = 'adminLogin.php';</script>";
-    exit();
+if (isset($_POST['editCustomer']) || isset($_GET['deleteCustomerId'])) {
+    admin_require_login('viewCustomer.php');
 }
 
 // Fetch all customers or search customers

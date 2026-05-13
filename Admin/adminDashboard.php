@@ -1,13 +1,7 @@
 <?php
 session_start();
 require_once "../db_connect.php";
-
-// Check admin session
-if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-    echo "<script>alert('Please log in as an admin.');</script>";
-    echo "<script>window.location.href = 'adminLogin.php';</script>";
-    exit();
-}
+require_once "admin_auth.php";
 
 try {
 

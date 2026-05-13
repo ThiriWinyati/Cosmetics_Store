@@ -2,13 +2,7 @@
 session_start();
 require_once "../db_connect.php";
 require_once "starRatingForReview.php";
-
-// Check if the user is logged in as an admin
-if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-    echo "<script>alert('Please log in as an admin.');</script>";
-    echo "<script>window.location.href = 'adminLogin.php';</script>";
-    exit();
-}
+require_once "admin_auth.php";
 
 // Fetch all reviews
 try {

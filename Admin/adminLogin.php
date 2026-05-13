@@ -1,5 +1,6 @@
 <?php
 require_once "../db_connect.php";
+require_once "admin_auth.php";
 
 if (!isset($_SESSION)) {
     session_start();
@@ -36,7 +37,9 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
                     $_SESSION['admin_id'] = $info['Admin_User_ID'];
                     $_SESSION['adminLoginSuccess'] = "Login Success";
                     $_SESSION['isLoggedIn'] = true;
-                    header("Location: adminHome.php");
+                    $returnTo = $_GET['return_to'] ?? 'adminHome.php';
+                    header("Location: " . $returnTo);
+                    exit();
                 } else {
                     $password_err = "Username or Password is incorrect";
                 }

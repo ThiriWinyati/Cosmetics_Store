@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "../db_connect.php";
+require_once "admin_auth.php";
 
 // Database credentials
 $server = getenv('DB_HOST');
@@ -40,11 +41,8 @@ try {
     echo $e->getMessage();
 }
 
-if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-    // If not logged in, redirect to login page
-    echo "<script>alert('Please log in as an admin.');</script>";
-    echo "<script>window.location.href = 'adminLogin.php';</script>";
-    exit();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['search'])) {
+    admin_require_login('viewProduct.php');
 }
 
 // Fetch products
