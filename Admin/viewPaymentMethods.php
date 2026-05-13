@@ -3,24 +3,7 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
-// Database credentials
-$server = getenv('DB_HOST');
-$user = getenv('DB_USER');
-$password = getenv('DB_PASS');
-$database = getenv('DB_NAME');
-$port = getenv('DB_PORT') ?: 3306;
-
-// Create connection
-try {
-    $conn = new PDO(
-        "mysql:host=$server;port=$port;dbname=$database;charset=utf8mb4",
-        $user,
-        $password
-    );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+$isAdmin = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     admin_require_login('viewPaymentMethods.php');
@@ -202,35 +185,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="text-end mb-3">
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertPaymentMethodModal">
-                        <i class="fa fa-plus"></i> Insert Payment Method
-                    </button>
+                    <?php if ($isAdmin): ?>
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertPaymentMethodModal">
+                            <i class="fa fa-plus"></i> Insert Payment Method
+                        </button>
+                    <?php else: ?>
+                        <button type="button" class="btn btn-secondary" disabled title="Admin login required">
+                            <i class="fa fa-lock"></i> Insert locked
+                        </button>
+                    <?php endif; ?>
                 </div>
 
 
                 <!-- Add a modal for inserting payment method -->
-                <div class="modal fade" id="insertPaymentMethodModal" tabindex="-1" aria-labelledby="insertPaymentMethodModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="insertPaymentMethodModalLabel">Insert Payment Method</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="POST" action="">
-                                    <div class="mb-3">
-                                        <label for="methodName" class="form-label">Payment Method Name</label>
-                                        <input type="text" class="form-control" id="methodName" name="methodName" required>
-                                    </div>
-                                    <button type="submit" name="insertPaymentMethod" class="btn btn-primary">
-                                        Add Payment Method
-                                    </button>
+                <?php if ($isAdmin): ?>
+                    <div class="modal fade" id="insertPaymentMethodModal" tabindex="-1" aria-labelledby="insertPaymentMethodModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="insertPaymentMethodModalLabel">Insert Payment Method</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="">
+                                        <div class="mb-3">
+                                            <label for="methodName" class="form-label">Payment Method Name</label>
+                                            <input type="text" class="form-control" id="methodName" name="methodName" required>
+                                        </div>
+                                        <button type="submit" name="insertPaymentMethod" class="btn btn-primary">
+                                            Add Payment Method
+                                        </button>
 
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                <?php endif; ?>
 
                 <div class="table-container">
                     <table class="table table-hover" id="viewPaymentMethodsTable">
@@ -243,68 +234,94 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </thead>
                         <tbody>
                             <?php
-                            foreach ($paymentMethods as $method) {
-                                $paymentMethodID = htmlspecialchars($method['Payment_Method_ID']);
-                                $methodName = htmlspecialchars($method['Method_Name']);
+                                foreach ($paymentMethods as $method) {
+                                    $paymentMethodID = htmlspecialchars($method['Payment_Method_ID']);
+                                    $methodName = htmlspecialchars($method['Method_Name']);
 
-                                echo "
-                                <tr>
-                                    <td>{$paymentMethodID}</td>
-                                    <td>{$methodName}</td>
-                                    <td>
-                                        <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editPaymentMethodModal{$paymentMethodID}'>
-                                            <i class='fa fa-edit'></i> Edit
-                                        </button>
-                                        <button class='btn btn-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deletePaymentMethodModal{$paymentMethodID}'>
-                                            <i class='fa fa-trash'></i> Delete
-                                        </button>
-                                    </td>
-                                </tr>";
+                                    echo "
+                                    <tr>
+                                        <td>{$paymentMethodID}</td>
+                                        <td>{$methodName}</td>
+                                        <td>";
 
-                                // Edit Modal
-                                echo "<div class='modal fade' id='editPaymentMethodModal{$paymentMethodID}' tabindex='-1' aria-labelledby='editPaymentMethodModalLabel' aria-hidden='true'>
-                                        <div class='modal-dialog'>
-                                            <div class='modal-content'>
-                                                <div class='modal-header'>
-                                                    <h5 class='modal-title' id='editPaymentMethodModalLabel'>Edit Payment Method</h5>
-                                                    <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-                                                </div>
-                                                <div class='modal-body'>
-                                                    <form method='POST' action=''>
-                                                        <input type='hidden' name='Payment_Method_ID' value='{$paymentMethodID}'>
-                                                        <div class='mb-3'>
-                                                            <label for='methodName' class='form-label'>Payment Method Name</label>
-                                                            <input type='text' class='form-control' id='methodName' name='methodName' value='{$methodName}' required>
-                                                        </div>
-                                                        <button type='submit' name='editPaymentMethod' class='btn btn-primary'>Save Changes</button>
-                                                    </form>
+                                    if ($isAdmin) {
+                                        echo "
+                                            <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editPaymentMethodModal{$paymentMethodID}'>
+                                                <i class='fa fa-edit'></i> Edit
+                                            </button>
+
+                                            <button class='btn btn-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deletePaymentMethodModal{$paymentMethodID}'>
+                                                <i class='fa fa-trash'></i> Delete
+                                            </button>";
+                                    } else {
+                                        echo "
+                                            <button class='btn btn-secondary btn-sm' disabled title='Admin login required'>
+                                                <i class='fa fa-lock'></i> Edit locked
+                                            </button>
+
+                                            <button class='btn btn-secondary btn-sm' disabled title='Admin login required'>
+                                                <i class='fa fa-lock'></i> Delete locked
+                                            </button>";
+                                    }
+
+                                    echo "
+                                        </td>
+                                    </tr>";
+
+                                    if ($isAdmin) {
+                                        // Edit Modal
+                                        echo "
+                                        <div class='modal fade' id='editPaymentMethodModal{$paymentMethodID}' tabindex='-1' aria-labelledby='editPaymentMethodModalLabel{$paymentMethodID}' aria-hidden='true'>
+                                            <div class='modal-dialog'>
+                                                <div class='modal-content'>
+                                                    <div class='modal-header'>
+                                                        <h5 class='modal-title' id='editPaymentMethodModalLabel{$paymentMethodID}'>Edit Payment Method</h5>
+                                                        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                                    </div>
+
+                                                    <div class='modal-body'>
+                                                        <form method='POST' action=''>
+                                                            <input type='hidden' name='Payment_Method_ID' value='{$paymentMethodID}'>
+
+                                                            <div class='mb-3'>
+                                                                <label class='form-label'>Payment Method Name</label>
+                                                                <input type='text' class='form-control' name='methodName' value='{$methodName}' required>
+                                                            </div>
+
+                                                            <button type='submit' name='editPaymentMethod' class='btn btn-primary'>Save Changes</button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>";
+                                        </div>";
 
-                                // Delete Modal
-                                echo "<div class='modal fade' id='deletePaymentMethodModal{$paymentMethodID}' tabindex='-1' aria-labelledby='deletePaymentMethodModalLabel' aria-hidden='true'>
-                                        <div class='modal-dialog'>
-                                            <div class='modal-content'>
-                                                <div class='modal-header'>
-                                                    <h5 class='modal-title' id='deletePaymentMethodModalLabel'>Delete Payment Method</h5>
-                                                    <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-                                                </div>
-                                                <div class='modal-body'>
-                                                    Are you sure you want to delete this payment method?
-                                                </div>
-                                                <div class='modal-footer'>
-                                                    <form method='POST' action=''>
-                                                        <input type='hidden' name='Payment_Method_ID' value='{$paymentMethodID}'>
-                                                        <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancel</button>
-                                                        <button type='submit' name='deletePaymentMethod' class='btn btn-danger'>Delete</button>
-                                                    </form>
+                                        // Delete Modal
+                                        echo "
+                                        <div class='modal fade' id='deletePaymentMethodModal{$paymentMethodID}' tabindex='-1' aria-labelledby='deletePaymentMethodModalLabel{$paymentMethodID}' aria-hidden='true'>
+                                            <div class='modal-dialog'>
+                                                <div class='modal-content'>
+                                                    <div class='modal-header'>
+                                                        <h5 class='modal-title' id='deletePaymentMethodModalLabel{$paymentMethodID}'>Delete Payment Method</h5>
+                                                        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                                    </div>
+
+                                                    <div class='modal-body'>
+                                                        Are you sure you want to delete this payment method?
+                                                    </div>
+
+                                                    <div class='modal-footer'>
+                                                        <form method='POST' action=''>
+                                                            <input type='hidden' name='Payment_Method_ID' value='{$paymentMethodID}'>
+
+                                                            <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancel</button>
+                                                            <button type='submit' name='deletePaymentMethod' class='btn btn-danger'>Delete</button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>";
-                            }
+                                        </div>";
+                                    }
+                                }
                             ?>
                         </tbody>
                     </table>
