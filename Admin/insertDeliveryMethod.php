@@ -3,6 +3,8 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
+admin_require_login('deliveryMethods.php');
+
 // Database credentials
 $server = getenv('DB_HOST');
 $user = getenv('DB_USER');

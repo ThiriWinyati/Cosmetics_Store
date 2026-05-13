@@ -3,6 +3,8 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
+$isAdmin = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
+
 $server = getenv('DB_HOST');
 $user = getenv('DB_USER');
 $password = getenv('DB_PASS');
@@ -20,7 +22,14 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['editDeliveryMethod']) || isset($_POST['deleteDeliveryMethod']))) {
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    (
+        isset($_POST['editDeliveryMethod']) ||
+        isset($_POST['deleteDeliveryMethod']) ||
+        isset($_POST['insertDeliveryMethod'])
+    )
+) {
     admin_require_login('deliveryMethods.php');
 }
 
@@ -242,9 +251,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
         </form>
 
         <div class="text-end mb-3">
-            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertDeliveryMethodModal">
-                <i class="fa fa-plus"></i> Insert Delivery Method
-            </button>
+            <?php if ($isAdmin): ?>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertDeliveryMethodModal">
+                    <i class="fa fa-plus"></i> Insert Delivery Method
+                </button>
+            <?php else: ?>
+                <button type="button" class="btn btn-secondary" disabled title="Admin login required">
+                    <i class="fa fa-lock"></i> Insert locked
+                </button>
+            <?php endif; ?>
         </div>
 
         <div class="delivery-methods-container">
@@ -260,116 +275,155 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
                 </thead>
                 <tbody>
                     <?php
-                    foreach ($deliveryMethods as $method) {
-                        $shippingMethodID = htmlspecialchars($method['Shipping_Method_ID']);
-                        $shippingMethod = htmlspecialchars($method['Shipping_Method']);
-                        $deliveryTime = htmlspecialchars($method['DeliveryTime']);
-                        $cost = number_format($method['Cost'], 2);
+                        if (!empty($deliveryMethods)) {
+                            foreach ($deliveryMethods as $method) {
+                                $shippingMethodID = htmlspecialchars($method['Shipping_Method_ID']);
+                                $shippingMethod = htmlspecialchars($method['Shipping_Method']);
+                                $deliveryTime = htmlspecialchars($method['DeliveryTime']);
+                                $cost = number_format((float)$method['Cost'], 2);
 
-                        echo "
+                                echo "
+                                <tr>
+                                    <td>{$shippingMethodID}</td>
+                                    <td>{$shippingMethod}</td>
+                                    <td>{$deliveryTime}</td>
+                                    <td>\${$cost}</td>
+                                    <td>";
+
+                                if ($isAdmin) {
+                                    echo "
+                                        <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editDeliveryMethodModal{$shippingMethodID}'>
+                                            <i class='fa fa-edit'></i> Edit
+                                        </button>
+
+                                        <button class='btn btn-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deleteDeliveryMethodModal{$shippingMethodID}'>
+                                            <i class='fa fa-trash'></i> Delete
+                                        </button>";
+                                } else {
+                                    echo "
+                                        <button class='btn btn-secondary btn-sm' disabled title='Admin login required'>
+                                            <i class='fa fa-lock'></i> Edit locked
+                                        </button>
+
+                                        <button class='btn btn-secondary btn-sm' disabled title='Admin login required'>
+                                            <i class='fa fa-lock'></i> Delete locked
+                                        </button>";
+                                }
+
+                                echo "
+                                    </td>
+                                </tr>";
+
+                                if ($isAdmin) {
+                                    // Edit Modal
+                                    echo "
+                                    <div class='modal fade' id='editDeliveryMethodModal{$shippingMethodID}' tabindex='-1' aria-labelledby='editDeliveryMethodModalLabel{$shippingMethodID}' aria-hidden='true'>
+                                        <div class='modal-dialog'>
+                                            <div class='modal-content'>
+                                                <div class='modal-header'>
+                                                    <h5 class='modal-title' id='editDeliveryMethodModalLabel{$shippingMethodID}'>Edit Shipping Method</h5>
+                                                    <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                                </div>
+
+                                                <div class='modal-body'>
+                                                    <form method='POST' action='deliveryMethods.php'>
+                                                        <input type='hidden' name='Shipping_Method_ID' value='{$shippingMethodID}'>
+
+                                                        <div class='mb-3'>
+                                                            <label class='form-label'>Shipping Method</label>
+                                                            <input type='text' class='form-control' name='Shipping_Method' value='{$shippingMethod}' required>
+                                                        </div>
+
+                                                        <div class='mb-3'>
+                                                            <label class='form-label'>Shipping Time</label>
+                                                            <input type='text' class='form-control' name='DeliveryTime' value='{$deliveryTime}' required>
+                                                        </div>
+
+                                                        <div class='mb-3'>
+                                                            <label class='form-label'>Cost</label>
+                                                            <input type='number' class='form-control' name='Cost' step='0.01' value='{$cost}' required>
+                                                        </div>
+
+                                                        <button type='submit' name='editDeliveryMethod' class='btn btn-primary'>Save Changes</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>";
+
+                                    // Delete Modal
+                                    echo "
+                                    <div class='modal fade' id='deleteDeliveryMethodModal{$shippingMethodID}' tabindex='-1' aria-labelledby='deleteDeliveryMethodModalLabel{$shippingMethodID}' aria-hidden='true'>
+                                        <div class='modal-dialog'>
+                                            <div class='modal-content'>
+                                                <div class='modal-header'>
+                                                    <h5 class='modal-title' id='deleteDeliveryMethodModalLabel{$shippingMethodID}'>Delete Delivery Method</h5>
+                                                    <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                                </div>
+
+                                                <div class='modal-body'>
+                                                    Are you sure you want to delete this delivery method?
+                                                </div>
+
+                                                <div class='modal-footer'>
+                                                    <form method='POST' action='deliveryMethods.php'>
+                                                        <input type='hidden' name='Shipping_Method_ID' value='{$shippingMethodID}'>
+
+                                                        <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancel</button>
+                                                        <button type='submit' name='deleteDeliveryMethod' class='btn btn-danger'>Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>";
+                                }
+                            }
+                        } else {
+                            echo "
                             <tr>
-                                <td>{$shippingMethodID}</td>
-                                <td>{$shippingMethod}</td>
-                                <td>{$deliveryTime}</td>
-                                <td>\${$cost}</td>
-                                <td>
-                                    <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editDeliveryMethodModal{$shippingMethodID}'>
-                                        <i class='fa fa-edit'></i> Edit
-                                    </button>
-                                    <button class='btn btn-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deleteDeliveryMethodModal{$shippingMethodID}'>
-                                        <i class='fa fa-trash'></i> Delete
-                                    </button>
-                                </td>
+                                <td colspan='5' class='text-center'>No shipping methods found.</td>
                             </tr>";
-
-                        // Edit Modal
-                        echo "<div class='modal fade' id='editDeliveryMethodModal{$shippingMethodID}' tabindex='-1' aria-labelledby='editDeliveryMethodModalLabel' aria-hidden='true'>
-                                <div class='modal-dialog'>
-                                    <div class='modal-content'>
-                                        <div class='modal-header'>
-                                            <h5 class='modal-title' id='editDeliveryMethodModalLabel'>Edit Shipping Method</h5>
-                                            <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-                                        </div>
-                                        <div class='modal-body'>
-                                            <form method='POST' action='deliveryMethods.php'>
-                                                <input type='hidden' name='Shipping_Method_ID' value='{$shippingMethodID}'>
-                                                <div class='mb-3'>
-                                                    <label for='Shipping_Method' class='form-label'>Shipping Method</label>
-                                                    <input type='text' class='form-control' id='Shipping_Method' name='Shipping_Method' value='{$shippingMethod}' required>
-                                                </div>
-                                                <div class='mb-3'>
-                                                    <label for='DeliveryTime' class='form-label'>Shipping Time</label>
-                                                    <input type='text' class='form-control' id='DeliveryTime' name='DeliveryTime' value='{$deliveryTime}' required>
-                                                </div>
-                                                <div class='mb-3'>
-                                                    <label for='Cost' class='form-label'>Cost</label>
-                                                    <input type='number' class='form-control' id='Cost' name='Cost' step='0.01' value='{$cost}' required>
-                                                </div>
-                                                <button type='submit' name='editDeliveryMethod' class='btn btn-primary'>Save Changes</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>";
-
-                        // Delete Modal
-                        echo "<div class='modal fade' id='deleteDeliveryMethodModal{$shippingMethodID}' tabindex='-1' aria-labelledby='deleteDeliveryMethodModalLabel' aria-hidden='true'>
-                                <div class='modal-dialog'>
-                                    <div class='modal-content'>
-                                        <div class='modal-header'>
-                                            <h5 class='modal-title' id='deleteDeliveryMethodModalLabel'>Delete Delivery Method</h5>
-                                            <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-                                        </div>
-                                        <div class='modal-body'>
-                                            Are you sure you want to delete this delivery method?
-                                        </div>
-                                        <div class='modal-footer'>
-                                            <form method='POST' action='deliveryMethods.php'>
-                                                <input type='hidden' name='Shipping_Method_ID' value='{$shippingMethodID}'>
-                                                <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancel</button>
-                                                <button type='submit' name='deleteDeliveryMethod' class='btn btn-danger'>Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>";
-                    }
-                    ?>
+                        }
+                        ?>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Insert Delivery Method Modal -->
-    <div class='modal fade' id='insertDeliveryMethodModal' tabindex='-1' aria-labelledby='insertDeliveryMethodModalLabel' aria-hidden='true'>
-        <div class='modal-dialog'>
-            <div class='modal-content'>
-                <div class='modal-header'>
-                    <h5 class='modal-title' id='insertDeliveryMethodModalLabel'>Insert New Shipping Method</h5>
-                    <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-                </div>
-                <div class='modal-body'>
-                    <form method='POST' action='insertDeliveryMethod.php'>
-                        <div class='mb-3'>
-                            <label for='Shipping_Method' class='form-label'>Shipping Method:</label>
-                            <input type='text' class='form-control' id='Shipping_Method' name='Shipping_Method' required>
-                        </div>
-                        <div class='mb-3'>
-                            <label for='DeliveryTime' class='form-label'>Shipping Time:</label>
-                            <input type='text' class='form-control' id='DeliveryTime' name='DeliveryTime' required>
-                        </div>
-                        <div class='mb-3'>
-                            <label for='Cost' class='form-label'>Cost:</label>
-                            <input type='number' class='form-control' id='Cost' name='Cost' step='0.01' required>
-                        </div>
-                        <button type='submit' class='btn btn-primary'>Insert Shipping Method</button>
-                    </form>
+    <?php if ($isAdmin): ?>
+        <!-- Insert Delivery Method Modal -->
+        <div class='modal fade' id='insertDeliveryMethodModal' tabindex='-1' aria-labelledby='insertDeliveryMethodModalLabel' aria-hidden='true'>
+            <div class='modal-dialog'>
+                <div class='modal-content'>
+                    <div class='modal-header'>
+                        <h5 class='modal-title' id='insertDeliveryMethodModalLabel'>Insert New Shipping Method</h5>
+                        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                    </div>
+
+                    <div class='modal-body'>
+                        <form method='POST' action='insertDeliveryMethod.php'>
+                            <div class='mb-3'>
+                                <label for='Shipping_Method' class='form-label'>Shipping Method:</label>
+                                <input type='text' class='form-control' id='Shipping_Method' name='Shipping_Method' required>
+                            </div>
+
+                            <div class='mb-3'>
+                                <label for='DeliveryTime' class='form-label'>Shipping Time:</label>
+                                <input type='text' class='form-control' id='DeliveryTime' name='DeliveryTime' required>
+                            </div>
+
+                            <div class='mb-3'>
+                                <label for='Cost' class='form-label'>Cost:</label>
+                                <input type='number' class='form-control' id='Cost' name='Cost' step='0.01' required>
+                            </div>
+
+                            <button type='submit' name='insertDeliveryMethod' class='btn btn-primary'>Insert Shipping Method</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <script src="https://
+    <?php endif; ?>
 </body>
 
 </html>
