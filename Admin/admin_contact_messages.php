@@ -71,31 +71,109 @@ $messagesList = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
+        .contact-page-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
         .main-contact-container {
-            max-width: 800px;
+            width: 100%;
+            max-width: 900px;
             margin: 0 auto;
         }
 
+        .main-contact-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
         .message-card {
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            margin-bottom: 24px;
+            border: 1px solid #343442;
+            border-radius: 16px;
+            background: #1f1f27;
+            color: #f5f5f5;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
         }
 
         .message-body {
-            padding: 20px;
+            padding: 24px;
         }
 
-        .message-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .message-body h5 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: #ffffff;
         }
 
-        .message-text {
-            font-size: 16px;
-            margin-bottom: 10px;
+        .message-body p {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #e8e8e8;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .message-body strong {
+            color: #ffffff;
+        }
+
+        .alert {
+            max-width: 100%;
+            margin-bottom: 24px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .contact-page-wrapper {
+                padding: 20px 12px;
+            }
+
+            .main-contact-container {
+                max-width: 100%;
+            }
+
+            .message-body {
+                padding: 18px;
+            }
+
+            .message-body h5 {
+                font-size: 1.05rem;
+            }
+
+            .message-body p {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .contact-page-wrapper {
+                padding: 15px 10px;
+            }
+
+            .message-card {
+                border-radius: 12px;
+            }
+
+            .message-body {
+                padding: 16px;
+            }
+
+            .message-body h5 {
+                font-size: 1rem;
+            }
+
+            .message-body p {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -103,18 +181,19 @@ $messagesList = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <?php include 'sidebar_nav.php'; ?>
 
-    <div class="col-md-9">
-        <!-- Main Content for Contact Messages -->
-        <div class="main-contact-container mt-4 align-items-center">
+    <div class="contact-page-wrapper">
+        <div class="main-contact-container mt-4">
             <h2 class="mb-4 text-center">Contact Messages</h2>
+
             <?php if (!$isAdmin): ?>
                 <div class="alert alert-warning text-center">
                     <i class="fa fa-lock"></i>
                     Customer contact details are hidden in portfolio preview mode.
                 </div>
             <?php endif; ?>
+
             <?php foreach ($messagesList as $message): ?>
-                <div class="message-card align-items-center">
+                <div class="message-card">
                     <div class="message-body">
                         <h5>
                             <?php
