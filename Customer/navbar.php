@@ -172,8 +172,10 @@ if (!empty($cartItems)) {
 
                     <!-- Account -->
                     <li class="nav-item dropdown">
-                        <button id="account" type="button" class="btn btn-outline-dark dropdown-toggle"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <button id="account" type="button"
+                            class="btn btn-outline-dark dropdown-toggle customer-mobile-page-link"
+                            data-mobile-href="<?php echo (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) ? '/Customer/userProfile.php' : '/Customer/user_login.php'; ?>"
+                            data-desktop-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-user-circle-o"></i>
 
                             <span>
