@@ -129,15 +129,17 @@ if (!empty($cartItems)) {
                             data-mobile-href="/Customer/cart.php" data-desktop-toggle="dropdown"
                             data-bs-toggle="dropdown" aria-expanded="false">
 
-                            <i class="fa fa-shopping-cart me-2"></i>
+                            <span class="cart-label">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>My Cart</span>
+                                <span class="cart-caret" aria-hidden="true"></span>
+                            </span>
 
                             <?php if ($totalQuantity > 0): ?>
                                 <span class="cart-quantity position-absolute top-0 start-100 translate-middle">
                                     <?php echo $totalQuantity; ?>
                                 </span>
                             <?php endif; ?>
-
-                            <span>My Cart</span>
 
                             <span class="cart-total d-block text-center mt-1">
                                 Total: $<?php echo number_format($totalAmount, 2); ?>
@@ -210,6 +212,10 @@ if (!empty($cartItems)) {
                 return;
             }
 
+            function updateBodyOffset() {
+                document.body.style.paddingTop = navbar.offsetHeight + 'px';
+            }
+
             toggler.addEventListener('click', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -222,6 +228,8 @@ if (!empty($cartItems)) {
                     menu.classList.add('show');
                     toggler.setAttribute('aria-expanded', 'true');
                 }
+
+                updateBodyOffset();
             }, true);
 
             function setDropdownMode() {
@@ -241,6 +249,9 @@ if (!empty($cartItems)) {
 
             setDropdownMode();
             isMobileNavbar.addEventListener('change', setDropdownMode);
+            updateBodyOffset();
+            window.addEventListener('resize', updateBodyOffset);
+            window.addEventListener('load', updateBodyOffset);
 
             mobilePageLinks.forEach(function (link) {
                 link.addEventListener('click', function (event) {
