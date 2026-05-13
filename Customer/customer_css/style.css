@@ -1180,6 +1180,10 @@ body {
   border: 1px solid #f4c8dc;
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 8px 20px rgba(220, 100, 150, 0.12); /* Subtle shadow */
+  position: sticky;
+  top: calc(var(--customer-navbar-height, 90px) + 16px);
+  max-height: calc(100vh - var(--customer-navbar-height, 90px) - 32px);
+  overflow-y: auto;
 }
 
 /* Ensure the dropdowns are scrollable */
@@ -1218,6 +1222,10 @@ body {
   border: 1px solid #f4c8dc;
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 8px 20px rgba(220, 100, 150, 0.12); /* Subtle shadow */
+  position: sticky;
+  top: calc(var(--customer-navbar-height, 90px) + 16px);
+  max-height: calc(100vh - var(--customer-navbar-height, 90px) - 32px);
+  overflow-y: auto;
 }
 
 .contact-form,
@@ -3180,15 +3188,15 @@ html[data-theme="dark"] .customer-navbar #account + .dropdown-menu .dropdown-div
   font-weight: 600;
 }
 
-.theme-toggle-btn .theme-icon-light {
-  display: none;
-}
-
-html[data-theme="dark"] .theme-toggle-btn .theme-icon-dark {
+.theme-toggle-btn .theme-icon-dark {
   display: none;
 }
 
 html[data-theme="dark"] .theme-toggle-btn .theme-icon-light {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-toggle-btn .theme-icon-dark {
   display: inline-block;
 }
 
@@ -3598,6 +3606,145 @@ html[data-theme="dark"] .forgot-password-image {
   box-shadow: none !important;
 }
 
+html[data-theme="dark"] .terms-container,
+html[data-theme="dark"] .privacy-container {
+  background-color: var(--customer-surface) !important;
+  border: 1px solid var(--customer-border);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px var(--customer-shadow);
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .terms-container h2,
+html[data-theme="dark"] .terms-container h3,
+html[data-theme="dark"] .terms-container p,
+html[data-theme="dark"] .terms-container li,
+html[data-theme="dark"] .privacy-container h3,
+html[data-theme="dark"] .privacy-container h4,
+html[data-theme="dark"] .privacy-container p,
+html[data-theme="dark"] .privacy-container li {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .card.shadow-lg,
+html[data-theme="dark"] .card.shadow-lg .card-body {
+  background-color: var(--customer-surface) !important;
+  border-color: var(--customer-border) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .card.shadow-lg {
+  border: 1px solid var(--customer-border) !important;
+  box-shadow: 0 10px 24px var(--customer-shadow) !important;
+}
+
+html[data-theme="dark"] .card.shadow-lg h4,
+html[data-theme="dark"] .card.shadow-lg p,
+html[data-theme="dark"] .card.shadow-lg th,
+html[data-theme="dark"] .card.shadow-lg td {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .card.shadow-lg .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--customer-text);
+  --bs-table-border-color: var(--customer-border);
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .profile-header,
+html[data-theme="dark"] .profile-card {
+  background-color: var(--customer-surface) !important;
+  border: 1px solid var(--customer-border);
+  box-shadow: 0 10px 24px var(--customer-shadow);
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .profile-header {
+  border-radius: 10px;
+  padding: 16px;
+}
+
+html[data-theme="dark"] .profile-card h4,
+html[data-theme="dark"] .profile-card p,
+html[data-theme="dark"] .profile-card strong,
+html[data-theme="dark"] .profile-header .header-title,
+html[data-theme="dark"] .profile-card .fa-user-circle {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .profile-image {
+  border: 3px solid var(--customer-accent);
+  box-shadow: 0 8px 18px var(--customer-shadow);
+}
+
+html[data-theme="dark"] .btn-update {
+  background-color: var(--customer-accent) !important;
+  border-color: var(--customer-accent) !important;
+  color: #1a1a1a !important;
+}
+
+html[data-theme="dark"] .btn-update:hover {
+  background-color: #ffaad0 !important;
+  border-color: #ffaad0 !important;
+}
+
+html[data-theme="dark"] .container > h2.text-center,
+html[data-theme="dark"] .container > p.text-center {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .container > .card.mb-4,
+html[data-theme="dark"] .container > .card.mb-4 .card-header,
+html[data-theme="dark"] .container > .card.mb-4 .card-body {
+  background-color: var(--customer-surface) !important;
+  border-color: var(--customer-border) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .container > .card.mb-4 {
+  border: 1px solid var(--customer-border) !important;
+  box-shadow: 0 10px 24px var(--customer-shadow);
+}
+
+html[data-theme="dark"] .container > .card.mb-4 h5,
+html[data-theme="dark"] .container > .card.mb-4 h6,
+html[data-theme="dark"] .container > .card.mb-4 p,
+html[data-theme="dark"] .container > .card.mb-4 strong {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .container > .card.mb-4 .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--customer-text);
+  --bs-table-border-color: var(--customer-border);
+  color: var(--customer-text) !important;
+  border-color: var(--customer-border) !important;
+}
+
+html[data-theme="dark"] .container > .card.mb-4 .table th,
+html[data-theme="dark"] .container > .card.mb-4 .table td {
+  background-color: transparent !important;
+  border-color: var(--customer-border) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .container > .card.mb-4 .table-dark th {
+  background-color: #2d2d32 !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .container > .card.mb-4 .btn-info {
+  background-color: var(--customer-accent) !important;
+  border-color: var(--customer-accent) !important;
+  color: #1a1a1a !important;
+}
+
+html[data-theme="dark"] .container > .card.mb-4 .btn-info:hover {
+  background-color: #ffaad0 !important;
+  border-color: #ffaad0 !important;
+}
+
 html[data-theme="dark"] footer,
 html[data-theme="dark"] footer .container {
   background-color: #101010;
@@ -3671,5 +3818,13 @@ html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
 
   .theme-toggle-btn {
     min-width: 120px;
+  }
+}
+
+@media (max-width: 767px) {
+  .filter-section {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
   }
 }

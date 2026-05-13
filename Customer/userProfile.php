@@ -103,7 +103,7 @@ $profile_picture = !empty($customer['Profile_Picture']) ? $customer['Profile_Pic
                 <div class="profile-card text-center">
                     <?php if ($profile_picture): ?>
                         <!-- Display profile image if available -->
-                        <img src="<?= $profile_picture; ?>" alt="Profile Picture" class="rounded-circle profile-image">
+                        <img src="<?= htmlspecialchars($profile_picture); ?>" alt="Profile Picture" class="rounded-circle profile-image">
                     <?php else: ?>
                         <!-- Display default user icon if no profile picture -->
                         <i class="fa fa-user-circle fa-5x" aria-hidden="true"></i>

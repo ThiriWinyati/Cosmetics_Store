@@ -533,9 +533,11 @@ try {
             topCustomersChart.data.datasets[0].data = topCustomersData.data.map(value => `$${value.toFixed(2)}`);
             topCustomersChart.update();
 
-            topProductsChart.data.labels = topProductsData.labels;
-            topProductsChart.data.datasets[0].data = topProductsData.data.map(value => `$${value.toFixed(2)}`);
-            topProductsChart.update();
+            if (topProductsChart) {
+                topProductsChart.data.labels = topProductsData.labels;
+                topProductsChart.data.datasets[0].data = topProductsData.data.map(value => `$${value.toFixed(2)}`);
+                topProductsChart.update();
+            }
 
             const topProductsQuantitiesTableBody = document.getElementById('topProductsQuantitiesTableBody');
             topProductsQuantitiesTableBody.innerHTML = '';
@@ -645,33 +647,34 @@ try {
             }
         });
 
-        const topProductsChart = new Chart(document.getElementById('topProductsChart'), {
-            type: 'bar',
-            data: {
-                labels: <?php echo json_encode(array_column($topProductsData, 'Name')); ?>,
-                datasets: [{
-                    label: 'Top 10 Products by Sales Counts',
-                    data: <?php echo json_encode(array_column($topProductsData, 'total_sales')); ?>,
-                    backgroundColor: '#ffce56'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
+        const topProductsChartCanvas = document.getElementById('topProductsChart');
+        const topProductsChart = topProductsChartCanvas ? new Chart(topProductsChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: <?php echo json_encode(array_column($topProductsData, 'Name')); ?>,
+                    datasets: [{
+                        label: 'Top 10 Products by Sales Counts',
+                        data: <?php echo json_encode(array_column($topProductsData, 'total_sales')); ?>,
+                        backgroundColor: '#ffce56'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
                         }
                     }
                 }
-            }
-        });
+            }) : null;
 
         const topProductsSalesChart = new Chart(document.getElementById('topProductsSalesChart'), {
             type: 'bar',
@@ -958,6 +961,65 @@ try {
                     }
                 }
             }
+        });
+
+        const adminDashboardCharts = [
+            barChart,
+            donutChart,
+            topCustomersChart,
+            topProductsChart,
+            topProductsSalesChart,
+            stockPieChart,
+            avgRatingChart,
+            yearlySalesChart,
+            monthlySalesChart,
+            dailySalesChart,
+            couponUsageChart,
+            couponUsagePercentChart
+        ];
+
+        function applyAdminDashboardChartTheme(theme = document.documentElement.getAttribute('data-theme')) {
+            const isDark = theme === 'dark';
+            const textColor = isDark ? '#f4f4f5' : '#333333';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(0, 0, 0, 0.1)';
+            const pieBorderColor = isDark ? '#1d1d22' : '#ffffff';
+
+            adminDashboardCharts.forEach(chart => {
+                if (!chart) {
+                    return;
+                }
+
+                if (chart.options.plugins?.legend?.labels) {
+                    chart.options.plugins.legend.labels.color = textColor;
+                } else if (chart.options.plugins?.legend) {
+                    chart.options.plugins.legend.labels = { color: textColor };
+                }
+
+                Object.values(chart.options.scales || {}).forEach(scale => {
+                    if (!scale) {
+                        return;
+                    }
+
+                    scale.ticks = scale.ticks || {};
+                    scale.ticks.color = textColor;
+
+                    if (scale.grid && scale.grid.display !== false) {
+                        scale.grid.color = gridColor;
+                    }
+                });
+
+                if (chart.options.elements?.arc) {
+                    chart.options.elements.arc.borderColor = pieBorderColor;
+                    chart.options.elements.arc.hoverBorderColor = pieBorderColor;
+                }
+
+                chart.update();
+            });
+        }
+
+        applyAdminDashboardChartTheme();
+        window.addEventListener('admin-theme-change', event => {
+            applyAdminDashboardChartTheme(event.detail?.theme);
         });
 
         document.getElementById('filterButton').addEventListener('click', function() {

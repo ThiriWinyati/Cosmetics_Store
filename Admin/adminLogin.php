@@ -61,6 +61,12 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
     <link rel="stylesheet" href="../Admin/admin_css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("adminTheme") || "light";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
     <style>
         body {
             display: flex;
@@ -167,6 +173,41 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
             50% {
                 transform: translateY(-20px);
             }
+        }
+
+        html[data-theme="dark"] body {
+            background-color: #111113;
+            color: #f4f4f5;
+        }
+
+        html[data-theme="dark"] .login-container {
+            background-color: #1d1d22;
+            border: 1px solid #3a3a42;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        html[data-theme="dark"] .login-form h4,
+        html[data-theme="dark"] .login-form .form-label {
+            color: #f4f4f5;
+        }
+
+        html[data-theme="dark"] .login-form .form-control {
+            background-color: #28282e;
+            border-color: #42424b;
+            color: #f4f4f5;
+        }
+
+        html[data-theme="dark"] .login-form .form-control::placeholder {
+            color: #a9adb7;
+        }
+
+        html[data-theme="dark"] .animation-container {
+            background: #111113;
+        }
+
+        html[data-theme="dark"] .animation-container::before,
+        html[data-theme="dark"] .animation-container::after {
+            display: none;
         }
     </style>
 </head>

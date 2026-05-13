@@ -83,7 +83,7 @@ if (!empty($cartItems)) {
                 <!-- Right Icons -->
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item theme-toggle-item">
-                        <button id="themeToggle" type="button" class="theme-toggle-btn" aria-label="Switch to dark mode"
+                        <button id="themeToggle" type="button" class="theme-toggle-btn" aria-label="Current theme: light"
                             aria-pressed="false">
                             <span class="theme-toggle-track" aria-hidden="true">
                                 <span class="theme-toggle-thumb">
@@ -91,7 +91,7 @@ if (!empty($cartItems)) {
                                     <i class="fa fa-sun-o theme-icon-light" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="theme-toggle-text">Dark</span>
+                            <span class="theme-toggle-text">Light</span>
                         </button>
                     </li>
 
@@ -231,11 +231,11 @@ if (!empty($cartItems)) {
                 if (themeToggle) {
                     const isDark = nextTheme === 'dark';
                     themeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-                    themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+                    themeToggle.setAttribute('aria-label', isDark ? 'Current theme: dark' : 'Current theme: light');
                     const label = themeToggle.querySelector('.theme-toggle-text');
 
                     if (label) {
-                        label.textContent = isDark ? 'Light' : 'Dark';
+                        label.textContent = isDark ? 'Dark' : 'Light';
                     }
                 }
             }
@@ -248,7 +248,9 @@ if (!empty($cartItems)) {
             });
 
             function updateBodyOffset() {
-                document.body.style.paddingTop = navbar.offsetHeight + 'px';
+                const navbarHeight = navbar.offsetHeight + 'px';
+                document.body.style.paddingTop = navbarHeight;
+                document.documentElement.style.setProperty('--customer-navbar-height', navbarHeight);
             }
 
             toggler.addEventListener('click', function (event) {

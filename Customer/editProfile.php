@@ -34,24 +34,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $profile_picture = $customer['Profile_Picture'];
 
-    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 0) {
-        $upload_dir = '../uploads/profile_pictures/';
-
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-
-        $file_name = time() . '_' . basename($_FILES['profile_picture']['name']);
-        $file_path = $upload_dir . $file_name;
-
-        $file_type = mime_content_type($_FILES['profile_picture']['tmp_name']);
-
-        if (strpos($file_type, 'image') !== false) {
-            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $file_path)) {
-                $profile_picture = $file_path;
-            }
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($_FILES['profile_picture']['error'] !== UPLOAD_ERR_OK) {
+            echo "<script>alert('There was an error uploading your profile picture.');</script>";
         } else {
-            echo "<script>alert('Only image files are allowed.');</script>";
+            $uploadDir = __DIR__ . '/../uploads/profile_pictures/';
+            $dbUploadPath = '../uploads/profile_pictures/';
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $allowedMimeTypes = [
+                'image/jpeg' => ['jpg', 'jpeg'],
+                'image/png' => ['png'],
+                'image/gif' => ['gif'],
+                'image/webp' => ['webp'],
+            ];
+
+            $fileType = mime_content_type($_FILES['profile_picture']['tmp_name']);
+            $fileExtension = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
+
+            if (!isset($allowedMimeTypes[$fileType]) || !in_array($fileExtension, $allowedMimeTypes[$fileType], true)) {
+                echo "<script>alert('Only JPG, PNG, GIF, and WEBP image files are allowed.');</script>";
+            } else {
+                $fileName = 'customer_' . $customer_id . '_' . bin2hex(random_bytes(8)) . '.' . $fileExtension;
+                $filePath = $uploadDir . $fileName;
+
+                if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $filePath)) {
+                    $profile_picture = $dbUploadPath . $fileName;
+                } else {
+                    echo "<script>alert('Could not save your profile picture. Please try again.');</script>";
+                }
+            }
         }
     }
 
@@ -180,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <!-- Profile Picture Section -->
             <div class="profile-image-container">
                 <?php if ($customer['Profile_Picture']): ?>
-                    <img src="<?= $customer['Profile_Picture']; ?>" class="rounded-circle profile-image" alt="Profile Picture">
+                    <img src="<?= htmlspecialchars($customer['Profile_Picture']); ?>" class="rounded-circle profile-image" alt="Profile Picture">
                 <?php else: ?>
                     <i class="fa fa-user-circle fa-5x" aria-hidden="true"></i>
                 <?php endif; ?>

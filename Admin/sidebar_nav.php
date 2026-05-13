@@ -18,6 +18,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="icon" href="path/to/favicon.ico">
     <title>Sidebar and Navbar</title>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("adminTheme") || "light";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
 </head>
 
 <body>
@@ -99,6 +105,16 @@
                 <img src="../images/logo.png" alt="Charm & Grace Logo">
                 <span>Charm & Grace</span>
             </a>
+
+            <button id="adminThemeToggle" class="admin-theme-toggle" type="button" aria-label="Current theme: light" aria-pressed="false">
+                <span class="admin-theme-toggle-track" aria-hidden="true">
+                    <span class="admin-theme-toggle-thumb">
+                        <i class="fas fa-sun admin-theme-icon-light"></i>
+                        <i class="fas fa-moon admin-theme-icon-dark"></i>
+                    </span>
+                </span>
+                <span class="admin-theme-toggle-text">Light</span>
+            </button>
         </nav>
 
         <script>
@@ -141,6 +157,33 @@
                         }
                     }
                 });
+
+                const themeToggle = document.getElementById("adminThemeToggle");
+
+                if (themeToggle) {
+                    const themeText = themeToggle.querySelector(".admin-theme-toggle-text");
+
+                    function applyAdminTheme(theme) {
+                        document.documentElement.setAttribute("data-theme", theme);
+                        localStorage.setItem("adminTheme", theme);
+                        window.dispatchEvent(new CustomEvent("admin-theme-change", { detail: { theme } }));
+
+                        const isDark = theme === "dark";
+                        themeToggle.setAttribute("aria-pressed", isDark ? "true" : "false");
+                        themeToggle.setAttribute("aria-label", `Current theme: ${theme}`);
+
+                        if (themeText) {
+                            themeText.textContent = isDark ? "Dark" : "Light";
+                        }
+                    }
+
+                    applyAdminTheme(localStorage.getItem("adminTheme") || "light");
+
+                    themeToggle.addEventListener("click", function () {
+                        const nextTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                        applyAdminTheme(nextTheme);
+                    });
+                }
             });
         </script>
 </body>
