@@ -194,6 +194,35 @@ if (!empty($cartItems)) {
             </div>
         </div>
     </nav>                     
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navbar = document.querySelector('.customer-navbar');
+            const toggler = navbar?.querySelector('.navbar-toggler');
+            const menu = navbar?.querySelector('#mainNavbar');
+
+            if (!toggler || !menu || typeof bootstrap === 'undefined') {
+                return;
+            }
+
+            toggler.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+
+                const collapse = bootstrap.Collapse.getOrCreateInstance(menu, {
+                    toggle: false
+                });
+
+                if (menu.classList.contains('show')) {
+                    collapse.hide();
+                    toggler.setAttribute('aria-expanded', 'false');
+                } else {
+                    collapse.show();
+                    toggler.setAttribute('aria-expanded', 'true');
+                }
+            }, true);
+        });
+    </script>
 </body>
 
 </html>
