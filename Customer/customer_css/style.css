@@ -126,7 +126,7 @@ body {
 }
 
 .navbar.not-sticky {
-  top: 0;
+  top: 0 !important;
 }
 
 .navbar-brand {
@@ -2992,5 +2992,134 @@ body {
   #wishlistDropdown {
     width: 280px;
     max-width: 90vw;
+  }
+}
+
+/* =========================================================
+   FINAL Customer Mobile Navbar Fix
+   ========================================================= */
+
+.customer-navbar,
+.navbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 99999 !important;
+  width: 100% !important;
+  background: #ffffff !important;
+}
+
+/* Desktop navbar */
+@media (min-width: 992px) {
+  .navbar {
+    min-height: 70px;
+  }
+
+  .navbar-collapse {
+    display: flex !important;
+  }
+}
+
+/* Mobile navbar */
+@media (max-width: 991px) {
+  body {
+    padding-top: 0 !important;
+  }
+
+  .navbar {
+    min-height: 75px !important;
+    height: auto !important;
+    padding: 12px 20px !important;
+  }
+
+  .navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .navbar-toggler {
+    display: block !important;
+    border: 1px solid #ddd !important;
+    border-radius: 10px;
+    padding: 10px 14px;
+    z-index: 100001;
+  }
+
+  .navbar-toggler:focus {
+    box-shadow: none !important;
+  }
+
+  .navbar-brand {
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .navbar-brand img {
+    width: 55px;
+    height: auto;
+  }
+
+  .navbar-brand h5 {
+    font-size: 1.25rem;
+    margin-bottom: 0;
+  }
+
+  .navbar-collapse {
+    width: 100%;
+    flex-basis: 100%;
+    background: #ffffff;
+    border-top: 1px solid #eeeeee;
+    margin-top: 14px;
+    padding: 16px 0;
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+  }
+
+  .navbar-collapse:not(.show) {
+    display: none !important;
+  }
+
+  .navbar-collapse.show {
+    display: block !important;
+  }
+
+  .navbar-nav {
+    width: 100%;
+    text-align: center;
+    align-items: center !important;
+  }
+
+  .navbar-nav .nav-item {
+    width: 100%;
+    text-align: center;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 12px 0 !important;
+    font-size: 1rem;
+  }
+
+  .wishlist-icon {
+    margin: 10px auto;
+  }
+
+  #cart {
+    margin: 10px auto;
+    display: block;
+  }
+
+  #account {
+    margin: 10px auto;
+    display: block;
+  }
+
+  #wishlistDropdown,
+  #cartDropdown {
+    width: 280px;
+    max-width: 90vw;
+    text-align: left;
   }
 }
