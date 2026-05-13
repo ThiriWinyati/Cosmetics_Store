@@ -35,7 +35,6 @@
                 <span>Dashboard</span>
             </a>
 
-            <!-- Management -->
             <button type="button" class="admin-nav-link admin-dropdown-toggle" onclick="toggleDropdown('productsDropdown')">
                 <span><i class="fa fa-cogs"></i> Management</span>
                 <i class="fa fa-caret-down"></i>
@@ -48,7 +47,6 @@
                 <a href="deliveryMethods.php" class="admin-nav-link sub-link"><i class="fa fa-ship"></i> Shipping</a>
             </div>
 
-            <!-- Customer Domain -->
             <button type="button" class="admin-nav-link admin-dropdown-toggle" onclick="toggleDropdown('customerDomainDropdown')">
                 <span><i class="fa fa-users"></i> Customer Domain</span>
                 <i class="fa fa-caret-down"></i>
@@ -61,7 +59,6 @@
                 <a href="viewReviews.php" class="admin-nav-link sub-link"><i class="fa fa-star"></i> Reviews</a>
             </div>
 
-            <!-- Orders -->
             <button type="button" class="admin-nav-link admin-dropdown-toggle" onclick="toggleDropdown('ordersDropdown')">
                 <span><i class="fa fa-box-open"></i> Orders</span>
                 <i class="fa fa-caret-down"></i>
@@ -73,7 +70,6 @@
                 <a href="viewPaymentMethods.php" class="admin-nav-link sub-link"><i class="fa fa-credit-card"></i> Payment</a>
             </div>
 
-            <!-- Special Offers -->
             <a href="viewCoupons.php" class="admin-nav-link">
                 <i class="fa fa-gift"></i>
                 <span>Special Offers</span>
@@ -81,13 +77,6 @@
 
         </nav>
 
-        <!-- Dark overlay for mobile -->
-        <div id="adminSidebarOverlay" class="admin-sidebar-overlay" onclick="toggleSidebar()"></div>
-
-        <!-- Admin Main Content Wrapper -->
-        <div id="adminMain" class="admin-main">
-
-        <!-- Logout -->
         <div class="admin-logout">
             <a href="adminLogout.php" class="admin-nav-link">
                 <i class="fa fa-sign-out-alt"></i>
@@ -96,9 +85,11 @@
         </div>
     </aside>
 
-    <!-- Main Content -->
-        <div id="main">
-            <!-- Admin Top Navbar -->
+
+    <div id="adminSidebarOverlay" class="admin-sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <div id="adminMain" class="admin-main">
+
         <nav class="admin-topbar">
             <button id="openNav" class="admin-menu-btn" onclick="toggleSidebar()" type="button">
                 <i class="fa fa-bars"></i>
@@ -114,9 +105,20 @@
             function toggleSidebar() {
                 const sidebar = document.getElementById("adminSidebar");
                 const overlay = document.getElementById("adminSidebarOverlay");
+                const main = document.getElementById("adminMain");
 
-                sidebar.classList.toggle("show");
-                overlay.classList.toggle("show");
+                if (window.innerWidth > 768) {
+                    sidebar.classList.toggle("collapsed");
+                    main.classList.toggle("expanded");
+                } else {
+                    sidebar.classList.toggle("show");
+                    overlay.classList.toggle("show");
+                }
+            }
+
+            function closeSidebar() {
+                document.getElementById("adminSidebar").classList.remove("show");
+                document.getElementById("adminSidebarOverlay").classList.remove("show");
             }
 
             function toggleDropdown(id) {
