@@ -3182,6 +3182,46 @@ html[data-theme="dark"] .btn-outline-dark:hover {
   background-color: var(--customer-surface-soft);
 }
 
+html[data-theme="dark"] footer,
+html[data-theme="dark"] footer .container {
+  background-color: #101010;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] footer h6,
+html[data-theme="dark"] footer p,
+html[data-theme="dark"] footer li,
+html[data-theme="dark"] footer a,
+html[data-theme="dark"] footer .text-black,
+html[data-theme="dark"] footer .text-muted {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] footer .text-muted {
+  color: var(--customer-muted) !important;
+}
+
+html[data-theme="dark"] footer a:hover {
+  color: var(--customer-accent) !important;
+}
+
+html[data-theme="dark"] .carousel-control-prev,
+html[data-theme="dark"] .carousel-control-next {
+  opacity: 0.9;
+}
+
+html[data-theme="dark"] .carousel-control-prev:hover,
+html[data-theme="dark"] .carousel-control-next:hover {
+  opacity: 1;
+}
+
+html[data-theme="dark"] .carousel-control-prev-icon,
+html[data-theme="dark"] .carousel-control-next-icon,
+html[data-theme="dark"] #brandsCarousel .carousel-control-prev-icon,
+html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
+  filter: none drop-shadow(0 0 4px rgba(0, 0, 0, 0.8));
+}
+
 @media (max-width: 991px) {
   .theme-toggle-item {
     margin: 10px auto;
