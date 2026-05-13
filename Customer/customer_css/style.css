@@ -450,6 +450,9 @@ body {
   height: 0;
   overflow: hidden;
   max-width: 100%;
+  border-radius: 10px;
+  border: 1px solid #eeeeee;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
 .map-container iframe {
@@ -458,6 +461,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 .product-image,
@@ -3209,6 +3213,214 @@ html[data-theme="dark"] .btn-outline-dark {
 
 html[data-theme="dark"] .btn-outline-dark:hover {
   background-color: var(--customer-surface-soft);
+}
+
+html[data-theme="dark"] .breadcrumb,
+html[data-theme="dark"] .breadcrumb-item,
+html[data-theme="dark"] .breadcrumb-item.active,
+html[data-theme="dark"] .breadcrumb-item a,
+html[data-theme="dark"] .breadcrumb a[style] {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .breadcrumb-item + .breadcrumb-item::before {
+  color: var(--customer-muted) !important;
+}
+
+html[data-theme="dark"] .breadcrumb-item a:hover {
+  color: var(--customer-accent) !important;
+}
+
+html[data-theme="dark"] .cosmetics-contact-info-container {
+  background-color: var(--customer-surface);
+  border: 1px solid var(--customer-border);
+  box-shadow: 0 10px 24px var(--customer-shadow);
+}
+
+html[data-theme="dark"] .cosmetics-contact-info-container h2,
+html[data-theme="dark"] .cosmetics-contact-info-container h4,
+html[data-theme="dark"] .cosmetics-contact-info-container p,
+html[data-theme="dark"] .cosmetics-contact-info-container .text-dark {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .map-container {
+  border-color: var(--customer-border);
+  box-shadow: 0 10px 24px var(--customer-shadow);
+}
+
+html[data-theme="dark"] .map-container iframe {
+  filter: invert(0.9) hue-rotate(180deg) saturate(0.85) brightness(0.9);
+}
+
+html[data-theme="dark"] .filter-section,
+html[data-theme="dark"] .filter-sidebar {
+  background-color: var(--customer-surface) !important;
+  border: 1px solid var(--customer-border);
+  box-shadow: 0 10px 24px var(--customer-shadow);
+}
+
+html[data-theme="dark"] .filter-section h5,
+html[data-theme="dark"] .filter-section .form-label,
+html[data-theme="dark"] .filter-section .form-check-label,
+html[data-theme="dark"] .filter-sidebar h5,
+html[data-theme="dark"] .filter-sidebar .form-label,
+html[data-theme="dark"] .filter-sidebar .form-check-label,
+html[data-theme="dark"] .products-display h3 {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .filter-section .form-control,
+html[data-theme="dark"] .filter-section .form-select,
+html[data-theme="dark"] .filter-sidebar .form-control,
+html[data-theme="dark"] .filter-sidebar .form-select {
+  background-color: var(--customer-surface-soft) !important;
+  border-color: var(--customer-border) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .filter-section .form-control::placeholder,
+html[data-theme="dark"] .filter-sidebar .form-control::placeholder {
+  color: var(--customer-muted) !important;
+}
+
+html[data-theme="dark"] .filter-section .btn-link,
+html[data-theme="dark"] .filter-sidebar .btn-link {
+  color: var(--customer-accent) !important;
+}
+
+html[data-theme="dark"] .filter-section .form-check-input,
+html[data-theme="dark"] .filter-sidebar .form-check-input {
+  background-color: var(--customer-surface-soft);
+  border-color: var(--customer-border);
+}
+
+html[data-theme="dark"] .filter-section .form-check-input:checked,
+html[data-theme="dark"] .filter-sidebar .form-check-input:checked {
+  background-color: var(--customer-accent);
+  border-color: var(--customer-accent);
+}
+
+html[data-theme="dark"] .product-collapse {
+  scrollbar-color: var(--customer-accent) var(--customer-surface-soft);
+}
+
+html[data-theme="dark"] .blog-header,
+html[data-theme="dark"] .blogcontent-left,
+html[data-theme="dark"] .blog-post,
+html[data-theme="dark"] .blog-post-content {
+  background-color: var(--customer-surface) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .blog-header,
+html[data-theme="dark"] .blogcontent-left,
+html[data-theme="dark"] .blog-post {
+  border-color: var(--customer-border) !important;
+  box-shadow: 0 10px 24px var(--customer-shadow);
+}
+
+html[data-theme="dark"] .blog-header h4,
+html[data-theme="dark"] .blog-header p,
+html[data-theme="dark"] .blogcontent-left h4,
+html[data-theme="dark"] .blogcontent-left a,
+html[data-theme="dark"] .blog-post h2,
+html[data-theme="dark"] .blog-post p {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .blogcontent-left a:hover,
+html[data-theme="dark"] .blog-post-content a:hover {
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .blog-post-content a {
+  background-color: var(--customer-accent);
+  color: #1a1a1a !important;
+}
+
+html[data-theme="dark"] .signin-container,
+html[data-theme="dark"] .signup-container,
+html[data-theme="dark"] .forgot-password-container {
+  background-color: var(--customer-bg) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .signin-form,
+html[data-theme="dark"] .signup-form,
+html[data-theme="dark"] .forgot-password-form {
+  background-color: var(--customer-surface) !important;
+  border: 1px solid var(--customer-border);
+  box-shadow: 0 10px 24px var(--customer-shadow) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .signin-form h2,
+html[data-theme="dark"] .signup-form h2,
+html[data-theme="dark"] .forgot-password-form h2,
+html[data-theme="dark"] .signin-form .form-label,
+html[data-theme="dark"] .signup-form .form-label,
+html[data-theme="dark"] .forgot-password-form .form-label,
+html[data-theme="dark"] .signin-form p,
+html[data-theme="dark"] .signup-form p,
+html[data-theme="dark"] .forgot-password-form p {
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .signin-form .form-control,
+html[data-theme="dark"] .signup-form .form-control,
+html[data-theme="dark"] .forgot-password-form .form-control {
+  background-color: var(--customer-surface-soft) !important;
+  border-color: var(--customer-border) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .signin-form .form-control::placeholder,
+html[data-theme="dark"] .signup-form .form-control::placeholder,
+html[data-theme="dark"] .forgot-password-form .form-control::placeholder {
+  color: var(--customer-muted) !important;
+}
+
+html[data-theme="dark"] .signin-form .form-control:focus,
+html[data-theme="dark"] .signup-form .form-control:focus,
+html[data-theme="dark"] .forgot-password-form .form-control:focus {
+  border-color: var(--customer-accent) !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 134, 186, 0.22) !important;
+}
+
+html[data-theme="dark"] .forgot-password-link,
+html[data-theme="dark"] .signin-form a,
+html[data-theme="dark"] .signup-form a,
+html[data-theme="dark"] .forgot-password-form a {
+  color: var(--customer-accent) !important;
+}
+
+html[data-theme="dark"] .signin-form a:hover,
+html[data-theme="dark"] .signup-form a:hover,
+html[data-theme="dark"] .forgot-password-form a:hover {
+  color: #ffaad0 !important;
+}
+
+html[data-theme="dark"] .signin-btn,
+html[data-theme="dark"] .signup-btn,
+html[data-theme="dark"] .forgot-password-btn {
+  background-color: var(--customer-accent) !important;
+  border-color: var(--customer-accent) !important;
+  color: #1a1a1a !important;
+}
+
+html[data-theme="dark"] .signin-btn:hover,
+html[data-theme="dark"] .signup-btn:hover,
+html[data-theme="dark"] .forgot-password-btn:hover {
+  background-color: #ffaad0 !important;
+  border-color: #ffaad0 !important;
+}
+
+html[data-theme="dark"] .signin-image,
+html[data-theme="dark"] .signup-image,
+html[data-theme="dark"] .forgot-password-image {
+  background-color: var(--customer-surface) !important;
+  box-shadow: 0 10px 24px var(--customer-shadow);
 }
 
 html[data-theme="dark"] footer,
