@@ -271,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
   <h4 class="carousel-title text-center" style="margin-top: 50px;">Available Brands</h4>
   <p class="carousel-title text-center">You can see many types of brands which can be grabbed from our store!</p>
 
-  <div id="brandsCarousel" class="carousel slide">
+  <div id="brandsCarousel" class="carousel slide" data-bs-ride="carousel">
 
     <!-- Carousel Indicators -->
     <div class="carousel-indicators">
@@ -282,199 +282,185 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
       <button type="button" data-bs-target="#brandsCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
       <button type="button" data-bs-target="#brandsCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
       <button type="button" data-bs-target="#brandsCarousel" data-bs-slide-to="6" aria-label="Slide 7"></button>
-
+      <button type="button" data-bs-target="#brandsCarousel" data-bs-slide-to="7" aria-label="Slide 8"></button>
+      <button type="button" data-bs-target="#brandsCarousel" data-bs-slide-to="8" aria-label="Slide 9"></button>
     </div>
 
     <!-- Carousel Content -->
     <div class="carousel-inner">
-      <!-- First Slide -->
+
+      <!-- Slide 1 -->
       <div class="carousel-item active">
         <div class="brand-slide-grid">
           <div class="brand-card">
             <img src="../images/brand1.png" alt="Brand 1">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand2.webp" alt="Brand 2">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand3.jpg" alt="Brand 3">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand4.png" alt="Brand 4">
           </div>
         </div>
       </div>
 
+      <!-- Slide 2 -->
       <div class="carousel-item">
         <div class="brand-slide-grid">
           <div class="brand-card">
             <img src="../images/brand5.jpg" alt="Brand 5">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand6.jpg" alt="Brand 6">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand7.png" alt="Brand 7">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand8.png" alt="Brand 8">
           </div>
         </div>
       </div>
 
+      <!-- Slide 3 -->
       <div class="carousel-item">
         <div class="brand-slide-grid">
           <div class="brand-card">
-            <img src="../images/brand9.jpg" alt="Brand 9">
+            <img src="../images/brand9.png" alt="Brand 9">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand10.jpg" alt="Brand 10">
           </div>
-
           <div class="brand-card">
-            <img src="../images/brand11.png" alt="Brand 11">
+            <img src="../images/brand11.jpg" alt="Brand 11">
           </div>
-
           <div class="brand-card">
-            <img src="../images/brand12.png" alt="Brand 12">
+            <img src="../images/brand12.jpg" alt="Brand 12">
           </div>
         </div>
       </div>
 
+      <!-- Slide 4 -->
       <div class="carousel-item">
         <div class="brand-slide-grid">
           <div class="brand-card">
-            <img src="../images/brand13.jpg" alt="Brand 13">
+            <img src="../images/brand13.png" alt="Brand 13">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand14.jpg" alt="Brand 14">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand15.png" alt="Brand 15">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand16.png" alt="Brand 16">
           </div>
         </div>
       </div>
 
+      <!-- Slide 5 -->
       <div class="carousel-item">
         <div class="brand-slide-grid">
           <div class="brand-card">
-            <img src="../images/brand17.jpg" alt="Brand 17">
+            <img src="../images/brand17.png" alt="Brand 17">
           </div>
-
           <div class="brand-card">
-            <img src="../images/brand18.jpg" alt="Brand 18">
+            <img src="../images/brand18.png" alt="Brand 18">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand19.png" alt="Brand 19">
           </div>
-
           <div class="brand-card">
-            <img src="../images/brand20.png" alt="Brand 20">
+            <img src="../images/brand20.webp" alt="Brand 20">
           </div>
         </div>
       </div>
 
+      <!-- Slide 6 -->
       <div class="carousel-item">
         <div class="brand-slide-grid">
           <div class="brand-card">
-            <img src="../images/brand21.jpg" alt="Brand 21">
+            <img src="../images/brand21.png" alt="Brand 21">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand22.jpg" alt="Brand 22">
           </div>
-
           <div class="brand-card">
-            <img src="../images/brand23.png" alt="Brand 23">
+            <img src="../images/brand23.jpg" alt="Brand 23">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand24.png" alt="Brand 24">
           </div>
         </div>
       </div>
 
+      <!-- Slide 7 -->
       <div class="carousel-item">
         <div class="brand-slide-grid">
           <div class="brand-card">
-            <img src="../images/brand25.jpg" alt="Brand 25">
+            <img src="../images/brand25.png" alt="Brand 25">
           </div>
-
           <div class="brand-card">
-            <img src="../images/brand26.jpg" alt="Brand 26">
+            <img src="../images/brand26.png" alt="Brand 26">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand27.png" alt="Brand 27">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand28.png" alt="Brand 28">
           </div>
         </div>
       </div>
 
+      <!-- Slide 8 -->
       <div class="carousel-item">
         <div class="brand-slide-grid">
           <div class="brand-card">
-            <img src="../images/brand29.jpg" alt="Brand 29">
+            <img src="../images/brand29.png" alt="Brand 29">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand30.jpg" alt="Brand 30">
           </div>
-
           <div class="brand-card">
-            <img src="../images/brand31.png" alt="Brand 31">
+            <img src="../images/brand31.jpg" alt="Brand 31">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand32.png" alt="Brand 32">
           </div>
         </div>
       </div>
 
+      <!-- Slide 9 -->
       <div class="carousel-item">
-        <div class="brand-slide-grid">
+        <div class="brand-slide-grid brand-slide-grid-last">
           <div class="brand-card">
-            <img src="../images/brand33.jpg" alt="Brand 33">
+            <img src="../images/brand33.webp" alt="Brand 33">
           </div>
-
           <div class="brand-card">
-            <img src="../images/brand34.jpg" alt="Brand 34">
+            <img src="../images/brand34.png" alt="Brand 34">
           </div>
-
           <div class="brand-card">
             <img src="../images/brand35.png" alt="Brand 35">
           </div>
-          
         </div>
       </div>
 
     </div>
-    <!-- Carousel Controls with repositioned arrows -->
+
+    <!-- Carousel Controls -->
     <button class="carousel-control-prev" type="button" data-bs-target="#brandsCarousel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Previous</span>
     </button>
+
     <button class="carousel-control-next" type="button" data-bs-target="#brandsCarousel" data-bs-slide="next">
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Next</span>
     </button>
+
   </div>
 
   <!-- Learn More Section -->
