@@ -3,6 +3,32 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
+$isAdmin = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
+
+function maskName($name)
+{
+    if (empty($name)) {
+        return 'N/A';
+    }
+
+    $firstLetter = mb_substr($name, 0, 1);
+    return $firstLetter . str_repeat('*', max(mb_strlen($name) - 1, 3));
+}
+
+function maskEmail($email)
+{
+    if (empty($email) || strpos($email, '@') === false) {
+        return 'N/A';
+    }
+
+    [$localPart, $domain] = explode('@', $email, 2);
+
+    $firstLetter = mb_substr($localPart, 0, 1);
+    $maskedLocal = $firstLetter . str_repeat('*', max(mb_strlen($localPart) - 1, 3));
+
+    return $maskedLocal . '@' . $domain;
+}
+
 // Database credentials
 $server = getenv('DB_HOST');
 $user = getenv('DB_USER');
@@ -284,43 +310,59 @@ function getProfilePicturePath($path)
                     <?php foreach ($customers as $customer): ?>
                         <tr>
                             <td>
-                                <?php
-                                $profilePic = getProfilePicturePath($customer['Profile_Picture'] ?? '');
-                                ?>
                                 <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>
                             </td>
-                            <td><?php echo htmlspecialchars($customer['Name']); ?></td>
-                            <td><?php echo htmlspecialchars($customer['Email']); ?></td>
+
                             <td>
-                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewCustomerModal<?php echo $customer['Customer_ID']; ?>">
-                                    <i class="fa fa-eye"></i> View
-                                </button>
+                                <?php
+                                echo $isAdmin
+                                    ? htmlspecialchars($customer['Name'])
+                                    : htmlspecialchars(maskName($customer['Name']));
+                                ?>
+                            </td>
+
+                            <td>
+                                <?php
+                                echo $isAdmin
+                                    ? htmlspecialchars($customer['Email'])
+                                    : htmlspecialchars(maskEmail($customer['Email']));
+                                ?>
+                            </td>
+
+                            <td>
+                                <?php if ($isAdmin): ?>
+                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewCustomerModal<?php echo htmlspecialchars($customer['Customer_ID']); ?>">
+                                        <i class="fa fa-eye"></i> View
+                                    </button>
+                                <?php else: ?>
+                                    <button class="btn btn-secondary btn-sm" disabled title="Admin login required">
+                                        <i class="fa fa-lock"></i> Locked
+                                    </button>
+                                <?php endif; ?>
                             </td>
                         </tr>
 
-                        <!-- View Customer Modal -->
-                        <div class="modal fade" id="viewCustomerModal<?php echo $customer['Customer_ID']; ?>" tabindex="-1" aria-labelledby="viewCustomerModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="viewCustomerModalLabel">Customer Details</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><strong>Customer ID:</strong> <?php echo htmlspecialchars($customer['Customer_ID']); ?></p>
-                                        <p><strong>Name:</strong> <?php echo htmlspecialchars($customer['Name']); ?></p>
-                                        <p><strong>Email:</strong> <?php echo htmlspecialchars($customer['Email']); ?></p>
-                                        <p><strong>Signup Time:</strong> <?php echo htmlspecialchars($customer['Signup_time']); ?></p>
-                                        <p><strong>Profile Picture:</strong></p>
-                                        <?php
-                                        $modalProfilePic = getProfilePicturePath($customer['Profile_Picture'] ?? '');
-                                        ?>
+                        <?php if ($isAdmin): ?>
+                            <div class="modal fade" id="viewCustomerModal<?php echo htmlspecialchars($customer['Customer_ID']); ?>" tabindex="-1" aria-labelledby="viewCustomerModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="viewCustomerModalLabel">Customer Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
 
-                                        <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>
+                                        <div class="modal-body">
+                                            <p><strong>Customer ID:</strong> <?php echo htmlspecialchars($customer['Customer_ID']); ?></p>
+                                            <p><strong>Name:</strong> <?php echo htmlspecialchars($customer['Name']); ?></p>
+                                            <p><strong>Email:</strong> <?php echo htmlspecialchars($customer['Email']); ?></p>
+                                            <p><strong>Signup Time:</strong> <?php echo htmlspecialchars($customer['Signup_time']); ?></p>
+                                            <p><strong>Profile Picture:</strong></p>
+                                            <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </tbody>
 
