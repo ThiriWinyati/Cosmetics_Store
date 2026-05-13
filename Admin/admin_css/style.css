@@ -2077,7 +2077,7 @@ html[data-theme="dark"] .admin-main #main-content > .container > a.text-decorati
   gap: 16px;
   margin-bottom: 18px;
   padding: 16px 0;
-  background: rgba(255, 255, 255, 0.94);
+  background: #ffffff;
 }
 
 .admin-page-title {
@@ -2335,7 +2335,7 @@ html[data-theme="dark"] .admin-main #main-content > .container > a.text-decorati
 }
 
 html[data-theme="dark"] .admin-page-header {
-  background: rgba(17, 17, 19, 0.94);
+  background: #111113;
 }
 
 html[data-theme="dark"] .admin-page-subtitle,

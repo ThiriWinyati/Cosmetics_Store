@@ -169,12 +169,12 @@ try {
         }
 
         .coupon-page-header {
-            position: sticky;
+            position: relative;
             top: calc(var(--admin-topbar-height, 72px) + 10px);
             z-index: 35;
-            padding: 14px 0 18px;
-            margin-bottom: 18px;
-            background: transparent;
+            padding: 14px 0 20px;
+            margin-bottom: 22px;
+            background: #ffffff;
             border: 0;
             box-shadow: none;
         }
@@ -204,7 +204,8 @@ try {
         .coupon-page-actions {
             display: flex;
             justify-content: center;
-            margin-top: 12px;
+            margin-top: 16px;
+            margin-bottom: 0;
         }
 
         #viewCouponsTable {
@@ -236,12 +237,16 @@ try {
 
         @media (max-width: 768px) {
             .coupon-page-header {
-                top: calc(var(--admin-topbar-height, 72px) + 6px);
+                top: auto;
             }
 
             .coupon-page-actions .btn {
                 width: 100%;
             }
+        }
+
+        html[data-theme="dark"] .coupon-page-header {
+            background: #111113;
         }
     </style>
 </head>

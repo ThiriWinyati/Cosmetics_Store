@@ -142,11 +142,11 @@ if (isset($_GET['shipping_id'])) {
             position: sticky;
             top: calc(var(--admin-topbar-height, 72px) + 12px);
             z-index: 20;
-            background: transparent;
+            background: #ffffff;
             border: 0;
             border-radius: 0;
             padding: 14px 0 18px;
-            margin-bottom: 22px;
+            margin-bottom: 28px;
             box-shadow: none;
         }
 
@@ -306,7 +306,7 @@ if (isset($_GET['shipping_id'])) {
         }
 
         html[data-theme="dark"] .delivery-page-header {
-            background: transparent;
+            background: #111113;
             border-color: transparent;
             box-shadow: none;
         }

@@ -77,12 +77,12 @@ $totalMessages = count($messagesList);
         }
 
         .contact-message-header {
-            position: sticky;
+            position: relative;
             top: calc(var(--admin-topbar-height, 72px) + 10px);
             z-index: 35;
-            padding: 14px 0 18px;
-            margin-bottom: 18px;
-            background: transparent;
+            padding: 14px 0 20px;
+            margin-bottom: 22px;
+            background: #ffffff;
             border: 0;
             box-shadow: none;
         }
@@ -227,13 +227,17 @@ $totalMessages = count($messagesList);
 
         @media (max-width: 768px) {
             .contact-message-header {
-                top: calc(var(--admin-topbar-height, 72px) + 6px);
+                top: auto;
             }
 
             .contact-message-stats,
             .contact-message-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        html[data-theme="dark"] .contact-message-header {
+            background: #111113;
         }
     </style>
 </head>

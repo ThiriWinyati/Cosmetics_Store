@@ -230,12 +230,12 @@ if (isset($_GET['deleteBrandId'])) {
         }
 
         .brand-page-header {
-            position: sticky;
+            position: relative;
             top: calc(var(--admin-topbar-height, 72px) + 10px);
             z-index: 35;
-            padding: 14px 0 18px;
-            margin-bottom: 18px;
-            background: transparent;
+            padding: 14px 0 20px;
+            margin-bottom: 22px;
+            background: #ffffff;
             border: 0;
             box-shadow: none;
         }
@@ -265,7 +265,8 @@ if (isset($_GET['deleteBrandId'])) {
         .brand-page-actions {
             display: flex;
             justify-content: center;
-            margin-top: 12px;
+            margin-top: 16px;
+            margin-bottom: 0;
         }
 
         #viewBrandsTable {
@@ -278,12 +279,16 @@ if (isset($_GET['deleteBrandId'])) {
 
         @media (max-width: 768px) {
             .brand-page-header {
-                top: calc(var(--admin-topbar-height, 72px) + 6px);
+                top: auto;
             }
 
             .brand-page-actions .btn {
                 width: 100%;
             }
+        }
+
+        html[data-theme="dark"] .brand-page-header {
+            background: #111113;
         }
     </style>
 </head>

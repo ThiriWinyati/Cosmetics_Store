@@ -238,12 +238,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
         }
 
         .shipping-page-header {
-            position: sticky;
+            position: relative;
             top: calc(var(--admin-topbar-height, 72px) + 10px);
             z-index: 35;
-            padding: 14px 0 18px;
-            margin-bottom: 18px;
-            background: transparent;
+            padding: 14px 0 20px;
+            margin-bottom: 22px;
+            background: #ffffff;
             border: 0;
             box-shadow: none;
         }
@@ -273,7 +273,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
         .shipping-page-actions {
             display: flex;
             justify-content: center;
-            margin-top: 12px;
+            margin-top: 16px;
+            margin-bottom: 0;
         }
 
         #shippingMethodsTable {
@@ -286,12 +287,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
 
         @media (max-width: 768px) {
             .shipping-page-header {
-                top: calc(var(--admin-topbar-height, 72px) + 6px);
+                top: auto;
             }
 
             .shipping-page-actions .btn {
                 width: 100%;
             }
+        }
+
+        html[data-theme="dark"] .shipping-page-header {
+            background: #111113;
         }
     </style>
 </head>
