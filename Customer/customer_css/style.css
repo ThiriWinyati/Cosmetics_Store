@@ -2902,6 +2902,29 @@ span {
   width: 100%;
 }
 
+.customer-navbar #account {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  min-width: max-content;
+  height: auto;
+  min-height: 40px;
+  padding: 8px 14px;
+  margin-top: 0;
+  color: #212529;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.customer-navbar #account span,
+.customer-navbar #account i {
+  display: inline-block;
+  color: inherit;
+}
+
 /* Desktop */
 @media (min-width: 992px) {
   .customer-navbar .navbar-collapse {
@@ -2971,7 +2994,6 @@ span {
   .customer-navbar #account,
   .customer-navbar .wishlist-icon {
     margin: 10px auto;
-    display: block;
   }
 
   .customer-navbar #cartDropdown,
