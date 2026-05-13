@@ -3087,6 +3087,35 @@ html[data-theme="dark"] .customer-navbar .navbar-toggler-icon {
   background-color: var(--customer-surface-soft);
 }
 
+html[data-theme="dark"] .customer-navbar #cartDropdown,
+html[data-theme="dark"] .customer-navbar #wishlistDropdown,
+html[data-theme="dark"] .customer-navbar #account + .dropdown-menu {
+  background-color: var(--customer-surface) !important;
+  border-color: var(--customer-border) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .customer-navbar #cartDropdown .dropdown-header,
+html[data-theme="dark"] .customer-navbar #wishlistDropdown .dropdown-header,
+html[data-theme="dark"] .customer-navbar #cartDropdown .dropdown-item,
+html[data-theme="dark"] .customer-navbar #wishlistDropdown .dropdown-item,
+html[data-theme="dark"] .customer-navbar #account + .dropdown-menu .dropdown-item {
+  background-color: transparent !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .customer-navbar #cartDropdown .dropdown-item:hover,
+html[data-theme="dark"] .customer-navbar #wishlistDropdown .dropdown-item:hover,
+html[data-theme="dark"] .customer-navbar #account + .dropdown-menu .dropdown-item:hover {
+  background-color: var(--customer-surface-soft) !important;
+}
+
+html[data-theme="dark"] .customer-navbar #cartDropdown .dropdown-divider,
+html[data-theme="dark"] .customer-navbar #wishlistDropdown .dropdown-divider,
+html[data-theme="dark"] .customer-navbar #account + .dropdown-menu .dropdown-divider {
+  border-color: var(--customer-border) !important;
+}
+
 .theme-toggle-item {
   display: flex;
   align-items: center;
