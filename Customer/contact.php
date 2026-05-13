@@ -1,51 +1,30 @@
-<?php
+<<?php
 require_once "../db_connect.php";
 
-// Database credentials
-$server = getenv('DB_HOST');
-$user = getenv('DB_USER');
-$password = getenv('DB_PASS');
-$database = getenv('DB_NAME');
-$port = getenv('DB_PORT') ?: 3306;
-
-// Create connection
-try {
-    $conn = new PDO(
-        "mysql:host=$server;port=$port;dbname=$database;charset=utf8mb4",
-        $user,
-        $password
-    );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
-
-if (!isset($_SESSION)) {
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
+$showModal = false;
 
 // Handle form submission for email
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name'])) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $subject = $_POST['subject'];
-    $message = $_POST['message'];
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $subject = trim($_POST['subject']);
+    $message = trim($_POST['message']);
 
-    // Get the customer's ID from the session
-    $customerId = isset($_SESSION['customer_id']) ? $_SESSION['customer_id'] : null;
+    $customerId = $_SESSION['customer_id'] ?? null;
 
-    // Insert data into the database
-    $sql = "INSERT INTO contactMessages (name, email, subject, message, customer_id) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$name, $email, $subject, $message, $customerId]);
+    try {
+        $sql = "INSERT INTO contactmessages (name, email, subject, message, customer_id) 
+                VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$name, $email, $subject, $message, $customerId]);
 
-    if ($stmt->rowCount() > 0) {
         $showModal = true;
-    } else {
-        $errorInfo = $stmt->errorInfo();
-        echo "Error: " . $errorInfo[2];
+    } catch (PDOException $e) {
+        echo "Contact form error: " . $e->getMessage();
     }
 }
 ?>
