@@ -108,19 +108,6 @@ body {
   font-family: "Poppins", sans-serif; /* Use a clean, modern font */
 }
 
-.navbar {
-  padding: 10px;
-  position: sticky;
-  height: 65px;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: top 0.3s ease-in-out;
-}
-
 .navbar.sticky {
   top: 0;
 }
@@ -2836,111 +2823,6 @@ span {
     max-width: 145px;
     height: 82px;
     padding: 12px;
-  }
-}
-
-/* Mobile navbar */
-@media (max-width: 991px) {
-  body {
-    padding-top: 0 !important;
-  }
-
-  .navbar {
-    min-height: 75px !important;
-    height: auto !important;
-    padding: 12px 20px !important;
-  }
-
-  .navbar .container-fluid {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
-
-  .navbar-toggler {
-    display: block !important;
-    border: 1px solid #ddd !important;
-    border-radius: 10px;
-    padding: 10px 14px;
-    z-index: 100001;
-  }
-
-  .navbar-toggler:focus {
-    box-shadow: none !important;
-  }
-
-  .navbar-brand {
-    margin: 0 auto !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .navbar-brand img {
-    width: 55px;
-    height: auto;
-  }
-
-  .navbar-brand h5 {
-    font-size: 1.25rem;
-    margin-bottom: 0;
-  }
-
-  .navbar-collapse {
-    width: 100%;
-    flex-basis: 100%;
-    background: #ffffff;
-    border-top: 1px solid #eeeeee;
-    margin-top: 14px;
-    padding: 16px 0;
-    max-height: calc(100vh - 90px);
-    overflow-y: auto;
-  }
-
-  .navbar-collapse:not(.show) {
-    display: none !important;
-  }
-
-  .navbar-collapse.show {
-    display: block !important;
-  }
-
-  .navbar-nav {
-    width: 100%;
-    text-align: center;
-    align-items: center !important;
-  }
-
-  .navbar-nav .nav-item {
-    width: 100%;
-    text-align: center;
-  }
-
-  .navbar-nav .nav-link {
-    padding: 12px 0 !important;
-    font-size: 1rem;
-  }
-
-  .wishlist-icon {
-    margin: 10px auto;
-  }
-
-  #cart {
-    margin: 10px auto;
-    display: block;
-  }
-
-  #account {
-    margin: 10px auto;
-    display: block;
-  }
-
-  #wishlistDropdown,
-  #cartDropdown {
-    width: 280px;
-    max-width: 90vw;
-    text-align: left;
   }
 }
 
