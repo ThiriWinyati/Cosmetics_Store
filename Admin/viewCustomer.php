@@ -277,6 +277,58 @@ function getProfilePicturePath($path)
         .rounded-circle {
             border-radius: 50%;
         }
+
+        .customer-page-shell {
+            padding-top: 28px;
+        }
+
+        .customer-page-header {
+            position: sticky;
+            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            z-index: 35;
+            padding: 14px 0 18px;
+            margin-bottom: 18px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .customer-page-header .admin-page-title,
+        .customer-page-header .admin-page-subtitle {
+            text-align: center;
+        }
+
+        .customer-page-header .admin-page-title {
+            font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+        }
+
+        .customer-page-search {
+            margin-top: 18px;
+        }
+
+        .customer-page-search .input-group {
+            flex-wrap: nowrap;
+            margin-bottom: 0;
+        }
+
+        .customer-page-search .admin-search-input {
+            min-width: 0;
+        }
+
+        #viewCustomersTable {
+            min-width: 820px;
+        }
+
+        #viewCustomersTable td {
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            .customer-page-header {
+                top: calc(var(--admin-topbar-height, 72px) + 6px);
+            }
+        }
     </style>
 </head>
 
@@ -284,20 +336,33 @@ function getProfilePicturePath($path)
     <?php include 'sidebar_nav.php'; ?>
 
 
-    <div class="container mt-4">
-        <a href="viewCustomer.php" class="text-decoration-none">
-            <h2 class="text-center">View Customers</h2>
-        </a>
-
-        <form method="POST" action="viewCustomer.php" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Search for customers..." value="<?php echo htmlspecialchars($searchTerm); ?>">
-                <button type="submit" class="btn btn-dark">Search</button>
+    <div class="admin-page-shell customer-page-shell">
+        <section class="customer-page-header">
+            <div>
+                <h2 class="admin-page-title">View Customers</h2>
+                <p class="admin-page-subtitle">Browse customer accounts and contact details.</p>
             </div>
-        </form>
 
-        <div class="table-container">
-            <table class="table table-hover" id="viewCustomersTable">
+            <div class="admin-toolbar customer-page-search">
+                <form method="POST" action="viewCustomer.php" class="w-100">
+                    <div class="input-group">
+                        <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search for customers..." value="<?php echo htmlspecialchars($searchTerm); ?>">
+                        <button type="submit" class="admin-search-button px-4">Search</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <?php if (!$isAdmin): ?>
+            <div class="alert alert-warning admin-preview-alert">
+                <i class="fa fa-lock"></i>
+                Customer details are hidden in portfolio preview mode.
+            </div>
+        <?php endif; ?>
+
+        <div class="admin-table-card">
+            <div class="admin-table-scroll">
+            <table class="table table-hover admin-data-table" id="viewCustomersTable">
                 <thead>
                     <tr>
                         <th>Profile Picture</th>
@@ -367,9 +432,8 @@ function getProfilePicturePath($path)
                 </tbody>
 
             </table>
+            </div>
         </div>
-    </div>
-
     </div>
 
 </body>

@@ -72,11 +72,169 @@ $totalMessages = count($messagesList);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
+        .contact-message-shell {
+            padding-top: 28px;
+        }
+
+        .contact-message-header {
+            position: sticky;
+            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            z-index: 35;
+            padding: 14px 0 18px;
+            margin-bottom: 18px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .contact-message-header .admin-page-title,
+        .contact-message-header .admin-page-subtitle {
+            text-align: center;
+        }
+
+        .contact-message-header .admin-page-title {
+            font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+        }
+
+        .contact-message-stats {
+            max-width: 720px;
+            margin: 18px auto 0;
+            grid-template-columns: repeat(2, minmax(180px, 1fr));
+        }
+
+        .contact-message-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 22px;
+            align-items: stretch;
+        }
+
+        .contact-message-card {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #eee0e8;
+            border-radius: 18px;
+            background: #ffffff;
+            box-shadow: 0 14px 34px rgba(38, 38, 48, 0.08);
+        }
+
+        .contact-message-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 18px;
+            border-bottom: 1px solid #f2e5ed;
+            background: #fff7fb;
+        }
+
+        .contact-message-avatar {
+            width: 48px;
+            height: 48px;
+            flex: 0 0 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8d7ea;
+            color: #c65091;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .contact-message-heading {
+            min-width: 0;
+        }
+
+        .contact-message-name {
+            margin: 0;
+            color: #d97cb3;
+            font-size: 1.05rem;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-message-subject {
+            margin: 6px 0 0;
+            color: #25252c;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-message-body {
+            flex: 1;
+            padding: 18px;
+        }
+
+        .contact-message-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-message-text {
+            color: #42424a;
+            line-height: 1.65;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-message-footer {
+            padding: 14px 18px;
+            border-top: 1px solid #f2e5ed;
+            color: #777;
+            font-size: 0.86rem;
+            background: #fffbfd;
+        }
+
         .alert {
             max-width: 100%;
             margin-bottom: 24px;
             border-radius: 12px;
             text-align: center;
+        }
+
+        html[data-theme="dark"] .contact-message-card {
+            border-color: #34343d;
+            background: #1f1f26;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
+        }
+
+        html[data-theme="dark"] .contact-message-card-header,
+        html[data-theme="dark"] .contact-message-footer {
+            border-color: #34343d;
+            background: #282832;
+        }
+
+        html[data-theme="dark"] .contact-message-avatar {
+            background: #3a2834;
+            color: #f178b6;
+        }
+
+        html[data-theme="dark"] .contact-message-subject,
+        html[data-theme="dark"] .contact-message-text {
+            color: #f5f5f7;
+        }
+
+        html[data-theme="dark"] .contact-message-meta,
+        html[data-theme="dark"] .contact-message-footer {
+            color: #b8bcc6;
+        }
+
+        @media (max-width: 768px) {
+            .contact-message-header {
+                top: calc(var(--admin-topbar-height, 72px) + 6px);
+            }
+
+            .contact-message-stats,
+            .contact-message-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -84,24 +242,24 @@ $totalMessages = count($messagesList);
 <body>
     <?php include 'sidebar_nav.php'; ?>
 
-    <div class="admin-page-shell">
-        <div class="admin-page-header">
+    <div class="admin-page-shell contact-message-shell">
+        <section class="contact-message-header">
             <div>
                 <h2 class="admin-page-title">Contact Messages</h2>
                 <p class="admin-page-subtitle">Review customer questions, subjects, and contact details from the storefront form.</p>
             </div>
-        </div>
 
-        <div class="admin-summary-grid">
-            <div class="admin-stat-card">
-                <span class="admin-stat-label">Messages</span>
-                <span class="admin-stat-value"><?php echo $totalMessages; ?></span>
+            <div class="admin-summary-grid contact-message-stats">
+                <div class="admin-stat-card">
+                    <span class="admin-stat-label">Messages</span>
+                    <span class="admin-stat-value"><?php echo $totalMessages; ?></span>
+                </div>
+                <div class="admin-stat-card">
+                    <span class="admin-stat-label">Access Mode</span>
+                    <span class="admin-stat-value"><?php echo $isAdmin ? 'Admin' : 'Preview'; ?></span>
+                </div>
             </div>
-            <div class="admin-stat-card">
-                <span class="admin-stat-label">Access Mode</span>
-                <span class="admin-stat-value"><?php echo $isAdmin ? 'Admin' : 'Preview'; ?></span>
-            </div>
-        </div>
+        </section>
 
             <?php if (!$isAdmin): ?>
                 <div class="alert alert-warning admin-preview-alert">
@@ -110,28 +268,32 @@ $totalMessages = count($messagesList);
                 </div>
             <?php endif; ?>
 
-            <div class="admin-message-grid">
+            <div class="contact-message-grid">
                 <?php foreach ($messagesList as $message): ?>
-                    <article class="admin-message-card">
-                        <div class="admin-message-card-header">
-                            <h5 class="admin-message-name">
-                            <?php
-                            echo $isAdmin
-                                ? htmlspecialchars($message['name'])
-                                : htmlspecialchars(maskText($message['name']));
-                            ?>
-                            </h5>
-                            <p class="admin-message-subject">
+                    <?php
+                    $displayName = $isAdmin
+                        ? htmlspecialchars($message['name'])
+                        : htmlspecialchars(maskText($message['name']));
+                    $avatarLetter = htmlspecialchars(mb_substr($displayName, 0, 1));
+                    ?>
+                    <article class="contact-message-card">
+                        <div class="contact-message-card-header">
+                            <span class="contact-message-avatar"><?php echo $avatarLetter; ?></span>
+
+                            <div class="contact-message-heading">
+                                <h5 class="contact-message-name"><?php echo $displayName; ?></h5>
+                                <p class="contact-message-subject">
                                 <?php
                                 echo $isAdmin
                                     ? htmlspecialchars($message['subject'])
                                     : htmlspecialchars(maskText($message['subject']));
                                 ?>
-                            </p>
+                                </p>
+                            </div>
                         </div>
 
-                        <div class="admin-message-card-body">
-                            <p class="admin-muted-text mb-3">
+                        <div class="contact-message-body">
+                            <p class="contact-message-meta">
                                 <i class="fa fa-envelope"></i>
                                 <?php
                                 echo $isAdmin
@@ -140,13 +302,18 @@ $totalMessages = count($messagesList);
                                 ?>
                             </p>
 
-                            <p class="admin-message-text mb-0">
+                            <p class="contact-message-text mb-0">
                                 <?php
                                 echo $isAdmin
                                     ? nl2br(htmlspecialchars($message['message']))
                                     : htmlspecialchars(maskMessage($message['message']));
                                 ?>
                             </p>
+                        </div>
+
+                        <div class="contact-message-footer">
+                            <i class="fa fa-inbox"></i>
+                            <?php echo $isAdmin ? 'Customer message is visible to admins.' : 'Full message is locked in preview mode.'; ?>
                         </div>
                     </article>
                 <?php endforeach; ?>

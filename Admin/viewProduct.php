@@ -341,6 +341,106 @@ foreach ($products ?? [] as $productSummary) {
             overflow: hidden;
             white-space: nowrap;
         }
+
+        .product-page-shell {
+            padding-top: 28px;
+        }
+
+        .product-page-header {
+            position: sticky;
+            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            z-index: 35;
+            padding: 14px 0 18px;
+            margin-bottom: 18px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .product-page-header .admin-page-title,
+        .product-page-header .admin-page-subtitle {
+            text-align: center;
+        }
+
+        .product-page-header .admin-page-title {
+            font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+        }
+
+        .product-summary-grid {
+            grid-template-columns: repeat(3, minmax(160px, 1fr));
+            margin-top: 18px;
+        }
+
+        .product-stat-card {
+            min-height: 108px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+            overflow: visible;
+        }
+
+        .product-stat-card .admin-stat-label,
+        .product-stat-card .admin-stat-value {
+            line-height: 1.15;
+        }
+
+        .product-page-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .product-page-search {
+            margin-top: 14px;
+        }
+
+        .product-page-search .input-group {
+            flex-wrap: nowrap;
+        }
+
+        .product-page-search .admin-search-input {
+            min-width: 0;
+        }
+
+        #viewProductsTable {
+            min-width: 1180px;
+        }
+
+        #viewProductsTable td {
+            padding-top: 18px;
+            padding-bottom: 18px;
+        }
+
+        #viewProductsTable .shade-list-cell {
+            max-width: 360px;
+            white-space: normal;
+            line-height: 1.45;
+        }
+
+        #viewProductsTable .shade-list-content {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        @media (max-width: 992px) {
+            .product-summary-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-page-header {
+                top: calc(var(--admin-topbar-height, 72px) + 6px);
+            }
+
+            .product-page-actions .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -348,14 +448,45 @@ foreach ($products ?? [] as $productSummary) {
     <?php include 'sidebar_nav.php'; ?>
 
 
-    <div class="admin-page-shell">
-        <div class="admin-page-header">
+    <div class="admin-page-shell product-page-shell">
+        <section class="product-page-header">
             <div>
                 <h2 class="admin-page-title">View Products</h2>
                 <p class="admin-page-subtitle">Manage product catalog visibility, stock by shade, brands, and product flags.</p>
             </div>
 
-            <div class="admin-page-actions">
+            <div class="admin-summary-grid product-summary-grid">
+                <div class="admin-stat-card product-stat-card">
+                    <span class="admin-stat-label">Visible Products</span>
+                    <span class="admin-stat-value"><?php echo $totalProducts; ?></span>
+                </div>
+                <div class="admin-stat-card product-stat-card">
+                    <span class="admin-stat-label">Latest</span>
+                    <span class="admin-stat-value"><?php echo $latestProducts; ?></span>
+                </div>
+                <div class="admin-stat-card product-stat-card">
+                    <span class="admin-stat-label">Popular</span>
+                    <span class="admin-stat-value"><?php echo $popularProducts; ?></span>
+                </div>
+            </div>
+
+            <?php if (!$isAdmin): ?>
+                <div class="alert alert-warning admin-preview-alert">
+                    <i class="fa fa-lock"></i>
+                    Product editing and deletion are locked in portfolio preview mode.
+                </div>
+            <?php endif; ?>
+
+            <div class="admin-toolbar product-page-search">
+                <form method="POST" action="viewProduct.php" class="w-100">
+                    <div class="input-group">
+                        <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search products, brands, categories, or shades..." value="<?php echo htmlspecialchars($_POST['searchTerm'] ?? ''); ?>" required>
+                        <button type="submit" name="search" class="admin-search-button px-4">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="product-page-actions">
                 <?php if ($isAdmin): ?>
                     <a href="insertProduct.php" class="btn btn-outline-primary text-decoration-none">
                         <i class="fa fa-plus"></i> Insert Product
@@ -366,38 +497,7 @@ foreach ($products ?? [] as $productSummary) {
                     </button>
                 <?php endif; ?>
             </div>
-        </div>
-
-        <div class="admin-summary-grid">
-            <div class="admin-stat-card">
-                <span class="admin-stat-label">Visible Products</span>
-                <span class="admin-stat-value"><?php echo $totalProducts; ?></span>
-            </div>
-            <div class="admin-stat-card">
-                <span class="admin-stat-label">Latest</span>
-                <span class="admin-stat-value"><?php echo $latestProducts; ?></span>
-            </div>
-            <div class="admin-stat-card">
-                <span class="admin-stat-label">Popular</span>
-                <span class="admin-stat-value"><?php echo $popularProducts; ?></span>
-            </div>
-        </div>
-
-        <?php if (!$isAdmin): ?>
-            <div class="alert alert-warning admin-preview-alert">
-                <i class="fa fa-lock"></i>
-                Product editing and deletion are locked in portfolio preview mode.
-            </div>
-        <?php endif; ?>
-
-        <div class="admin-toolbar">
-            <form method="POST" action="viewProduct.php" class="w-100">
-                <div class="input-group">
-                    <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search products, brands, categories, or shades..." value="<?php echo htmlspecialchars($_POST['searchTerm'] ?? ''); ?>" required>
-                    <button type="submit" name="search" class="admin-search-button px-4">Search</button>
-                </div>
-            </form>
-        </div>
+        </section>
 
         <div class="admin-table-card">
             <div class="admin-table-scroll">
@@ -440,7 +540,7 @@ foreach ($products ?? [] as $productSummary) {
                                     <td>{$categoryName}</td>
                                     <td>$ {$price}</td>
                                     <td>{$brandName}</td>
-                                    <td>{$shades}</td>
+                                    <td class='shade-list-cell'><div class='shade-list-content'>{$shades}</div></td>
                                     <td>{$quantities}</td>
                                     <td><span class='admin-status-badge " . (($product['is_latest_column'] == 1) ? "status-delivered" : "status-locked") . "'>{$isLatest}</span></td>
                                     <td><span class='admin-status-badge " . (($product['is_popular_column'] == 1) ? "status-delivered" : "status-locked") . "'>{$isPopular}</span></td>

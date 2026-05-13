@@ -142,12 +142,12 @@ if (isset($_GET['shipping_id'])) {
             position: sticky;
             top: calc(var(--admin-topbar-height, 72px) + 12px);
             z-index: 20;
-            background: rgba(255, 255, 255, 0.96);
-            border: 1px solid #f0d5e3;
-            border-radius: 16px;
-            padding: 18px;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            padding: 14px 0 18px;
             margin-bottom: 22px;
-            box-shadow: 0 12px 28px rgba(38, 38, 48, 0.08);
+            box-shadow: none;
             backdrop-filter: blur(12px);
         }
 
@@ -155,36 +155,50 @@ if (isset($_GET['shipping_id'])) {
             color: #d97cb3;
             font-weight: 800;
             margin: 0;
+            text-align: center;
         }
 
         .delivery-page-subtitle {
             color: #777;
             margin: 6px 0 0;
+            text-align: center;
         }
 
         .delivery-toolbar {
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
             margin-top: 16px;
         }
 
         .delivery-filter-actions,
         .delivery-search {
             display: flex;
-            flex-wrap: wrap;
             gap: 10px;
         }
 
+        .delivery-filter-actions {
+            flex-wrap: wrap;
+            justify-content: center;
+            order: 2;
+        }
+
         .delivery-search {
-            flex: 1;
-            min-width: min(100%, 360px);
+            order: 1;
+            width: 100%;
+            flex-wrap: nowrap;
         }
 
         .delivery-search .form-control {
             min-width: 0;
+            flex: 1;
+            border-radius: 10px;
+        }
+
+        .delivery-search .btn {
+            flex: 0 0 auto;
+            border-radius: 10px;
         }
 
         .delivery-grid {
@@ -292,7 +306,12 @@ if (isset($_GET['shipping_id'])) {
             margin-top: 10px;
         }
 
-        html[data-theme="dark"] .delivery-page-header,
+        html[data-theme="dark"] .delivery-page-header {
+            background: transparent;
+            border-color: transparent;
+            box-shadow: none;
+        }
+
         html[data-theme="dark"] .delivery-card {
             background: rgba(31, 31, 39, 0.96);
             border-color: #343442;
@@ -331,18 +350,17 @@ if (isset($_GET['shipping_id'])) {
                 top: calc(var(--admin-topbar-height, 72px) + 8px);
             }
 
-            .delivery-toolbar,
-            .delivery-search {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
             .delivery-filter-actions {
                 width: 100%;
             }
 
             .delivery-filter-actions .btn {
                 flex: 1;
+            }
+
+            .delivery-search .btn {
+                padding-left: 14px;
+                padding-right: 14px;
             }
         }
     </style>
@@ -365,16 +383,16 @@ if (isset($_GET['shipping_id'])) {
                 </div>
 
                 <div class="delivery-toolbar">
+                    <form method="POST" action="manageDelivery.php" class="delivery-search">
+                        <input type="text" name="searchTerm" class="form-control" placeholder="<?php echo $isAdmin ? 'Search shipment, order, customer, method...' : 'Search shipment status or method...'; ?>" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                        <button type="submit" class="btn btn-dark">Search</button>
+                    </form>
+
                     <div class="delivery-filter-actions">
                         <a href="manageDelivery.php" class="btn btn-outline-primary">All</a>
                         <a href="manageDelivery.php?status=Delivered" class="btn btn-success">Delivered</a>
                         <a href="manageDelivery.php?status=Processing" class="btn btn-warning">Processing</a>
                     </div>
-
-                    <form method="POST" action="manageDelivery.php" class="delivery-search">
-                        <input type="text" name="searchTerm" class="form-control" placeholder="<?php echo $isAdmin ? 'Search shipment, order, customer, method...' : 'Search shipment status or method...'; ?>" value="<?php echo htmlspecialchars($searchTerm); ?>">
-                        <button type="submit" class="btn btn-dark">Search</button>
-                    </form>
                 </div>
             </section>
 

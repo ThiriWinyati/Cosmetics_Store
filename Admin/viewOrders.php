@@ -317,40 +317,158 @@ foreach ($orders ?? [] as $orderSummary) {
             color: #c2185b;
             text-decoration: underline;
         }
+
+        .orders-page-shell {
+            padding-top: 28px;
+        }
+
+        .orders-page-header {
+            position: sticky;
+            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            z-index: 35;
+            padding: 14px 0 18px;
+            margin-bottom: 18px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .orders-page-header .admin-page-title,
+        .orders-page-header .admin-page-subtitle {
+            text-align: center;
+        }
+
+        .orders-page-header .admin-page-title {
+            font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+        }
+
+        .orders-summary-grid {
+            grid-template-columns: repeat(3, minmax(160px, 1fr));
+            margin-top: 18px;
+        }
+
+        .orders-stat-card {
+            min-height: 108px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+            overflow: visible;
+        }
+
+        .orders-page-search {
+            margin-top: 14px;
+        }
+
+        .orders-page-search .input-group {
+            flex-wrap: nowrap;
+            margin-bottom: 0;
+        }
+
+        .orders-page-search .admin-search-input {
+            min-width: 0;
+        }
+
+        .orders-page-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .orders-page-actions .btn {
+            min-width: 160px;
+            font-weight: 700;
+        }
+
+        #viewOrdersTable {
+            min-width: 1260px;
+        }
+
+        #viewOrdersTable td {
+            padding-top: 18px;
+            padding-bottom: 18px;
+            vertical-align: middle;
+        }
+
+        #viewOrdersTable .order-products-cell {
+            max-width: 300px;
+            white-space: normal;
+            line-height: 1.45;
+        }
+
+        #viewOrdersTable .order-products-content {
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        #viewOrdersTable .order-quantities-cell,
+        #viewOrdersTable .order-coupon-cell {
+            white-space: nowrap;
+        }
+
+        @media (max-width: 992px) {
+            .orders-summary-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .orders-page-header {
+                top: calc(var(--admin-topbar-height, 72px) + 6px);
+            }
+
+            .orders-page-actions .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
 <body>
     <?php include 'sidebar_nav.php'; ?>
 
-    <div class="admin-page-shell">
-        <div class="admin-page-header">
+    <div class="admin-page-shell orders-page-shell">
+        <section class="orders-page-header">
             <div>
                 <h2 class="admin-page-title">View Orders</h2>
                 <p class="admin-page-subtitle">Browse order activity, fulfillment status, payment method, and product quantities.</p>
             </div>
 
-            <div class="admin-page-actions">
+            <div class="admin-summary-grid orders-summary-grid">
+                <div class="admin-stat-card orders-stat-card">
+                    <span class="admin-stat-label">Visible Orders</span>
+                    <span class="admin-stat-value"><?php echo $totalOrders; ?></span>
+                </div>
+                <div class="admin-stat-card orders-stat-card">
+                    <span class="admin-stat-label">Pending</span>
+                    <span class="admin-stat-value"><?php echo $pendingOrders; ?></span>
+                </div>
+                <div class="admin-stat-card orders-stat-card">
+                    <span class="admin-stat-label">Accepted</span>
+                    <span class="admin-stat-value"><?php echo $acceptedOrders; ?></span>
+                </div>
+            </div>
+
+            <div class="admin-toolbar orders-page-search">
+                <form method="POST" action="viewOrders.php" class="w-100">
+                    <div class="input-group">
+                        <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search orders, customers, products, payment, or shipping..." value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
+                        <button type="submit" class="admin-search-button px-4">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="orders-page-actions">
                 <a href="viewOrders.php?status=pending" class="btn btn-warning view-orders-btn">Pending Orders</a>
                 <a href="viewOrders.php?status=accepted" class="btn btn-success view-orders-btn">Accepted Orders</a>
                 <a href="orderManage.php" class="btn btn-primary">Manage Orders</a>
             </div>
-        </div>
-
-        <div class="admin-summary-grid">
-            <div class="admin-stat-card">
-                <span class="admin-stat-label">Visible Orders</span>
-                <span class="admin-stat-value"><?php echo $totalOrders; ?></span>
-            </div>
-            <div class="admin-stat-card">
-                <span class="admin-stat-label">Pending</span>
-                <span class="admin-stat-value"><?php echo $pendingOrders; ?></span>
-            </div>
-            <div class="admin-stat-card">
-                <span class="admin-stat-label">Accepted</span>
-                <span class="admin-stat-value"><?php echo $acceptedOrders; ?></span>
-            </div>
-        </div>
+        </section>
 
         <?php if (!$isAdmin): ?>
             <div class="alert alert-warning admin-preview-alert">
@@ -358,15 +476,6 @@ foreach ($orders ?? [] as $orderSummary) {
                 Customer names and emails are hidden in portfolio preview mode.
             </div>
         <?php endif; ?>
-
-        <div class="admin-toolbar">
-            <form method="POST" action="viewOrders.php" class="w-100">
-                <div class="input-group">
-                    <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search for orders..." value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
-                    <button type="submit" class="admin-search-button px-4">Search</button>
-                </div>
-            </form>
-        </div>
 
         <div class="admin-table-card">
             <div class="admin-table-scroll">
@@ -398,9 +507,9 @@ foreach ($orders ?? [] as $orderSummary) {
                                 <td><?php echo htmlspecialchars($order['Shipping_Method'] ?? 'Not selected'); ?></td>
                                 <td><?php echo htmlspecialchars($order['Payment_Method_Name'] ?? 'Not selected'); ?></td>
                                 <td><span class="admin-status-badge <?php echo $statusClass; ?>"><?php echo htmlspecialchars($order['Status'] ?? 'Pending'); ?></span></td>
-                                <td><?php echo htmlspecialchars($order['Product_Names'] ?? 'No products'); ?></td>
-                                <td><?php echo htmlspecialchars($order['Quantities'] ?? '0'); ?></td>
-                                <td><?php echo htmlspecialchars($order['Coupon_Code'] ?? 'No coupon'); ?></td>
+                                <td class="order-products-cell"><div class="order-products-content"><?php echo htmlspecialchars($order['Product_Names'] ?? 'No products'); ?></div></td>
+                                <td class="order-quantities-cell"><?php echo htmlspecialchars($order['Quantities'] ?? '0'); ?></td>
+                                <td class="order-coupon-cell"><?php echo htmlspecialchars($order['Coupon_Code'] ?? 'No coupon'); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>

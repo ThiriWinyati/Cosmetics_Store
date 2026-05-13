@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="../backEnd/backEnd_css/style.css">
+    <link rel="stylesheet" href="../Admin/admin_css/style.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -232,25 +232,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
             color: #c2185b;
             text-decoration: underline;
         }
+
+        .shipping-page-shell {
+            padding-top: 28px;
+        }
+
+        .shipping-page-header {
+            position: sticky;
+            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            z-index: 35;
+            padding: 14px 0 18px;
+            margin-bottom: 18px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .shipping-page-header .admin-page-title,
+        .shipping-page-header .admin-page-subtitle {
+            text-align: center;
+        }
+
+        .shipping-page-header .admin-page-title {
+            font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+        }
+
+        .shipping-page-search {
+            margin-top: 18px;
+        }
+
+        .shipping-page-search .input-group {
+            flex-wrap: nowrap;
+            margin-bottom: 0;
+        }
+
+        .shipping-page-search .admin-search-input {
+            min-width: 0;
+        }
+
+        .shipping-page-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        #shippingMethodsTable {
+            min-width: 900px;
+        }
+
+        #shippingMethodsTable td {
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            .shipping-page-header {
+                top: calc(var(--admin-topbar-height, 72px) + 6px);
+            }
+
+            .shipping-page-actions .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
 <body>
     <?php include 'sidebar_nav.php'; ?>
 
-    <div class="container mt-4">
-        <a href="deliveryMethods.php" class="text-decoration-none">
-            <h2 class="text-center">Shipping Methods</h2>
-        </a>
-
-        <form method="POST" action="deliveryMethods.php" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Search for shipping methods..." value="<?php echo htmlspecialchars($searchTerm); ?>">
-                <button type="submit" class="btn btn-dark">Search</button>
+    <div class="admin-page-shell shipping-page-shell">
+        <section class="shipping-page-header">
+            <div>
+                <h2 class="admin-page-title">Shipping Methods</h2>
+                <p class="admin-page-subtitle">Manage available delivery options, delivery time, and shipping cost.</p>
             </div>
-        </form>
 
-        <div class="text-end mb-3">
+            <div class="admin-toolbar shipping-page-search">
+                <form method="POST" action="deliveryMethods.php" class="w-100">
+                    <div class="input-group">
+                        <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search for shipping methods..." value="<?php echo htmlspecialchars($searchTerm); ?>">
+                        <button type="submit" class="admin-search-button px-4">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="shipping-page-actions">
             <?php if ($isAdmin): ?>
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertDeliveryMethodModal">
                     <i class="fa fa-plus"></i> Insert Delivery Method
@@ -260,10 +326,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
                     <i class="fa fa-lock"></i> Insert locked
                 </button>
             <?php endif; ?>
-        </div>
+            </div>
+        </section>
 
-        <div class="delivery-methods-container">
-            <table class="table">
+        <div class="admin-table-card">
+            <div class="admin-table-scroll">
+            <table class="table table-hover admin-data-table" id="shippingMethodsTable">
                 <thead>
                     <tr>
                         <th>Shipping Method ID</th>
@@ -387,6 +455,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
                         ?>
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 

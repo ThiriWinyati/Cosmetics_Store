@@ -159,23 +159,91 @@ try {
             color: #c2185b;
             text-decoration: underline;
         }
+
+        .category-page-shell {
+            padding-top: 28px;
+        }
+
+        .category-page-header {
+            position: sticky;
+            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            z-index: 35;
+            padding: 14px 0 18px;
+            margin-bottom: 18px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .category-page-header .admin-page-title,
+        .category-page-header .admin-page-subtitle {
+            text-align: center;
+        }
+
+        .category-page-header .admin-page-title {
+            font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+        }
+
+        .category-page-search {
+            margin-top: 18px;
+        }
+
+        .category-page-search .input-group {
+            flex-wrap: nowrap;
+            margin-bottom: 0;
+        }
+
+        .category-page-search .admin-search-input {
+            min-width: 0;
+        }
+
+        .category-page-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        #viewCategoriesTable {
+            min-width: 720px;
+        }
+
+        #viewCategoriesTable td {
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            .category-page-header {
+                top: calc(var(--admin-topbar-height, 72px) + 6px);
+            }
+
+            .category-page-actions .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
 <body>
     <?php include 'sidebar_nav.php'; ?>
 
-    <div class="container" style="overflow-x:auto;">
-        <a href="viewCategory.php" class="text-decoration-none">
-            <h2 class="text-center mb-4">View Categories</h2>
-        </a>
-        <form method="POST" action="viewCategory.php" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Search for categories..." value="<?php echo htmlspecialchars($searchTerm); ?>">
-                <button type="submit" class="btn btn-dark">Search</button>
+    <div class="admin-page-shell category-page-shell">
+        <section class="category-page-header">
+            <div>
+                <h2 class="admin-page-title">View Categories</h2>
+                <p class="admin-page-subtitle">Browse and organize the product categories used across the shop.</p>
             </div>
-        </form>
-        <div class="text-end mb-3">
+
+            <div class="admin-toolbar category-page-search">
+                <form method="POST" action="viewCategory.php" class="w-100">
+                    <div class="input-group">
+                        <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search for categories..." value="<?php echo htmlspecialchars($searchTerm); ?>">
+                        <button type="submit" class="admin-search-button px-4">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="category-page-actions">
             <?php if ($isAdmin): ?>
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertModal">
                     <i class="fa fa-plus"></i> Insert New Category
@@ -185,10 +253,12 @@ try {
                     <i class="fa fa-lock"></i> Insert locked
                 </button>
             <?php endif; ?>
-        </div>
+            </div>
+        </section>
 
-        <div class="table-container">
-            <table class="table table-hover" id="viewCategoriesTable">
+        <div class="admin-table-card">
+            <div class="admin-table-scroll">
+            <table class="table table-hover admin-data-table" id="viewCategoriesTable">
                 <thead>
                     <tr>
                         <th>Category ID</th>
@@ -287,6 +357,7 @@ try {
                     <?php endif; ?>
                 </tbody>
             </table>
+            </div>
         </div>
 
 

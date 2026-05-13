@@ -224,6 +224,68 @@ if (isset($_GET['deleteBrandId'])) {
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        .brand-page-shell {
+            padding-top: 28px;
+        }
+
+        .brand-page-header {
+            position: sticky;
+            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            z-index: 35;
+            padding: 14px 0 18px;
+            margin-bottom: 18px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .brand-page-header .admin-page-title,
+        .brand-page-header .admin-page-subtitle {
+            text-align: center;
+        }
+
+        .brand-page-header .admin-page-title {
+            font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+        }
+
+        .brand-page-search {
+            margin-top: 18px;
+        }
+
+        .brand-page-search .input-group {
+            flex-wrap: nowrap;
+            margin-bottom: 0;
+        }
+
+        .brand-page-search .admin-search-input {
+            min-width: 0;
+        }
+
+        .brand-page-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        #viewBrandsTable {
+            min-width: 720px;
+        }
+
+        #viewBrandsTable td {
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            .brand-page-header {
+                top: calc(var(--admin-topbar-height, 72px) + 6px);
+            }
+
+            .brand-page-actions .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -232,17 +294,23 @@ if (isset($_GET['deleteBrandId'])) {
     <?php include 'sidebar_nav.php'; ?>
 
 
-    <div class="container mt-4">
-        <a href="viewBrands.php" class="text-decoration-none">
-            <h2 class="text-center mb-4">View Brands</h2>
-        </a>
-        <form method="POST" action="viewBrands.php" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Search for brands..." value="<?php echo htmlspecialchars($searchTerm); ?>">
-                <button type="submit" class="btn btn-dark">Search</button>
+    <div class="admin-page-shell brand-page-shell">
+        <section class="brand-page-header">
+            <div>
+                <h2 class="admin-page-title">View Brands</h2>
+                <p class="admin-page-subtitle">Browse and maintain the cosmetic brands used by products.</p>
             </div>
-        </form>
-        <div class="text-end mb-3">
+
+            <div class="admin-toolbar brand-page-search">
+                <form method="POST" action="viewBrands.php" class="w-100">
+                    <div class="input-group">
+                        <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search for brands..." value="<?php echo htmlspecialchars($searchTerm); ?>">
+                        <button type="submit" class="admin-search-button px-4">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="brand-page-actions">
             <?php if ($isAdmin): ?>
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertBrandModal">
                     <i class="fa fa-plus"></i> Insert New Brand
@@ -252,10 +320,12 @@ if (isset($_GET['deleteBrandId'])) {
                     <i class="fa fa-lock"></i> Insert locked
                 </button>
             <?php endif; ?>
-        </div>
+            </div>
+        </section>
 
-        <div class="table-container">
-            <table class="table table-hover" id="viewBrandsTable">
+        <div class="admin-table-card">
+            <div class="admin-table-scroll">
+            <table class="table table-hover admin-data-table" id="viewBrandsTable">
                 <thead>
                     <tr>
                         <th>Brand ID</th>
@@ -354,6 +424,7 @@ if (isset($_GET['deleteBrandId'])) {
                     <?php endif; ?>
                 </tbody>
             </table>
+            </div>
         </div>
 
         <?php if ($isAdmin): ?>
