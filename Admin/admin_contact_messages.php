@@ -48,6 +48,7 @@ $sql = "SELECT * FROM contactmessages";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $messagesList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$totalMessages = count($messagesList);
 ?>
 
 <!DOCTYPE html>
@@ -71,109 +72,11 @@ $messagesList = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
-        .contact-page-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            padding: 30px 20px;
-        }
-
-        .main-contact-container {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .main-contact-container h2 {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .message-card {
-            width: 100%;
-            margin-bottom: 24px;
-            border: 1px solid #343442;
-            border-radius: 16px;
-            background: #1f1f27;
-            color: #f5f5f5;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-        }
-
-        .message-body {
-            padding: 24px;
-        }
-
-        .message-body h5 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 14px;
-            color: #ffffff;
-        }
-
-        .message-body p {
-            font-size: 1rem;
-            margin-bottom: 12px;
-            line-height: 1.6;
-            color: #e8e8e8;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
-        .message-body strong {
-            color: #ffffff;
-        }
-
         .alert {
             max-width: 100%;
             margin-bottom: 24px;
             border-radius: 12px;
             text-align: center;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .contact-page-wrapper {
-                padding: 20px 12px;
-            }
-
-            .main-contact-container {
-                max-width: 100%;
-            }
-
-            .message-body {
-                padding: 18px;
-            }
-
-            .message-body h5 {
-                font-size: 1.05rem;
-            }
-
-            .message-body p {
-                font-size: 0.95rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .contact-page-wrapper {
-                padding: 15px 10px;
-            }
-
-            .message-card {
-                border-radius: 12px;
-            }
-
-            .message-body {
-                padding: 16px;
-            }
-
-            .message-body h5 {
-                font-size: 1rem;
-            }
-
-            .message-body p {
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
@@ -181,57 +84,73 @@ $messagesList = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <?php include 'sidebar_nav.php'; ?>
 
-    <div class="contact-page-wrapper">
-        <div class="main-contact-container mt-4">
-            <h2 class="mb-4 text-center">Contact Messages</h2>
+    <div class="admin-page-shell">
+        <div class="admin-page-header">
+            <div>
+                <h2 class="admin-page-title">Contact Messages</h2>
+                <p class="admin-page-subtitle">Review customer questions, subjects, and contact details from the storefront form.</p>
+            </div>
+        </div>
+
+        <div class="admin-summary-grid">
+            <div class="admin-stat-card">
+                <span class="admin-stat-label">Messages</span>
+                <span class="admin-stat-value"><?php echo $totalMessages; ?></span>
+            </div>
+            <div class="admin-stat-card">
+                <span class="admin-stat-label">Access Mode</span>
+                <span class="admin-stat-value"><?php echo $isAdmin ? 'Admin' : 'Preview'; ?></span>
+            </div>
+        </div>
 
             <?php if (!$isAdmin): ?>
-                <div class="alert alert-warning text-center">
+                <div class="alert alert-warning admin-preview-alert">
                     <i class="fa fa-lock"></i>
                     Customer contact details are hidden in portfolio preview mode.
                 </div>
             <?php endif; ?>
 
-            <?php foreach ($messagesList as $message): ?>
-                <div class="message-card">
-                    <div class="message-body">
-                        <h5>
+            <div class="admin-message-grid">
+                <?php foreach ($messagesList as $message): ?>
+                    <article class="admin-message-card">
+                        <div class="admin-message-card-header">
+                            <h5 class="admin-message-name">
                             <?php
                             echo $isAdmin
                                 ? htmlspecialchars($message['name'])
                                 : htmlspecialchars(maskText($message['name']));
                             ?>
-                        </h5>
+                            </h5>
+                            <p class="admin-message-subject">
+                                <?php
+                                echo $isAdmin
+                                    ? htmlspecialchars($message['subject'])
+                                    : htmlspecialchars(maskText($message['subject']));
+                                ?>
+                            </p>
+                        </div>
 
-                        <p>
-                            <strong>Email:</strong>
-                            <?php
-                            echo $isAdmin
-                                ? htmlspecialchars($message['email'])
-                                : htmlspecialchars(maskEmail($message['email']));
-                            ?>
-                        </p>
+                        <div class="admin-message-card-body">
+                            <p class="admin-muted-text mb-3">
+                                <i class="fa fa-envelope"></i>
+                                <?php
+                                echo $isAdmin
+                                    ? htmlspecialchars($message['email'])
+                                    : htmlspecialchars(maskEmail($message['email']));
+                                ?>
+                            </p>
 
-                        <p>
-                            <strong>Subject:</strong>
-                            <?php
-                            echo $isAdmin
-                                ? htmlspecialchars($message['subject'])
-                                : htmlspecialchars(maskText($message['subject']));
-                            ?>
-                        </p>
-
-                        <p>
-                            <?php
-                            echo $isAdmin
-                                ? nl2br(htmlspecialchars($message['message']))
-                                : htmlspecialchars(maskMessage($message['message']));
-                            ?>
-                        </p>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                            <p class="admin-message-text mb-0">
+                                <?php
+                                echo $isAdmin
+                                    ? nl2br(htmlspecialchars($message['message']))
+                                    : htmlspecialchars(maskMessage($message['message']));
+                                ?>
+                            </p>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
     </div>
 </body>
 

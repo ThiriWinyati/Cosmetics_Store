@@ -3,6 +3,27 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
+$isAdmin = admin_is_logged_in();
+
+function maskOrderName($name)
+{
+    if (empty($name)) {
+        return 'Locked';
+    }
+
+    return mb_substr($name, 0, 1) . str_repeat('*', max(mb_strlen($name) - 1, 3));
+}
+
+function maskOrderEmail($email)
+{
+    if (empty($email) || strpos($email, '@') === false) {
+        return 'Locked';
+    }
+
+    [$localPart, $domain] = explode('@', $email, 2);
+    return mb_substr($localPart, 0, 1) . str_repeat('*', max(mb_strlen($localPart) - 1, 3)) . '@' . $domain;
+}
+
 // Fetch all orders or search orders
 $searchTerm = $_POST['searchTerm'] ?? '';
 try {
@@ -130,7 +151,19 @@ if (isset($_GET['status'])) {
     }
 }
 
-error_log("Orders: " . print_r($orders, true));
+$totalOrders = count($orders ?? []);
+$pendingOrders = 0;
+$acceptedOrders = 0;
+
+foreach ($orders ?? [] as $orderSummary) {
+    $orderStatus = strtolower($orderSummary['Status'] ?? 'pending');
+
+    if ($orderStatus === 'accepted') {
+        $acceptedOrders++;
+    } else {
+        $pendingOrders++;
+    }
+}
 
 ?>
 
@@ -290,29 +323,54 @@ error_log("Orders: " . print_r($orders, true));
 <body>
     <?php include 'sidebar_nav.php'; ?>
 
-    <div class="container mt-4">
-        <a href="viewOrders.php" class="text-decoration-none">
-            <h2 class="text-center view-orders-title">View Orders</h2>
-        </a>
-
-        <div class="text-center mb-3 view-orders-status-buttons">
-            <a href="viewOrders.php?status=pending" class="btn btn-warning view-orders-btn">Pending Orders</a>
-            <a href="viewOrders.php?status=accepted" class="btn btn-success view-orders-btn">Accepted Orders</a>
-        </div>
-
-        <div class="text-center mb-3">
-            <a href="orderManage.php" class="btn btn-primary">Manage Orders</a>
-        </div>
-
-        <form method="POST" action="viewOrders.php" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Search for orders..." value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
-                <button type="submit" class="btn btn-dark">Search</button>
+    <div class="admin-page-shell">
+        <div class="admin-page-header">
+            <div>
+                <h2 class="admin-page-title">View Orders</h2>
+                <p class="admin-page-subtitle">Browse order activity, fulfillment status, payment method, and product quantities.</p>
             </div>
-        </form>
 
-        <div class="table-container view-orders-table-container">
-            <table class="table table-hover view-orders-table" id="viewOrdersTable">
+            <div class="admin-page-actions">
+                <a href="viewOrders.php?status=pending" class="btn btn-warning view-orders-btn">Pending Orders</a>
+                <a href="viewOrders.php?status=accepted" class="btn btn-success view-orders-btn">Accepted Orders</a>
+                <a href="orderManage.php" class="btn btn-primary">Manage Orders</a>
+            </div>
+        </div>
+
+        <div class="admin-summary-grid">
+            <div class="admin-stat-card">
+                <span class="admin-stat-label">Visible Orders</span>
+                <span class="admin-stat-value"><?php echo $totalOrders; ?></span>
+            </div>
+            <div class="admin-stat-card">
+                <span class="admin-stat-label">Pending</span>
+                <span class="admin-stat-value"><?php echo $pendingOrders; ?></span>
+            </div>
+            <div class="admin-stat-card">
+                <span class="admin-stat-label">Accepted</span>
+                <span class="admin-stat-value"><?php echo $acceptedOrders; ?></span>
+            </div>
+        </div>
+
+        <?php if (!$isAdmin): ?>
+            <div class="alert alert-warning admin-preview-alert">
+                <i class="fa fa-lock"></i>
+                Customer names and emails are hidden in portfolio preview mode.
+            </div>
+        <?php endif; ?>
+
+        <div class="admin-toolbar">
+            <form method="POST" action="viewOrders.php" class="w-100">
+                <div class="input-group">
+                    <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search for orders..." value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
+                    <button type="submit" class="admin-search-button px-4">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-table-card">
+            <div class="admin-table-scroll">
+            <table class="table table-hover view-orders-table admin-data-table" id="viewOrdersTable">
                 <thead>
                     <tr>
                         <th>Order ID</th>
@@ -329,13 +387,17 @@ error_log("Orders: " . print_r($orders, true));
                 <tbody>
                     <?php if (!empty($orders)): ?>
                         <?php foreach ($orders as $order): ?>
+                            <?php
+                            $orderStatus = strtolower($order['Status'] ?? 'pending');
+                            $statusClass = $orderStatus === 'accepted' ? 'status-accepted' : 'status-pending';
+                            ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($order['Order_ID'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($order['Customer_Name'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($order['Customer_Email'] ?? ''); ?></td>
+                                <td><span class="admin-row-title">#<?php echo htmlspecialchars($order['Order_ID'] ?? ''); ?></span></td>
+                                <td><?php echo htmlspecialchars($isAdmin ? ($order['Customer_Name'] ?? '') : maskOrderName($order['Customer_Name'] ?? '')); ?></td>
+                                <td><?php echo htmlspecialchars($isAdmin ? ($order['Customer_Email'] ?? '') : maskOrderEmail($order['Customer_Email'] ?? '')); ?></td>
                                 <td><?php echo htmlspecialchars($order['Shipping_Method'] ?? 'Not selected'); ?></td>
                                 <td><?php echo htmlspecialchars($order['Payment_Method_Name'] ?? 'Not selected'); ?></td>
-                                <td><?php echo htmlspecialchars($order['Status'] ?? 'Pending'); ?></td>
+                                <td><span class="admin-status-badge <?php echo $statusClass; ?>"><?php echo htmlspecialchars($order['Status'] ?? 'Pending'); ?></span></td>
                                 <td><?php echo htmlspecialchars($order['Product_Names'] ?? 'No products'); ?></td>
                                 <td><?php echo htmlspecialchars($order['Quantities'] ?? '0'); ?></td>
                                 <td><?php echo htmlspecialchars($order['Coupon_Code'] ?? 'No coupon'); ?></td>
@@ -348,6 +410,7 @@ error_log("Orders: " . print_r($orders, true));
                     <?php endif; ?>
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </body>

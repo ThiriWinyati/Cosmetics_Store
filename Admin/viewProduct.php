@@ -168,6 +168,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['search'])) {
 
 
 
+$totalProducts = count($products ?? []);
+$latestProducts = 0;
+$popularProducts = 0;
+
+foreach ($products ?? [] as $productSummary) {
+    if (($productSummary['is_latest_column'] ?? 0) == 1) {
+        $latestProducts++;
+    }
+
+    if (($productSummary['is_popular_column'] ?? 0) == 1) {
+        $popularProducts++;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -334,31 +348,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['search'])) {
     <?php include 'sidebar_nav.php'; ?>
 
 
-    <!-- View Products -->
-    <div class="container" style="overflow-x:auto;">
-        <a href="viewProduct.php" class="text-decoration-none">
-            <h2 class="text-center mb-4">View Products</h2>
-        </a>
-        <form method="POST" action="viewProduct.php" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Search for products..." required>
-                <button type="submit" name="search" class="btn btn-dark">Search</button>
+    <div class="admin-page-shell">
+        <div class="admin-page-header">
+            <div>
+                <h2 class="admin-page-title">View Products</h2>
+                <p class="admin-page-subtitle">Manage product catalog visibility, stock by shade, brands, and product flags.</p>
             </div>
-        </form>
-        <div class="text-end mb-3">
-            <?php if ($isAdmin): ?>
-                <a href="insertProduct.php" class="btn btn-outline-primary text-decoration-none">
-                    <i class="fa fa-plus"></i> Insert Product
-                </a>
-            <?php else: ?>
-                <button type="button" class="btn btn-secondary" disabled title="Admin login required">
-                    <i class="fa fa-lock"></i> Insert locked
-                </button>
-            <?php endif; ?>
+
+            <div class="admin-page-actions">
+                <?php if ($isAdmin): ?>
+                    <a href="insertProduct.php" class="btn btn-outline-primary text-decoration-none">
+                        <i class="fa fa-plus"></i> Insert Product
+                    </a>
+                <?php else: ?>
+                    <button type="button" class="btn btn-secondary" disabled title="Admin login required">
+                        <i class="fa fa-lock"></i> Insert locked
+                    </button>
+                <?php endif; ?>
+            </div>
         </div>
 
-        <div class="table-container">
-            <table class="table table-hover" id="viewProductsTable">
+        <div class="admin-summary-grid">
+            <div class="admin-stat-card">
+                <span class="admin-stat-label">Visible Products</span>
+                <span class="admin-stat-value"><?php echo $totalProducts; ?></span>
+            </div>
+            <div class="admin-stat-card">
+                <span class="admin-stat-label">Latest</span>
+                <span class="admin-stat-value"><?php echo $latestProducts; ?></span>
+            </div>
+            <div class="admin-stat-card">
+                <span class="admin-stat-label">Popular</span>
+                <span class="admin-stat-value"><?php echo $popularProducts; ?></span>
+            </div>
+        </div>
+
+        <?php if (!$isAdmin): ?>
+            <div class="alert alert-warning admin-preview-alert">
+                <i class="fa fa-lock"></i>
+                Product editing and deletion are locked in portfolio preview mode.
+            </div>
+        <?php endif; ?>
+
+        <div class="admin-toolbar">
+            <form method="POST" action="viewProduct.php" class="w-100">
+                <div class="input-group">
+                    <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search products, brands, categories, or shades..." value="<?php echo htmlspecialchars($_POST['searchTerm'] ?? ''); ?>" required>
+                    <button type="submit" name="search" class="admin-search-button px-4">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-table-card">
+            <div class="admin-table-scroll">
+            <table class="table table-hover admin-data-table" id="viewProductsTable">
                 <thead>
                     <tr>
                         <th>Product ID</th>
@@ -389,25 +432,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['search'])) {
 
                                 echo "
                                 <tr>
-                                    <td>{$productID}</td>
-                                    <td>{$productName}</td>
+                                    <td><span class='admin-row-title'>#{$productID}</span></td>
+                                    <td>
+                                        <span class='admin-row-title'>{$productName}</span>
+                                        <div class='admin-muted-text'>{$brandName}</div>
+                                    </td>
                                     <td>{$categoryName}</td>
-                                    <td>{$price}</td>
+                                    <td>$ {$price}</td>
                                     <td>{$brandName}</td>
                                     <td>{$shades}</td>
                                     <td>{$quantities}</td>
-                                    <td>{$isLatest}</td>
-                                    <td>{$isPopular}</td>
-                                    <td>";
+                                    <td><span class='admin-status-badge " . (($product['is_latest_column'] == 1) ? "status-delivered" : "status-locked") . "'>{$isLatest}</span></td>
+                                    <td><span class='admin-status-badge " . (($product['is_popular_column'] == 1) ? "status-delivered" : "status-locked") . "'>{$isPopular}</span></td>
+                                    <td><span class='admin-action-group'>";
 
                                 if ($isAdmin) {
                                     echo "
-                                        <a href='editProduct.php?id={$productID}' class='btn btn-link text-decoration-none custom-edit'>
-                                            <i class='fa fa-pencil-alt'></i>
+                                        <a href='editProduct.php?id={$productID}' class='btn btn-warning btn-sm admin-icon-btn text-decoration-none custom-edit'>
+                                            <i class='fa fa-pencil-alt'></i> Edit
                                         </a>
 
-                                        <button class='btn btn-link text-decoration-none custom-delete' data-bs-toggle='modal' data-bs-target='#deleteProductModal{$productID}'>
-                                            <i class='fa fa-trash'></i>
+                                        <button class='btn btn-danger btn-sm admin-icon-btn custom-delete' data-bs-toggle='modal' data-bs-target='#deleteProductModal{$productID}'>
+                                            <i class='fa fa-trash'></i> Delete
                                         </button>";
                                 } else {
                                     echo "
@@ -421,6 +467,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['search'])) {
                                 }
 
                                 echo "
+                                        </span>
                                     </td>
                                 </tr>";
 
@@ -459,6 +506,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['search'])) {
                         ?>
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </body>
