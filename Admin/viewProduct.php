@@ -3,24 +3,7 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
-// Database credentials
-$server = getenv('DB_HOST');
-$user = getenv('DB_USER');
-$password = getenv('DB_PASS');
-$database = getenv('DB_NAME');
-$port = getenv('DB_PORT') ?: 3306;
-
-// Create connection
-try {
-    $conn = new PDO(
-        "mysql:host=$server;port=$port;dbname=$database;charset=utf8mb4",
-        $user,
-        $password
-    );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+$isAdmin = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
 
 try {
     //to get categories
@@ -363,9 +346,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['search'])) {
             </div>
         </form>
         <div class="text-end mb-3">
-            <button type="button" class="btn btn-outline-primary">
-                <a href="insertProduct.php" style="text-decoration: none;"><i class="fa fa-plus"></i> Insert Product</a>
-            </button>
+            <?php if ($isAdmin): ?>
+                <a href="insertProduct.php" class="btn btn-outline-primary text-decoration-none">
+                    <i class="fa fa-plus"></i> Insert Product
+                </a>
+            <?php else: ?>
+                <button type="button" class="btn btn-secondary" disabled title="Admin login required">
+                    <i class="fa fa-lock"></i> Insert locked
+                </button>
+            <?php endif; ?>
         </div>
 
         <div class="table-container">
@@ -386,49 +375,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['search'])) {
                 </thead>
                 <tbody id="products">
                     <?php
-                    if (isset($products) && isset($_SESSION['isLoggedIn'])) {
-                        foreach ($products as $product) {
-                            echo "<tr>
-                                <td>{$product['Product_ID']}</td>
-                                <td>{$product['Name']}</td>
-                                <td>{$product['categories']}</td>
-                                <td>{$product['Price']}</td>
-                                <td>{$product['brands']}</td>
-                                <td>{$product['shades']}</td>
-                                <td>{$product['quantities']}</td>
-                            
-                                <td>" . ($product['is_latest_column'] == 1 ? 'Yes' : 'No') . "</td>
-                                <td>" . ($product['is_popular_column'] == 1 ? 'Yes' : 'No') . "</td> <!-- New column for Is Popular -->
-                                <td>
-                                    <a href='editProduct.php?id={$product['Product_ID']}' class='btn btn-link text-decoration-none custom-edit'><i class='fa fa-pencil-alt'></i> </a>
-                                    <button class='btn btn-link text-decoration-none custom-delete' data-bs-toggle='modal' data-bs-target='#deleteProductModal{$product['Product_ID']}'><i class='fa fa-trash'></i></button>
-                                </td>
+                        if (isset($products) && !empty($products)) {
+                            foreach ($products as $product) {
+                                $productID = htmlspecialchars($product['Product_ID']);
+                                $productName = htmlspecialchars($product['Name'] ?? '');
+                                $categoryName = htmlspecialchars($product['categories'] ?? '');
+                                $price = htmlspecialchars($product['Price'] ?? '');
+                                $brandName = htmlspecialchars($product['brands'] ?? '');
+                                $shades = htmlspecialchars($product['shades'] ?? '');
+                                $quantities = htmlspecialchars($product['quantities'] ?? '');
+                                $isLatest = ($product['is_latest_column'] == 1) ? 'Yes' : 'No';
+                                $isPopular = ($product['is_popular_column'] == 1) ? 'Yes' : 'No';
+
+                                echo "
+                                <tr>
+                                    <td>{$productID}</td>
+                                    <td>{$productName}</td>
+                                    <td>{$categoryName}</td>
+                                    <td>{$price}</td>
+                                    <td>{$brandName}</td>
+                                    <td>{$shades}</td>
+                                    <td>{$quantities}</td>
+                                    <td>{$isLatest}</td>
+                                    <td>{$isPopular}</td>
+                                    <td>";
+
+                                if ($isAdmin) {
+                                    echo "
+                                        <a href='editProduct.php?id={$productID}' class='btn btn-link text-decoration-none custom-edit'>
+                                            <i class='fa fa-pencil-alt'></i>
+                                        </a>
+
+                                        <button class='btn btn-link text-decoration-none custom-delete' data-bs-toggle='modal' data-bs-target='#deleteProductModal{$productID}'>
+                                            <i class='fa fa-trash'></i>
+                                        </button>";
+                                } else {
+                                    echo "
+                                        <button class='btn btn-secondary btn-sm' disabled title='Admin login required'>
+                                            <i class='fa fa-lock'></i> Edit locked
+                                        </button>
+
+                                        <button class='btn btn-secondary btn-sm' disabled title='Admin login required'>
+                                            <i class='fa fa-lock'></i> Delete locked
+                                        </button>";
+                                }
+
+                                echo "
+                                    </td>
                                 </tr>";
 
-                            // Delete Modal
-                            echo "<div class='modal fade' id='deleteProductModal{$product['Product_ID']}' tabindex='-1' aria-labelledby='deleteProductModalLabel' aria-hidden='true'>
-                                    <div class='modal-dialog'>
-                                        <div class='modal-content'>
-                                            <div class='modal-header'>
-                                                <h5 class='modal-title' id='deleteProductModalLabel'>Delete Product</h5>
-                                                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-                                            </div>
-                                            <div class='modal-body'>
-                                                Are you sure you want to delete this product?
-                                            </div>
-                                            <div class='modal-footer'>
-                                                <form action='deleteProduct.php' method='GET'>
-                                                    <input type='hidden' name='id' value='{$product['Product_ID']}'>
-                                                    <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancel</button>
-                                                    <button type='submit' class='btn btn-danger'>Delete</button>
-                                                </form>
+                                if ($isAdmin) {
+                                    echo "
+                                    <div class='modal fade' id='deleteProductModal{$productID}' tabindex='-1' aria-labelledby='deleteProductModalLabel{$productID}' aria-hidden='true'>
+                                        <div class='modal-dialog'>
+                                            <div class='modal-content'>
+                                                <div class='modal-header'>
+                                                    <h5 class='modal-title' id='deleteProductModalLabel{$productID}'>Delete Product</h5>
+                                                    <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                                </div>
+
+                                                <div class='modal-body'>
+                                                    Are you sure you want to delete this product?
+                                                </div>
+
+                                                <div class='modal-footer'>
+                                                    <form action='deleteProduct.php' method='GET'>
+                                                        <input type='hidden' name='id' value='{$productID}'>
+                                                        <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancel</button>
+                                                        <button type='submit' class='btn btn-danger'>Delete</button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>";
+                                    </div>";
+                                }
+                            }
+                        } else {
+                            echo "
+                            <tr>
+                                <td colspan='10' class='text-center'>No products found.</td>
+                            </tr>";
                         }
-                    }
-                    ?>
+                        ?>
                 </tbody>
             </table>
         </div>
