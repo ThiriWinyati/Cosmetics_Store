@@ -126,7 +126,7 @@ body {
 }
 
 .navbar.not-sticky {
-  top: -100px;
+  top: 0;
 }
 
 .navbar-brand {
@@ -2837,4 +2837,31 @@ span {
     height: 82px;
     padding: 12px;
   }
+}
+
+/* =========================================================
+   Sticky Navbar Fix
+   ========================================================= */
+
+.navbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 99999 !important;
+  width: 100% !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Make sure page content does not cover navbar */
+body {
+  padding-top: 0;
+}
+
+/* Stop navbar from disappearing */
+.navbar.not-sticky {
+  top: 0 !important;
+}
+
+.navbar.sticky {
+  top: 0 !important;
 }
