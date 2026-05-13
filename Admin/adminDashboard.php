@@ -179,14 +179,19 @@ try {
         .dashboard-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
             padding: 20px;
+            width: 100%;
+            min-width: 0;
         }
 
         .charts-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+            gap: 24px;
+            align-items: stretch;
+            width: 100%;
+            min-width: 0;
         }
 
         .chart-box {
@@ -197,7 +202,11 @@ try {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
+            gap: 16px;
+            min-width: 0;
+            width: 100%;
+            overflow: hidden;
         }
 
         .chart-box:hover {
@@ -206,19 +215,23 @@ try {
         }
 
         canvas {
+            width: 100% !important;
             max-width: 100%;
-            max-height: 250px;
+            min-height: 280px;
+            max-height: 320px;
         }
 
         .donut-chart-container {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
 
         .donut-chart-container canvas {
-            max-width: 200px;
-            max-height: 200px;
+            max-width: 300px;
+            min-height: 240px;
+            max-height: 300px;
         }
 
         .table {
@@ -229,6 +242,7 @@ try {
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            table-layout: fixed;
         }
 
         .table th,
@@ -236,6 +250,7 @@ try {
             padding: 0.75rem;
             vertical-align: top;
             border-top: 1px solid #dee2e6;
+            overflow-wrap: anywhere;
         }
 
         .table thead th {
@@ -294,14 +309,18 @@ try {
         }
 
         .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+            gap: 24px;
+            width: 100%;
+            margin: 0;
+            align-items: stretch;
         }
 
         .col {
-            flex: 1;
-            min-width: 300px;
+            min-width: 0;
+            width: 100%;
+            padding: 0;
         }
 
         .filter-container {
@@ -313,12 +332,16 @@ try {
             flex: 1;
             max-width: 100%;
             /* Ensure the chart container fits within the box */
+            min-width: 0;
+            min-height: 300px;
         }
 
         .filter-chart-container {
             display: flex;
             flex-direction: row;
             gap: 20px;
+            min-width: 0;
+            align-items: stretch;
         }
 
         .filter-container {
@@ -328,6 +351,8 @@ try {
 
         .chart {
             flex: 2;
+            min-width: 0;
+            min-height: 300px;
         }
 
         .small-pie-chart-container {
@@ -339,6 +364,16 @@ try {
         .small-pie-chart-container canvas {
             max-width: 100px;
             max-height: 100px;
+        }
+
+        @media (max-width: 992px) {
+            .filter-chart-container {
+                flex-direction: column;
+            }
+
+            .filter-container {
+                max-width: 100%;
+            }
         }
     </style>
 </head>

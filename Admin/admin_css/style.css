@@ -1588,10 +1588,27 @@ html[data-theme="dark"] .main-content {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   transform: translateX(0);
   transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  position: relative;
+}
+
+.admin-theme-toggle-thumb i {
+  position: absolute;
+  inset: 0;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.admin-theme-icon-light {
+  opacity: 1 !important;
 }
 
 .admin-theme-icon-dark {
-  display: none;
+  opacity: 0 !important;
 }
 
 html[data-theme="dark"] .admin-theme-toggle-track {
@@ -1605,11 +1622,11 @@ html[data-theme="dark"] .admin-theme-toggle-thumb {
 }
 
 html[data-theme="dark"] .admin-theme-icon-light {
-  display: none;
+  opacity: 0 !important;
 }
 
 html[data-theme="dark"] .admin-theme-icon-dark {
-  display: inline-block;
+  opacity: 1 !important;
 }
 
 html[data-theme="dark"] .admin-sidebar,
@@ -1890,4 +1907,74 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
   .admin-theme-toggle-text {
     display: none;
   }
+}
+
+/* Keep page content aligned inside the modern admin layout.
+   Older admin styles add a sidebar-width margin to every .container. */
+.admin-main > .container,
+.admin-main > .container-fluid,
+.admin-main #main-content,
+.admin-main #main-content > .container,
+.admin-main #main-content > .container-fluid {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.admin-main > .container,
+.admin-main > .container-fluid {
+  padding-left: clamp(18px, 3vw, 48px);
+  padding-right: clamp(18px, 3vw, 48px);
+}
+
+.admin-main #main-content {
+  padding: clamp(18px, 3vw, 48px);
+}
+
+.admin-main #main-content > .container,
+.admin-main #main-content > .container-fluid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Slightly smaller admin typography for denser management screens. */
+.admin-main {
+  font-size: 0.94rem;
+}
+
+.admin-brand {
+  font-size: 1.25rem !important;
+}
+
+.admin-nav-link {
+  font-size: 0.93rem !important;
+  padding: 11px 14px !important;
+}
+
+.admin-dropdown-container .sub-link {
+  font-size: 0.86rem !important;
+}
+
+.admin-main h1,
+.admin-main h2 {
+  font-size: clamp(1.55rem, 2vw, 2rem) !important;
+}
+
+.admin-main h3,
+.admin-main h4 {
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem) !important;
+}
+
+.admin-main .table th,
+.admin-main .table td,
+.admin-main .list-group-item,
+.admin-main .form-control,
+.admin-main .form-select,
+.admin-main .btn {
+  font-size: 0.92rem;
+}
+
+.admin-theme-toggle {
+  font-size: 0.92rem;
 }

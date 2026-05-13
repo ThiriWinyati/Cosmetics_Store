@@ -190,9 +190,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     <!-- Main Content -->
-    <div id="payment-main">
-        <div class="payment-container mt-4">
-            <div class="center-content">
+    <div id="main-content">
+        <div class="container mt-4">
                 <a href="viewPaymentMethods.php" style="text-decoration:none;">
                     <h2>Payment Methods</h2>
                 </a> 
@@ -312,7 +311,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </tbody>
                     </table>
                 </div>
-            </div> 
         </div>
     </div>
     </div>
