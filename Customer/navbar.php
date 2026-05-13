@@ -54,8 +54,8 @@ if (!empty($cartItems)) {
         <div class="container-fluid">
 
             <!-- Mobile Toggle Button -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" aria-controls="mainNavbar" aria-expanded="false"
+                aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -195,12 +195,12 @@ if (!empty($cartItems)) {
         </div>
     </nav>                     
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        function setupCustomerNavbar() {
             const navbar = document.querySelector('.customer-navbar');
             const toggler = navbar?.querySelector('.navbar-toggler');
             const menu = navbar?.querySelector('#mainNavbar');
 
-            if (!toggler || !menu || typeof bootstrap === 'undefined') {
+            if (!toggler || !menu) {
                 return;
             }
 
@@ -209,19 +209,21 @@ if (!empty($cartItems)) {
                 event.stopPropagation();
                 event.stopImmediatePropagation();
 
-                const collapse = bootstrap.Collapse.getOrCreateInstance(menu, {
-                    toggle: false
-                });
-
                 if (menu.classList.contains('show')) {
-                    collapse.hide();
+                    menu.classList.remove('show');
                     toggler.setAttribute('aria-expanded', 'false');
                 } else {
-                    collapse.show();
+                    menu.classList.add('show');
                     toggler.setAttribute('aria-expanded', 'true');
                 }
             }, true);
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupCustomerNavbar);
+        } else {
+            setupCustomerNavbar();
+        }
     </script>
 </body>
 

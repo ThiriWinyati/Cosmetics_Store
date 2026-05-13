@@ -2903,6 +2903,10 @@ span {
     overflow-y: auto;
   }
 
+  .customer-navbar .navbar-collapse:not(.show) {
+    display: none !important;
+  }
+
   .customer-navbar .navbar-nav {
     width: 100%;
     text-align: center;
