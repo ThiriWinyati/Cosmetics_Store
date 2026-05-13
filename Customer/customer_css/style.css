@@ -3298,6 +3298,7 @@ html[data-theme="dark"] .pagination .page-item.disabled .page-link {
 }
 
 html[data-theme="dark"] .products-display .card1,
+html[data-theme="dark"] .container .card1,
 html[data-theme="dark"] .products-section .card,
 html[data-theme="dark"] .popular-products-section .card,
 html[data-theme="dark"] .new-arrivals-section .card {
@@ -3307,6 +3308,7 @@ html[data-theme="dark"] .new-arrivals-section .card {
 }
 
 html[data-theme="dark"] .products-display .card-image-wrapper,
+html[data-theme="dark"] .container .card1 .card-image-wrapper,
 html[data-theme="dark"] .products-section .card-image-wrapper,
 html[data-theme="dark"] .popular-products-section .card-image-wrapper,
 html[data-theme="dark"] .new-arrivals-section .card-image-wrapper {
@@ -3314,6 +3316,7 @@ html[data-theme="dark"] .new-arrivals-section .card-image-wrapper {
 }
 
 html[data-theme="dark"] .products-display .card-body,
+html[data-theme="dark"] .container .card1 .card-body,
 html[data-theme="dark"] .products-section .card-body,
 html[data-theme="dark"] .popular-products-section .card-body,
 html[data-theme="dark"] .new-arrivals-section .card-body {
@@ -3322,6 +3325,7 @@ html[data-theme="dark"] .new-arrivals-section .card-body {
 }
 
 html[data-theme="dark"] .products-display .card1:hover,
+html[data-theme="dark"] .container .card1:hover,
 html[data-theme="dark"] .products-section .card:hover,
 html[data-theme="dark"] .popular-products-section .card:hover,
 html[data-theme="dark"] .new-arrivals-section .card:hover {
@@ -3331,6 +3335,8 @@ html[data-theme="dark"] .new-arrivals-section .card:hover {
 
 html[data-theme="dark"] .products-display .card1:hover .card-image-wrapper,
 html[data-theme="dark"] .products-display .card1:hover .card-body,
+html[data-theme="dark"] .container .card1:hover .card-image-wrapper,
+html[data-theme="dark"] .container .card1:hover .card-body,
 html[data-theme="dark"] .products-section .card:hover .card-image-wrapper,
 html[data-theme="dark"] .products-section .card:hover .card-body,
 html[data-theme="dark"] .popular-products-section .card:hover .card-image-wrapper,
@@ -3343,6 +3349,9 @@ html[data-theme="dark"] .new-arrivals-section .card:hover .card-body {
 html[data-theme="dark"] .products-display .card-title,
 html[data-theme="dark"] .products-display .card-text,
 html[data-theme="dark"] .products-display .text,
+html[data-theme="dark"] .container .card1 .card-title,
+html[data-theme="dark"] .container .card1 .card-text,
+html[data-theme="dark"] .container .card1 .text,
 html[data-theme="dark"] .products-section .card-title,
 html[data-theme="dark"] .products-section .card-text,
 html[data-theme="dark"] .products-section .price,
