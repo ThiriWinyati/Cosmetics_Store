@@ -3225,10 +3225,10 @@ html[data-theme="dark"] .breadcrumb a[style] {
 
 html[data-theme="dark"] .breadcrumb {
   --bs-breadcrumb-divider: "›";
-  background-color: var(--customer-surface);
-  border: 1px solid var(--customer-border);
-  border-radius: 8px;
-  padding: 10px 14px;
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
 }
 
 html[data-theme="dark"] .breadcrumb-item + .breadcrumb-item::before {
@@ -3252,6 +3252,57 @@ html[data-theme="dark"] .shop-search-input::placeholder {
 html[data-theme="dark"] .shop-search-input:focus {
   border-color: var(--customer-accent) !important;
   box-shadow: 0 0 0 0.2rem rgba(255, 134, 186, 0.22) !important;
+}
+
+html[data-theme="dark"] .pagination .page-link {
+  background-color: var(--customer-surface) !important;
+  border-color: var(--customer-border) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .pagination .page-link:hover,
+html[data-theme="dark"] .pagination .page-link:focus {
+  background-color: var(--customer-surface-soft) !important;
+  border-color: var(--customer-accent) !important;
+  color: var(--customer-accent) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] .pagination .page-item.active .page-link {
+  background-color: var(--customer-accent) !important;
+  border-color: var(--customer-accent) !important;
+  color: #1a1a1a !important;
+}
+
+html[data-theme="dark"] .pagination .page-item.disabled .page-link {
+  background-color: var(--customer-bg) !important;
+  border-color: var(--customer-border) !important;
+  color: var(--customer-muted) !important;
+}
+
+html[data-theme="dark"] .products-display .card1,
+html[data-theme="dark"] .products-section .card,
+html[data-theme="dark"] .popular-products-section .card,
+html[data-theme="dark"] .new-arrivals-section .card {
+  background-color: #242428 !important;
+  border: 1px solid #3a3a40 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="dark"] .products-display .card-body,
+html[data-theme="dark"] .products-section .card-body,
+html[data-theme="dark"] .popular-products-section .card-body,
+html[data-theme="dark"] .new-arrivals-section .card-body {
+  background-color: #242428 !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .products-display .card1:hover,
+html[data-theme="dark"] .products-section .card:hover,
+html[data-theme="dark"] .popular-products-section .card:hover,
+html[data-theme="dark"] .new-arrivals-section .card:hover {
+  background-color: #2d2d32 !important;
+  border-color: var(--customer-accent) !important;
 }
 
 html[data-theme="dark"] .cosmetics-contact-info-container {
