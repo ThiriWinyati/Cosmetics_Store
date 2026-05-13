@@ -3,6 +3,8 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
+$isAdmin = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
+
 if (isset($_POST['insertBrand']) || isset($_POST['editBrand']) || isset($_GET['deleteBrandId'])) {
     admin_require_login('viewBrands.php');
 }
@@ -241,9 +243,15 @@ if (isset($_GET['deleteBrandId'])) {
             </div>
         </form>
         <div class="text-end mb-3">
-            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertBrandModal">
-                <i class="fa fa-plus"></i> Insert New Brand
-            </button>
+            <?php if ($isAdmin): ?>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertBrandModal">
+                    <i class="fa fa-plus"></i> Insert New Brand
+                </button>
+            <?php else: ?>
+                <button type="button" class="btn btn-secondary" disabled title="Admin login required">
+                    <i class="fa fa-lock"></i> Insert locked
+                </button>
+            <?php endif; ?>
         </div>
 
         <div class="table-container">
@@ -255,94 +263,123 @@ if (isset($_GET['deleteBrandId'])) {
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
-                </tbody>
-                <?php foreach ($brands as $brand): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($brand['brand_id']); ?></td>
-                        <td><?php echo htmlspecialchars($brand['brand_name']); ?></td>
-                        <td>
-                            <!-- Edit Button -->
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editBrandModal<?php echo $brand['brand_id']; ?>">
-                                <i class="fa fa-pencil-alt"></i> Edit
-                            </button>
+                <tbody>
+                    <?php if (!empty($brands)): ?>
+                        <?php foreach ($brands as $brand): ?>
+                            <?php
+                            $brandID = htmlspecialchars($brand['brand_id']);
+                            $brandName = htmlspecialchars($brand['brand_name']);
+                            ?>
 
-                            <!-- Delete Button -->
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteBrandModal<?php echo $brand['brand_id']; ?>">
-                                <i class="fa fa-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
+                            <tr>
+                                <td><?php echo $brandID; ?></td>
+                                <td><?php echo $brandName; ?></td>
+                                <td>
+                                    <?php if ($isAdmin): ?>
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editBrandModal<?php echo $brandID; ?>">
+                                            <i class="fa fa-pencil-alt"></i> Edit
+                                        </button>
 
-                    <!-- Edit Modal -->
-                    <div class="modal fade" id="editBrandModal<?php echo $brand['brand_id']; ?>" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editBrandModalLabel">Edit Brand</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form method="POST" action="viewBrands.php">
-                                        <input type="hidden" name="brandId" value="<?php echo $brand['brand_id']; ?>">
-                                        <div class="mb-3">
-                                            <label for="brandName" class="form-label">Brand Name</label>
-                                            <input type="text" class="form-control" id="brandName" name="brandName" value="<?php echo htmlspecialchars($brand['brand_name']); ?>" required>
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteBrandModal<?php echo $brandID; ?>">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="btn btn-secondary btn-sm" disabled title="Admin login required">
+                                            <i class="fa fa-lock"></i> Edit locked
+                                        </button>
+
+                                        <button class="btn btn-secondary btn-sm" disabled title="Admin login required">
+                                            <i class="fa fa-lock"></i> Delete locked
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+
+                            <?php if ($isAdmin): ?>
+                                <!-- Edit Modal -->
+                                <div class="modal fade" id="editBrandModal<?php echo $brandID; ?>" tabindex="-1" aria-labelledby="editBrandModalLabel<?php echo $brandID; ?>" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editBrandModalLabel<?php echo $brandID; ?>">Edit Brand</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <form method="POST" action="viewBrands.php">
+                                                    <input type="hidden" name="brandId" value="<?php echo $brandID; ?>">
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Brand Name</label>
+                                                        <input type="text" class="form-control" name="brandName" value="<?php echo $brandName; ?>" required>
+                                                    </div>
+
+                                                    <button type="submit" name="editBrand" class="btn btn-primary">Save Changes</button>
+                                                </form>
+                                            </div>
                                         </div>
-                                        <button type="submit" name="editBrand" class="btn btn-primary">Save Changes</button>
-                                    </form>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteBrandModal<?php echo $brand['brand_id']; ?>" tabindex="-1" aria-labelledby="deleteBrandModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteBrandModalLabel">Delete Brand</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteBrandModal<?php echo $brandID; ?>" tabindex="-1" aria-labelledby="deleteBrandModalLabel<?php echo $brandID; ?>" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteBrandModalLabel<?php echo $brandID; ?>">Delete Brand</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this brand?
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <form action="viewBrands.php" method="GET">
+                                                    <input type="hidden" name="deleteBrandId" value="<?php echo $brandID; ?>">
+
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    Are you sure you want to delete this brand?
-                                </div>
-                                <div class="modal-footer">
-                                    <form action="viewBrands.php" method="GET">
-                                        <input type="hidden" name="deleteBrandId" value="<?php echo $brand['brand_id']; ?>">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="3" class="text-center">No brands found.</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
-        <!-- Insert Brand Modal -->
-        <div class="modal fade" id="insertBrandModal" tabindex="-1" aria-labelledby="insertBrandModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="insertBrandModalLabel">Insert New Brand</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="viewBrands.php">
-                            <div class="mb-3">
-                                <label for="brandName" class="form-label">Brand Name</label>
-                                <input type="text" class="form-control" id="brandName" name="brandName" required>
-                            </div>
-                            <button type="submit" name="insertBrand" class="btn btn-primary">Insert Brand</button>
-                        </form>
+        <?php if ($isAdmin): ?>
+            <!-- Insert Brand Modal -->
+            <div class="modal fade" id="insertBrandModal" tabindex="-1" aria-labelledby="insertBrandModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="insertBrandModalLabel">Insert New Brand</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <form method="POST" action="viewBrands.php">
+                                <div class="mb-3">
+                                    <label for="brandName" class="form-label">Brand Name</label>
+                                    <input type="text" class="form-control" id="brandName" name="brandName" required>
+                                </div>
+
+                                <button type="submit" name="insertBrand" class="btn btn-primary">Insert Brand</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        <?php endif; ?>
 </body>
 
 </html>
