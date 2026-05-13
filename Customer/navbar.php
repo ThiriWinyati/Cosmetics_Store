@@ -31,12 +31,6 @@ if (!empty($cartItems)) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -52,10 +46,6 @@ if (!empty($cartItems)) {
             document.documentElement.setAttribute('data-theme', savedTheme);
         })();
     </script>
-    <title>Navbar</title>
-</head>
-
-<body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white customer-navbar">
         <div class="container-fluid">
 
@@ -283,8 +273,20 @@ if (!empty($cartItems)) {
                         link.classList.remove('show');
                         dropdownMenu?.classList.remove('show');
                     } else {
-                        link.setAttribute('data-bs-toggle', link.dataset.desktopToggle);
+                        link.removeAttribute('data-bs-toggle');
                     }
+                });
+            }
+
+            function closeNavbarDropdowns(activeLink) {
+                mobilePageLinks.forEach(function (link) {
+                    if (link === activeLink) {
+                        return;
+                    }
+
+                    link.setAttribute('aria-expanded', 'false');
+                    link.classList.remove('show');
+                    link.parentElement?.querySelector('.dropdown-menu')?.classList.remove('show');
                 });
             }
 
@@ -301,8 +303,31 @@ if (!empty($cartItems)) {
                         event.stopPropagation();
                         event.stopImmediatePropagation();
                         window.location.href = link.dataset.mobileHref;
+                        return;
                     }
+
+                    const dropdownMenu = link.parentElement?.querySelector('.dropdown-menu');
+
+                    if (!dropdownMenu) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+
+                    const shouldOpen = !dropdownMenu.classList.contains('show');
+                    closeNavbarDropdowns(link);
+                    dropdownMenu.classList.toggle('show', shouldOpen);
+                    link.classList.toggle('show', shouldOpen);
+                    link.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
                 }, true);
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!navbar.contains(event.target)) {
+                    closeNavbarDropdowns();
+                }
             });
         }
 
@@ -312,6 +337,3 @@ if (!empty($cartItems)) {
             setupCustomerNavbar();
         }
     </script>
-</body>
-
-</html>
