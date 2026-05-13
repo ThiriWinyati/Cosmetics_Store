@@ -193,22 +193,7 @@ if (!empty($cartItems)) {
                 </ul>
             </div>
         </div>
-    </nav>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const navbarCollapse = document.getElementById("mainNavbar");
-
-            document.querySelectorAll("#mainNavbar .nav-link").forEach(function (link) {
-                link.addEventListener("click", function () {
-                    if (window.innerWidth < 992 && navbarCollapse.classList.contains("show")) {
-                        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navbarCollapse);
-                        bsCollapse.hide();
-                    }
-                });
-            });
-        });
-        </script>                        
+    </nav>                     
 </body>
 
 </html>
