@@ -85,7 +85,6 @@ $totalMessages = count($messagesList);
             background: transparent;
             border: 0;
             box-shadow: none;
-            backdrop-filter: blur(12px);
         }
 
         .contact-message-header .admin-page-title,

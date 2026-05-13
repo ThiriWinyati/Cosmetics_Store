@@ -355,7 +355,6 @@ foreach ($products ?? [] as $productSummary) {
             background: transparent;
             border: 0;
             box-shadow: none;
-            backdrop-filter: blur(12px);
         }
 
         .product-page-header .admin-page-title,

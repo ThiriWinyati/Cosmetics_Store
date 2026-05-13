@@ -331,7 +331,6 @@ foreach ($orders ?? [] as $orderSummary) {
             background: transparent;
             border: 0;
             box-shadow: none;
-            backdrop-filter: blur(12px);
         }
 
         .orders-page-header .admin-page-title,

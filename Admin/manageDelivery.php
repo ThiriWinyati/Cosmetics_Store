@@ -148,7 +148,6 @@ if (isset($_GET['shipping_id'])) {
             padding: 14px 0 18px;
             margin-bottom: 22px;
             box-shadow: none;
-            backdrop-filter: blur(12px);
         }
 
         .delivery-page-title {

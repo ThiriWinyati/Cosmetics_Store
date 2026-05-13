@@ -2031,7 +2031,6 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
   margin-bottom: 16px;
   padding: 12px 0;
   background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
 }
 
 .admin-main > .container > a.text-decoration-none:first-child h1,
@@ -2079,7 +2078,6 @@ html[data-theme="dark"] .admin-main #main-content > .container > a.text-decorati
   margin-bottom: 18px;
   padding: 16px 0;
   background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
 }
 
 .admin-page-title {

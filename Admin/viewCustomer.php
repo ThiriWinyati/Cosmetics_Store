@@ -291,7 +291,6 @@ function getProfilePicturePath($path)
             background: transparent;
             border: 0;
             box-shadow: none;
-            backdrop-filter: blur(12px);
         }
 
         .customer-page-header .admin-page-title,

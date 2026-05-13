@@ -173,7 +173,6 @@ try {
             background: transparent;
             border: 0;
             box-shadow: none;
-            backdrop-filter: blur(12px);
         }
 
         .category-page-header .admin-page-title,

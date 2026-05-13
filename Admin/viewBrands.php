@@ -238,7 +238,6 @@ if (isset($_GET['deleteBrandId'])) {
             background: transparent;
             border: 0;
             box-shadow: none;
-            backdrop-filter: blur(12px);
         }
 
         .brand-page-header .admin-page-title,

@@ -246,7 +246,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
             background: transparent;
             border: 0;
             box-shadow: none;
-            backdrop-filter: blur(12px);
         }
 
         .shipping-page-header .admin-page-title,
