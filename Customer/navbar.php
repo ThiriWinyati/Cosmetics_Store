@@ -46,6 +46,12 @@ if (!empty($cartItems)) {
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="icon" href="path/to/favicon.ico">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('customerTheme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
     <title>Navbar</title>
 </head>
 
@@ -86,6 +92,14 @@ if (!empty($cartItems)) {
 
                 <!-- Right Icons -->
                 <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item theme-toggle-item">
+                        <button id="themeToggle" type="button" class="theme-toggle-btn" aria-label="Switch to dark mode"
+                            aria-pressed="false">
+                            <i class="fa fa-moon-o theme-icon-dark" aria-hidden="true"></i>
+                            <i class="fa fa-sun-o theme-icon-light" aria-hidden="true"></i>
+                            <span class="theme-toggle-text">Dark</span>
+                        </button>
+                    </li>
 
                     <!-- Wishlist -->
                     <li class="nav-item dropdown">
@@ -209,10 +223,35 @@ if (!empty($cartItems)) {
             const menu = navbar?.querySelector('#mainNavbar');
             const mobilePageLinks = navbar?.querySelectorAll('.customer-mobile-page-link') ?? [];
             const isMobileNavbar = window.matchMedia('(max-width: 991px)');
+            const themeToggle = navbar?.querySelector('#themeToggle');
 
             if (!toggler || !menu) {
                 return;
             }
+
+            function applyTheme(theme) {
+                const nextTheme = theme === 'dark' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', nextTheme);
+                localStorage.setItem('customerTheme', nextTheme);
+
+                if (themeToggle) {
+                    const isDark = nextTheme === 'dark';
+                    themeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+                    themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+                    const label = themeToggle.querySelector('.theme-toggle-text');
+
+                    if (label) {
+                        label.textContent = isDark ? 'Light' : 'Dark';
+                    }
+                }
+            }
+
+            applyTheme(localStorage.getItem('customerTheme') || 'light');
+
+            themeToggle?.addEventListener('click', function () {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
 
             function updateBodyOffset() {
                 document.body.style.paddingTop = navbar.offsetHeight + 'px';

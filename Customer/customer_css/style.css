@@ -3003,3 +3003,192 @@ span {
     text-align: left;
   }
 }
+
+/* =========================================================
+   Customer Light / Dark Theme
+   ========================================================= */
+
+:root {
+  --customer-bg: #ffffff;
+  --customer-surface: #ffffff;
+  --customer-surface-soft: #f8f9fa;
+  --customer-text: #222222;
+  --customer-muted: #5f6368;
+  --customer-border: #eeeeee;
+  --customer-shadow: rgba(0, 0, 0, 0.08);
+  --customer-accent: #dc6496;
+  --customer-brown: #532923;
+}
+
+html[data-theme="dark"] {
+  --customer-bg: #121212;
+  --customer-surface: #1c1c1f;
+  --customer-surface-soft: #27272b;
+  --customer-text: #f5f5f5;
+  --customer-muted: #c4c4c4;
+  --customer-border: #37373d;
+  --customer-shadow: rgba(0, 0, 0, 0.45);
+  --customer-accent: #ff86ba;
+  --customer-brown: #f0c6bb;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--customer-bg);
+  color: var(--customer-text);
+}
+
+.customer-navbar {
+  background: var(--customer-surface) !important;
+  box-shadow: 0 2px 10px var(--customer-shadow);
+}
+
+.customer-navbar .navbar-brand h5,
+.customer-navbar .nav-link,
+.customer-navbar #cart,
+.customer-navbar #account,
+.customer-navbar .wishlist-icon,
+.customer-navbar .dropdown-item,
+.customer-navbar .dropdown-header {
+  color: var(--customer-text) !important;
+}
+
+.customer-navbar .navbar-toggler {
+  border-color: var(--customer-border);
+  background-color: var(--customer-surface);
+}
+
+.customer-navbar .navbar-toggler-icon {
+  filter: none;
+}
+
+html[data-theme="dark"] .customer-navbar .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+.customer-navbar .navbar-collapse {
+  background: var(--customer-surface) !important;
+}
+
+.customer-navbar .dropdown-menu {
+  background-color: var(--customer-surface);
+  border-color: var(--customer-border);
+  box-shadow: 0 10px 24px var(--customer-shadow);
+}
+
+.customer-navbar .dropdown-divider,
+.customer-navbar #cartDropdown .dropdown-item {
+  border-color: var(--customer-border);
+}
+
+.customer-navbar .dropdown-item:hover,
+.customer-navbar .dropdown-item:focus,
+.customer-navbar #account:hover {
+  background-color: var(--customer-surface-soft);
+}
+
+.theme-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--customer-border);
+  border-radius: 10px;
+  background: var(--customer-surface-soft);
+  color: var(--customer-text);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--customer-accent);
+  color: var(--customer-accent);
+}
+
+.theme-toggle-btn .theme-icon-light {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-toggle-btn .theme-icon-dark {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-toggle-btn .theme-icon-light {
+  display: inline-block;
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .card1,
+html[data-theme="dark"] .coupon-card,
+html[data-theme="dark"] .modal-content,
+html[data-theme="dark"] .list-group-item,
+html[data-theme="dark"] .table,
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] .accordion-item,
+html[data-theme="dark"] .breadcrumb,
+html[data-theme="dark"] .container,
+html[data-theme="dark"] main,
+html[data-theme="dark"] section {
+  background-color: var(--customer-bg);
+  color: var(--customer-text);
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .coupon-card,
+html[data-theme="dark"] .modal-content,
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] .accordion-item {
+  border-color: var(--customer-border);
+}
+
+html[data-theme="dark"] a,
+html[data-theme="dark"] .breadcrumb-item a,
+html[data-theme="dark"] .carousel-title,
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6,
+html[data-theme="dark"] p,
+html[data-theme="dark"] label,
+html[data-theme="dark"] span,
+html[data-theme="dark"] td,
+html[data-theme="dark"] th {
+  color: var(--customer-text);
+}
+
+html[data-theme="dark"] .text-muted,
+html[data-theme="dark"] small {
+  color: var(--customer-muted) !important;
+}
+
+html[data-theme="dark"] .btn-outline-dark {
+  color: var(--customer-text);
+  border-color: var(--customer-border);
+}
+
+html[data-theme="dark"] .btn-outline-dark:hover {
+  background-color: var(--customer-surface-soft);
+}
+
+@media (max-width: 991px) {
+  .theme-toggle-item {
+    margin: 10px auto;
+    width: 100%;
+  }
+
+  .theme-toggle-btn {
+    min-width: 120px;
+  }
+}
