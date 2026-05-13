@@ -176,4 +176,3 @@ if (!empty($cartItems)) {
             </div>
         </div>
     </nav>
-                      
