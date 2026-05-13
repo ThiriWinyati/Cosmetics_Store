@@ -18,6 +18,7 @@ if (isset($_SESSION['customer_id'])) {
     $wishlistItems = [];
 }
 
+// Fetch cart items
 $cartItems = $_SESSION['cart'] ?? [];
 $totalQuantity = 0;
 $totalAmount = 0;
@@ -49,7 +50,8 @@ if (!empty($cartItems)) {
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-white customer-navbar">
         <div class="container-fluid">
 
             <!-- Mobile Toggle Button -->
@@ -59,7 +61,7 @@ if (!empty($cartItems)) {
             </button>
 
             <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center mx-lg-auto" href="/Customer/user_homeIndex.php">
+            <a class="navbar-brand d-flex align-items-center" href="/Customer/user_homeIndex.php">
                 <img src="/images/logo.png" alt="Charm & Grace Logo">
                 <h5 class="ms-2 mb-0">Charm & Grace</h5>
             </a>
@@ -88,9 +90,10 @@ if (!empty($cartItems)) {
 
                     <!-- Wishlist -->
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
                             <div class="wishlist-icon position-relative">
                                 <i class="fa fa-heart"></i>
+
                                 <?php if (count($wishlistItems) > 0): ?>
                                     <span class="wishlist-quantity position-absolute top-0 start-100 translate-middle">
                                         <?php echo count($wishlistItems); ?>
@@ -120,22 +123,23 @@ if (!empty($cartItems)) {
 
                     <!-- Cart -->
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
-                            <button id="cart" type="button" class="btn btn-outline-dark position-relative">
-                                <i class="fa fa-shopping-cart me-2 position-relative"></i>
+                        <button id="cart" type="button" class="btn btn-outline-dark position-relative dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-expanded="false">
 
-                                <?php if ($totalQuantity > 0): ?>
-                                    <span class="cart-quantity position-absolute top-0 start-100 translate-middle">
-                                        <?php echo $totalQuantity; ?>
-                                    </span>
-                                <?php endif; ?>
+                            <i class="fa fa-shopping-cart me-2"></i>
 
-                                <span>My Cart</span>
-                                <span class="cart-total d-block text-center mt-1">
-                                    Total: $<?php echo number_format($totalAmount, 2); ?>
+                            <?php if ($totalQuantity > 0): ?>
+                                <span class="cart-quantity position-absolute top-0 start-100 translate-middle">
+                                    <?php echo $totalQuantity; ?>
                                 </span>
-                            </button>
-                        </a>
+                            <?php endif; ?>
+
+                            <span>My Cart</span>
+
+                            <span class="cart-total d-block text-center mt-1">
+                                Total: $<?php echo number_format($totalAmount, 2); ?>
+                            </span>
+                        </button>
 
                         <div class="dropdown-menu dropdown-menu-end" id="cartDropdown">
                             <h6 class="dropdown-header">Your Cart</h6>
@@ -163,8 +167,10 @@ if (!empty($cartItems)) {
 
                     <!-- Account -->
                     <li class="nav-item dropdown">
-                        <button id="account" type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button id="account" type="button" class="btn btn-outline-dark dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-user-circle-o"></i>
+
                             <span>
                                 <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
                                     Welcome, <?php echo htmlspecialchars($_SESSION['cname'] ?? 'Customer'); ?>!
