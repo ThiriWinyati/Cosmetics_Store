@@ -177,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['signUp'])) {
                         </div>
                         <button type="submit" class="btn btn-primary signup-btn" name="signUp">Sign Up</button>
                     </form>
-                    <p class="mt-3 text-center">By creating an account, you agree to our <a href="#" style="color: #e91e63;">Terms & Conditions</a>.</p>
+                    <p class="mt-3 text-center">By creating an account, you agree to our <a href="/Customer/terms_conditions.php" style="color: #e91e63;">Terms & Conditions</a>.</p>
                     <p class="text-center mt-3">Already have an account? <a href="/Customer/user_login.php" style="color: #e91e63;">Log in here</a></p>
                 </div>
             </div>

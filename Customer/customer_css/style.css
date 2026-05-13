@@ -1176,9 +1176,10 @@ body {
 /* Adjust the filter section to fit within the sidebar */
 .filter-section {
   padding: 15px;
-  background-color: #f8f9fa; /* Light background for the filter section */
+  background-color: #fff5fa; /* Light background for the filter section */
+  border: 1px solid #f4c8dc;
   border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  box-shadow: 0 8px 20px rgba(220, 100, 150, 0.12); /* Subtle shadow */
 }
 
 /* Ensure the dropdowns are scrollable */
@@ -1213,9 +1214,10 @@ body {
 
 .filter-section {
   padding: 15px;
-  background-color: #f8f9fa; /* Light background for the filter section */
+  background-color: #fff5fa; /* Light background for the filter section */
+  border: 1px solid #f4c8dc;
   border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  box-shadow: 0 8px 20px rgba(220, 100, 150, 0.12); /* Subtle shadow */
 }
 
 .contact-form,
@@ -3254,6 +3256,21 @@ html[data-theme="dark"] .shop-search-input:focus {
   box-shadow: 0 0 0 0.2rem rgba(255, 134, 186, 0.22) !important;
 }
 
+html[data-theme="dark"] .shop-search-input + .btn,
+html[data-theme="dark"] button[name="search_button"] {
+  background-color: var(--customer-accent) !important;
+  border-color: var(--customer-accent) !important;
+  color: #1a1a1a !important;
+  font-weight: 600;
+}
+
+html[data-theme="dark"] .shop-search-input + .btn:hover,
+html[data-theme="dark"] button[name="search_button"]:hover {
+  background-color: #ffaad0 !important;
+  border-color: #ffaad0 !important;
+  color: #1a1a1a !important;
+}
+
 html[data-theme="dark"] .pagination .page-link {
   background-color: var(--customer-surface) !important;
   border-color: var(--customer-border) !important;
@@ -3289,6 +3306,13 @@ html[data-theme="dark"] .new-arrivals-section .card {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35) !important;
 }
 
+html[data-theme="dark"] .products-display .card-image-wrapper,
+html[data-theme="dark"] .products-section .card-image-wrapper,
+html[data-theme="dark"] .popular-products-section .card-image-wrapper,
+html[data-theme="dark"] .new-arrivals-section .card-image-wrapper {
+  background-color: #242428 !important;
+}
+
 html[data-theme="dark"] .products-display .card-body,
 html[data-theme="dark"] .products-section .card-body,
 html[data-theme="dark"] .popular-products-section .card-body,
@@ -3303,6 +3327,32 @@ html[data-theme="dark"] .popular-products-section .card:hover,
 html[data-theme="dark"] .new-arrivals-section .card:hover {
   background-color: #2d2d32 !important;
   border-color: var(--customer-accent) !important;
+}
+
+html[data-theme="dark"] .products-display .card1:hover .card-image-wrapper,
+html[data-theme="dark"] .products-display .card1:hover .card-body,
+html[data-theme="dark"] .products-section .card:hover .card-image-wrapper,
+html[data-theme="dark"] .products-section .card:hover .card-body,
+html[data-theme="dark"] .popular-products-section .card:hover .card-image-wrapper,
+html[data-theme="dark"] .popular-products-section .card:hover .card-body,
+html[data-theme="dark"] .new-arrivals-section .card:hover .card-image-wrapper,
+html[data-theme="dark"] .new-arrivals-section .card:hover .card-body {
+  background-color: #2d2d32 !important;
+}
+
+html[data-theme="dark"] .products-display .card-title,
+html[data-theme="dark"] .products-display .card-text,
+html[data-theme="dark"] .products-display .text,
+html[data-theme="dark"] .products-section .card-title,
+html[data-theme="dark"] .products-section .card-text,
+html[data-theme="dark"] .products-section .price,
+html[data-theme="dark"] .popular-products-section .card-title,
+html[data-theme="dark"] .popular-products-section .card-text,
+html[data-theme="dark"] .popular-products-section .price,
+html[data-theme="dark"] .new-arrivals-section .card-title,
+html[data-theme="dark"] .new-arrivals-section .card-text,
+html[data-theme="dark"] .new-arrivals-section .price {
+  color: var(--customer-text) !important;
 }
 
 html[data-theme="dark"] .cosmetics-contact-info-container {
@@ -3493,8 +3543,9 @@ html[data-theme="dark"] .forgot-password-btn:hover {
 html[data-theme="dark"] .signin-image,
 html[data-theme="dark"] .signup-image,
 html[data-theme="dark"] .forgot-password-image {
-  background-color: var(--customer-surface) !important;
-  box-shadow: 0 10px 24px var(--customer-shadow);
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 html[data-theme="dark"] footer,
@@ -3535,6 +3586,31 @@ html[data-theme="dark"] .carousel-control-next-icon,
 html[data-theme="dark"] #brandsCarousel .carousel-control-prev-icon,
 html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
   filter: none drop-shadow(0 0 4px rgba(0, 0, 0, 0.8));
+}
+
+html[data-theme="dark"] #brandsCarousel .carousel-control-prev,
+html[data-theme="dark"] #brandsCarousel .carousel-control-next {
+  width: 44px;
+  height: 44px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid var(--customer-border);
+  border-radius: 50%;
+  background-color: rgba(36, 36, 40, 0.92);
+  opacity: 1;
+}
+
+html[data-theme="dark"] #brandsCarousel .carousel-control-prev:hover,
+html[data-theme="dark"] #brandsCarousel .carousel-control-next:hover {
+  border-color: var(--customer-accent);
+  background-color: rgba(45, 45, 50, 0.96);
+}
+
+html[data-theme="dark"] #brandsCarousel .carousel-control-prev-icon,
+html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 0;
 }
 
 @media (max-width: 991px) {
