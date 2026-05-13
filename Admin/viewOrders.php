@@ -228,11 +228,32 @@ error_log("Orders: " . print_r($orders, true));
             text-align: center;
         }
 
-        .table thead th {
-            vertical-align: bottom;
-            border-bottom: 2px solid #dee2e6;
-            background-color: rgb(191, 132, 166);
-            color: #fff;
+        #viewOrdersTable thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            vertical-align: middle;
+            background: #2f2f38;
+            color: #ffffff;
+            border-color: #454550;
+            font-weight: 700;
+            letter-spacing: 0;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        #viewOrdersTable thead th:first-child {
+            border-top-left-radius: 12px;
+        }
+
+        #viewOrdersTable thead th:last-child {
+            border-top-right-radius: 12px;
+        }
+
+        html[data-theme="dark"] #viewOrdersTable thead th {
+            background: #2d2d34 !important;
+            color: #ffffff !important;
+            border-color: #3a3a42 !important;
         }
 
         .table tbody+tbody {
@@ -290,8 +311,8 @@ error_log("Orders: " . print_r($orders, true));
             </div>
         </form>
 
-        <div class="table-container">
-            <table class="table table-hover" id="viewOrdersTable">
+        <div class="table-container view-orders-table-container">
+            <table class="table table-hover view-orders-table" id="viewOrdersTable">
                 <thead>
                     <tr>
                         <th>Order ID</th>
