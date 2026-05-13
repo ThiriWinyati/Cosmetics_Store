@@ -2907,6 +2907,14 @@ span {
     display: none !important;
   }
 
+  .customer-navbar .customer-mobile-page-link + .dropdown-menu {
+    display: none !important;
+  }
+
+  .customer-navbar .customer-mobile-page-link.dropdown-toggle::after {
+    display: none;
+  }
+
   .customer-navbar .navbar-nav {
     width: 100%;
     text-align: center;

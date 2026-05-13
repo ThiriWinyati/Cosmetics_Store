@@ -90,7 +90,8 @@ if (!empty($cartItems)) {
                     <!-- Wishlist -->
                     <li class="nav-item dropdown">
                         <a href="/Customer/wishlist.php" class="nav-link customer-mobile-page-link"
-                            data-mobile-href="/Customer/wishlist.php" data-bs-toggle="dropdown" aria-expanded="false">
+                            data-mobile-href="/Customer/wishlist.php" data-desktop-toggle="dropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <div class="wishlist-icon position-relative">
                                 <i class="fa fa-heart"></i>
 
@@ -125,7 +126,8 @@ if (!empty($cartItems)) {
                     <li class="nav-item dropdown">
                         <button id="cart" type="button"
                             class="btn btn-outline-dark position-relative dropdown-toggle customer-mobile-page-link"
-                            data-mobile-href="/Customer/cart.php" data-bs-toggle="dropdown" aria-expanded="false">
+                            data-mobile-href="/Customer/cart.php" data-desktop-toggle="dropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
 
                             <i class="fa fa-shopping-cart me-2"></i>
 
@@ -201,6 +203,8 @@ if (!empty($cartItems)) {
             const navbar = document.querySelector('.customer-navbar');
             const toggler = navbar?.querySelector('.navbar-toggler');
             const menu = navbar?.querySelector('#mainNavbar');
+            const mobilePageLinks = navbar?.querySelectorAll('.customer-mobile-page-link') ?? [];
+            const isMobileNavbar = window.matchMedia('(max-width: 991px)');
 
             if (!toggler || !menu) {
                 return;
@@ -220,9 +224,27 @@ if (!empty($cartItems)) {
                 }
             }, true);
 
-            navbar.querySelectorAll('.customer-mobile-page-link').forEach(function (link) {
+            function setDropdownMode() {
+                mobilePageLinks.forEach(function (link) {
+                    const dropdownMenu = link.parentElement?.querySelector('.dropdown-menu');
+
+                    if (isMobileNavbar.matches) {
+                        link.removeAttribute('data-bs-toggle');
+                        link.setAttribute('aria-expanded', 'false');
+                        link.classList.remove('show');
+                        dropdownMenu?.classList.remove('show');
+                    } else {
+                        link.setAttribute('data-bs-toggle', link.dataset.desktopToggle);
+                    }
+                });
+            }
+
+            setDropdownMode();
+            isMobileNavbar.addEventListener('change', setDropdownMode);
+
+            mobilePageLinks.forEach(function (link) {
                 link.addEventListener('click', function (event) {
-                    if (window.matchMedia('(max-width: 991px)').matches) {
+                    if (isMobileNavbar.matches) {
                         event.preventDefault();
                         event.stopPropagation();
                         event.stopImmediatePropagation();
