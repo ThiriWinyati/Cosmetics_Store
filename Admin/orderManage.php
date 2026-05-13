@@ -148,18 +148,18 @@ if (isset($_GET['delete_order_id'])) {
         }
 
         .order-card {
-            background: #1f1f27;
-            color: #f5f5f5;
-            border: 1px solid #343442;
+            background: #ffffff;
+            color: #222222;
+            border: 1px solid #ead8e3;
             border-radius: 18px;
             padding: 24px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 8px 24px rgba(39, 39, 48, 0.1);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
         .order-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 12px 30px rgba(39, 39, 48, 0.16);
         }
 
         .order-header {
@@ -167,7 +167,7 @@ if (isset($_GET['delete_order_id'])) {
             justify-content: space-between;
             align-items: center;
             gap: 12px;
-            border-bottom: 1px solid #3a3a48;
+            border-bottom: 1px solid #f0d3e2;
             padding-bottom: 14px;
             margin-bottom: 16px;
         }
@@ -192,18 +192,18 @@ if (isset($_GET['delete_order_id'])) {
         .order-details p,
         .order-products p {
             margin-bottom: 10px;
-            color: #dddddd;
+            color: #4a4a4f;
         }
 
         .order-details strong,
         .order-products strong {
-            color: #ffffff;
+            color: #222222;
         }
 
         .order-products {
             margin-top: 18px;
             padding-top: 14px;
-            border-top: 1px solid #3a3a48;
+            border-top: 1px solid #f0d3e2;
         }
 
         .order-products > p:last-of-type {
@@ -217,12 +217,12 @@ if (isset($_GET['delete_order_id'])) {
             justify-content: space-between;
             align-items: center;
             gap: 12px;
-            background: #2a2a35;
-            border: 1px solid #3b3b4a;
+            background: #fff6fa;
+            border: 1px solid #f0c2da;
             border-radius: 12px;
             padding: 10px 12px;
             margin-bottom: 8px;
-            color: #eeeeee;
+            color: #333333;
         }
 
         .order-footer {
@@ -265,6 +265,38 @@ if (isset($_GET['delete_order_id'])) {
             background: #3a3a45;
             color: #bdbdbd;
             cursor: not-allowed;
+        }
+
+        html[data-theme="dark"] .order-card {
+            background: #1f1f27;
+            color: #f5f5f5;
+            border-color: #343442;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        html[data-theme="dark"] .order-card:hover {
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        html[data-theme="dark"] .order-header,
+        html[data-theme="dark"] .order-products {
+            border-color: #3a3a48;
+        }
+
+        html[data-theme="dark"] .order-details p,
+        html[data-theme="dark"] .order-products p {
+            color: #dddddd;
+        }
+
+        html[data-theme="dark"] .order-details strong,
+        html[data-theme="dark"] .order-products strong {
+            color: #ffffff;
+        }
+
+        html[data-theme="dark"] .product-item {
+            background: #2a2a35;
+            border-color: #3b3b4a;
+            color: #eeeeee;
         }
 
         @media (max-width: 576px) {
@@ -391,8 +423,8 @@ if (isset($_GET['delete_order_id'])) {
                 }
 
                 echo "
-                </div>
-        
+                </div>";
+
                 if ($isAdmin) {
                     echo "
                     <div class='order-footer'>

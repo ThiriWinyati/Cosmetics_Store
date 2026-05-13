@@ -1978,3 +1978,41 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
 .admin-theme-toggle {
   font-size: 0.92rem;
 }
+
+/* Fixed admin topbar, matching the customer navbar behavior. */
+:root {
+  --admin-topbar-height: 72px;
+}
+
+.admin-main {
+  padding-top: var(--admin-topbar-height) !important;
+}
+
+.admin-topbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 260px;
+  right: 0;
+  width: auto !important;
+  min-height: var(--admin-topbar-height);
+}
+
+.admin-main.expanded .admin-topbar {
+  left: 0;
+}
+
+@media (max-width: 992px) and (min-width: 769px) {
+  .admin-topbar {
+    left: 240px;
+  }
+
+  .admin-main.expanded .admin-topbar {
+    left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-topbar {
+    left: 0;
+  }
+}

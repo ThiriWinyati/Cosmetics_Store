@@ -38,6 +38,9 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
                     $_SESSION['adminLoginSuccess'] = "Login Success";
                     $_SESSION['isLoggedIn'] = true;
                     $returnTo = $_GET['return_to'] ?? 'adminHome.php';
+                    if (preg_match('/^https?:\/\//i', $returnTo) || str_starts_with($returnTo, '//')) {
+                        $returnTo = 'adminHome.php';
+                    }
                     header("Location: " . $returnTo);
                     exit();
                 } else {
