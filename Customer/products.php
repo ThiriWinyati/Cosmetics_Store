@@ -329,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
                 <form method="POST" action="">
                     <div class="mb-3">
                         <div class="d-flex">
-                            <input type="text" name="search" value="<?= htmlspecialchars($_POST['search'] ?? ''); ?>" class="form-control me-2" placeholder="Search by product name" style="flex-grow: 1;">
+                            <input type="text" name="search" value="<?= htmlspecialchars($_POST['search'] ?? ''); ?>" class="form-control me-2 shop-search-input" placeholder="Search by product name" style="flex-grow: 1;">
                             <button type="submit" name="search_button" class="btn btn-secondary">Search</button>
                         </div>
                     </div>

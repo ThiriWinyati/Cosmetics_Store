@@ -3223,12 +3223,35 @@ html[data-theme="dark"] .breadcrumb a[style] {
   color: var(--customer-text) !important;
 }
 
+html[data-theme="dark"] .breadcrumb {
+  --bs-breadcrumb-divider: "›";
+  background-color: var(--customer-surface);
+  border: 1px solid var(--customer-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
 html[data-theme="dark"] .breadcrumb-item + .breadcrumb-item::before {
   color: var(--customer-muted) !important;
 }
 
 html[data-theme="dark"] .breadcrumb-item a:hover {
   color: var(--customer-accent) !important;
+}
+
+html[data-theme="dark"] .shop-search-input {
+  background-color: var(--customer-surface-soft) !important;
+  border-color: var(--customer-border) !important;
+  color: var(--customer-text) !important;
+}
+
+html[data-theme="dark"] .shop-search-input::placeholder {
+  color: var(--customer-muted) !important;
+}
+
+html[data-theme="dark"] .shop-search-input:focus {
+  border-color: var(--customer-accent) !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 134, 186, 0.22) !important;
 }
 
 html[data-theme="dark"] .cosmetics-contact-info-container {
