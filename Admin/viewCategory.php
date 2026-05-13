@@ -3,6 +3,8 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
+$isAdmin = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
+
 // Fetch all categories or search categories
 $searchTerm = $_POST['searchTerm'] ?? '';
 try {
@@ -174,9 +176,15 @@ try {
             </div>
         </form>
         <div class="text-end mb-3">
-            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertModal">
-                <i class="fa fa-plus"></i> Insert New Category
-            </button>
+            <?php if ($isAdmin): ?>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertModal">
+                    <i class="fa fa-plus"></i> Insert New Category
+                </button>
+            <?php else: ?>
+                <button type="button" class="btn btn-secondary" disabled title="Admin login required">
+                    <i class="fa fa-lock"></i> Insert locked
+                </button>
+            <?php endif; ?>
         </div>
 
         <div class="table-container">
@@ -189,88 +197,94 @@ try {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($categories as $category): ?>
+                    <?php if (!empty($categories)): ?>
+                        <?php foreach ($categories as $category): ?>
+                            <?php
+                            $categoryID = htmlspecialchars($category['Category_ID']);
+                            $categoryName = htmlspecialchars($category['Category_Name']);
+                            ?>
+
+                            <tr>
+                                <td><?php echo $categoryID; ?></td>
+                                <td><?php echo $categoryName; ?></td>
+                                <td>
+                                    <?php if ($isAdmin): ?>
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $categoryID; ?>">
+                                            <i class="fa fa-pencil-alt"></i> Edit
+                                        </button>
+
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $categoryID; ?>">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="btn btn-secondary btn-sm" disabled title="Admin login required">
+                                            <i class="fa fa-lock"></i> Edit locked
+                                        </button>
+
+                                        <button class="btn btn-secondary btn-sm" disabled title="Admin login required">
+                                            <i class="fa fa-lock"></i> Delete locked
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+
+                            <?php if ($isAdmin): ?>
+                                <!-- Edit Modal -->
+                                <div class="modal fade" id="editModal<?php echo $categoryID; ?>" tabindex="-1" aria-labelledby="editModalLabel<?php echo $categoryID; ?>" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editModalLabel<?php echo $categoryID; ?>">Edit Category</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <form action="editCategory.php" method="POST">
+                                                    <input type="hidden" name="category_id" value="<?php echo $categoryID; ?>">
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Category Name:</label>
+                                                        <input type="text" class="form-control" name="category_name" value="<?php echo $categoryName; ?>" required>
+                                                    </div>
+
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal<?php echo $categoryID; ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?php echo $categoryID; ?>" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel<?php echo $categoryID; ?>">Delete Category</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this category?
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <form action="deleteCategory.php" method="POST">
+                                                    <input type="hidden" name="category_id" value="<?php echo $categoryID; ?>">
+
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($category['Category_ID']); ?></td>
-                            <td><?php echo htmlspecialchars($category['Category_Name']); ?></td>
-                            <td>
-                                <!-- Edit Button -->
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $category['Category_ID']; ?>">
-                                    <i class="fa fa-pencil-alt"></i> Edit
-                                </button>
-
-                                <!-- Delete Button -->
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $category['Category_ID']; ?>">
-                                    <i class="fa fa-trash"></i> Delete
-                                </button>
-                            </td>
+                            <td colspan="3" class="text-center">No categories found.</td>
                         </tr>
-
-                        <!-- Insert Modal -->
-                        <div class="modal fade" id="insertModal" tabindex="-1" aria-labelledby="insertModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="insertModalLabel">Insert New Category</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="insertCategory.php" method="POST">
-                                            <div class="mb-3">
-                                                <label for="category_name" class="form-label">Category Name:</label>
-                                                <input type="text" class="form-control" id="category_name" name="category_name">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Insert Category</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Edit Modal -->
-                        <div class="modal fade" id="editModal<?php echo $category['Category_ID']; ?>" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editModalLabel">Edit Category</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="editCategory.php" method="POST">
-                                            <input type="hidden" name="category_id" value="<?php echo $category['Category_ID']; ?>">
-                                            <div class="mb-3">
-                                                <label for="category_name" class="form-label">Category Name:</label>
-                                                <input type="text" class="form-control" id="category_name" name="category_name" value="<?php echo htmlspecialchars($category['Category_Name']); ?>">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Delete Modal -->
-                        <div class="modal fade" id="deleteModal<?php echo $category['Category_ID']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteModalLabel">Delete Category</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Are you sure you want to delete this category?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <form action="deleteCategory.php" method="POST">
-                                            <input type="hidden" name="category_id" value="<?php echo $category['Category_ID']; ?>">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
