@@ -1,35 +1,16 @@
 <?php
 require_once "../db_connect.php";
 
-// Database credentials
-$server = getenv('DB_HOST');
-$user = getenv('DB_USER');
-$password = getenv('DB_PASS');
-$database = getenv('DB_NAME');
-$port = getenv('DB_PORT') ?: 3306;
-
-// Create connection
-try {
-    $conn = new PDO(
-        "mysql:host=$server;port=$port;dbname=$database;charset=utf8mb4",
-        $user,
-        $password
-    );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
-
-if (!isset($_SESSION)) {
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 // Fetch wishlist items
 if (isset($_SESSION['customer_id'])) {
     $wishlistQuery = "SELECT p.Name, p.Price, p.Product_ID 
-                    FROM favourites f 
-                    JOIN products p ON f.Product_ID = p.Product_ID 
-                    WHERE f.Customer_ID = ?";
+                      FROM favourites f 
+                      JOIN products p ON f.Product_ID = p.Product_ID 
+                      WHERE f.Customer_ID = ?";
     $stmt = $conn->prepare($wishlistQuery);
     $stmt->execute([$_SESSION['customer_id']]);
     $wishlistItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -37,13 +18,16 @@ if (isset($_SESSION['customer_id'])) {
     $wishlistItems = [];
 }
 
-// Fetch cart items
-if (isset($_SESSION['cart'])) {
-    $cartItems = $_SESSION['cart'];
-} else {
-    $cartItems = [];
-}
+$cartItems = $_SESSION['cart'] ?? [];
+$totalQuantity = 0;
+$totalAmount = 0;
 
+if (!empty($cartItems)) {
+    foreach ($cartItems as $item) {
+        $totalQuantity += $item['quantity'] ?? 0;
+        $totalAmount += ($item['price'] ?? 0) * ($item['quantity'] ?? 0);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -65,40 +49,46 @@ if (isset($_SESSION['cart'])) {
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
         <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+            <!-- Mobile Toggle Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center mx-lg-auto" href="/Customer/user_homeIndex.php">
+                <img src="/images/logo.png" alt="Charm & Grace Logo">
+                <h5 class="ms-2 mb-0">Charm & Grace</h5>
+            </a>
+
+            <!-- Collapsible Navbar Content -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
+
+                <!-- Left Links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="about.php">About</a>
+                        <a class="nav-link" href="/Customer/about.php">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.php">Contact</a>
+                        <a class="nav-link" href="/Customer/contact.php">Contact</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="products.php">Shop</a>
+                        <a class="nav-link" href="/Customer/products.php">Shop</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="blog.php">Blog</a>
+                        <a class="nav-link" href="/Customer/blog.php">Blog</a>
                     </li>
                 </ul>
-            </div>
 
-            <div class="navbar-brand mx-auto d-flex align-items-center">
-                <a href="user_homeIndex.php" class="d-flex align-items-center text-decoration-none color-black">
-                    <img src="../images/logo.png" alt="">
-                    <h5 class="ms-2 mb-0">Charm & Grace</h5>
-                </a>
-            </div>
+                <!-- Right Icons -->
+                <ul class="navbar-nav ms-auto align-items-lg-center">
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <!-- Wishlist Button and Dropdown -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" data-bs-toggle="dropdown">
+                    <!-- Wishlist -->
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle-icon" data-bs-toggle="dropdown" aria-expanded="false">
                             <div class="wishlist-icon position-relative">
                                 <i class="fa fa-heart"></i>
                                 <?php if (count($wishlistItems) > 0): ?>
@@ -108,94 +98,95 @@ if (isset($_SESSION['cart'])) {
                                 <?php endif; ?>
                             </div>
                         </a>
+
                         <div class="dropdown-menu dropdown-menu-end" id="wishlistDropdown">
                             <h6 class="dropdown-header">Your Wishlist</h6>
+
                             <?php if (!empty($wishlistItems)): ?>
                                 <?php foreach ($wishlistItems as $item): ?>
                                     <div class="dropdown-item d-flex justify-content-between">
-                                        <span><?php echo htmlspecialchars($item['Name']); ?></span>
-                                        <span>$<?php echo number_format($item['Price'], 2); ?></span>
+                                        <span><?php echo htmlspecialchars($item['Name'] ?? 'Product'); ?></span>
+                                        <span>$<?php echo number_format((float)($item['Price'] ?? 0), 2); ?></span>
                                     </div>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <div class="dropdown-item">Wishlist is empty</div>
                             <?php endif; ?>
+
                             <div class="dropdown-divider"></div>
-                            <a href="wishlist.php" class="dropdown-item text-center">View Wishlist</a>
+                            <a href="/Customer/wishlist.php" class="dropdown-item text-center">View Wishlist</a>
                         </div>
                     </li>
 
-                    <!-- Cart Button and Dropdown -->
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" data-bs-toggle="dropdown">
+                    <!-- Cart -->
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
                             <button id="cart" type="button" class="btn btn-outline-dark position-relative">
-                                <i class="fa fa-shopping-cart me-2 position-relative">
-                                    <?php if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])): ?>
-                                        <?php $totalQuantity = array_sum(array_column($_SESSION['cart'], 'quantity')); ?>
-                                        <span class="cart-quantity position-absolute top-0 start-100 translate-middle">
-                                            <?php echo $totalQuantity; ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </i>
+                                <i class="fa fa-shopping-cart me-2 position-relative"></i>
+
+                                <?php if ($totalQuantity > 0): ?>
+                                    <span class="cart-quantity position-absolute top-0 start-100 translate-middle">
+                                        <?php echo $totalQuantity; ?>
+                                    </span>
+                                <?php endif; ?>
+
                                 <span>My Cart</span>
                                 <span class="cart-total d-block text-center mt-1">
-                                    <?php if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])): ?>
-                                        <?php $totalAmount = 0; ?>
-                                        <?php foreach ($_SESSION['cart'] as $item): ?>
-                                            <?php $totalAmount += $item['price'] * $item['quantity']; ?>
-                                        <?php endforeach; ?>
-                                        Total: $<?php echo number_format($totalAmount, 2); ?>
-                                    <?php else: ?>
-                                        Total: $0.00
-                                    <?php endif; ?>
+                                    Total: $<?php echo number_format($totalAmount, 2); ?>
                                 </span>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end" id="cartDropdown">
-                                <h6 class="dropdown-header">Your Cart</h6>
-                                <?php if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])): ?>
-                                    <?php foreach ($_SESSION['cart'] as $item): ?>
-                                        <div class="dropdown-item d-flex justify-content-between">
-                                            <span><?php echo htmlspecialchars($item['product_name']); ?> x <?php echo $item['quantity']; ?></span>
-                                            <span>$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></span>
-                                        </div>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <div class="dropdown-item">Cart is empty</div>
-                                <?php endif; ?>
-                                <a href="cart.php" class="dropdown-item text-center" style="justify-content:center;">View Cart</a>
-                            </div>
                         </a>
-                    </li>
 
-                    <li class="nav-item">
-                        <div class="dropdown">
-                            <button id="account" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-user-circle-o"></i>
-                                <span class="navbar-text me-3">
-                                    <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
-                                        <?php echo 'Welcome, ' . $_SESSION['cname'] . '!'; ?>
-                                    <?php else: ?>
-                                        Welcome, Guest!
-                                    <?php endif; ?>
-                                    <i class="fas fa-caret-down"></i>
-                                </span>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="account">
-                                <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
-                                    <li><a class="dropdown-item" href="userProfile.php">My Profile</a></li>
-                                    <li><a class="dropdown-item" href="orderHistory.php">Order History</a></li>
-                                <?php endif; ?>
-                                <li><a class="dropdown-item" href="<?php echo isset($_SESSION['is_logged_in']) ? 'user_logout.php' : 'user_login.php'; ?>">
-                                        <?php echo isset($_SESSION['is_logged_in']) ? 'Logout' : 'Login'; ?>
-                                    </a>
-                                </li>
-                            </ul>
+                        <div class="dropdown-menu dropdown-menu-end" id="cartDropdown">
+                            <h6 class="dropdown-header">Your Cart</h6>
+
+                            <?php if (!empty($cartItems)): ?>
+                                <?php foreach ($cartItems as $item): ?>
+                                    <div class="dropdown-item d-flex justify-content-between">
+                                        <span>
+                                            <?php echo htmlspecialchars($item['product_name'] ?? 'Product'); ?>
+                                            x <?php echo htmlspecialchars($item['quantity'] ?? 0); ?>
+                                        </span>
+                                        <span>
+                                            $<?php echo number_format((float)(($item['price'] ?? 0) * ($item['quantity'] ?? 0)), 2); ?>
+                                        </span>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="dropdown-item">Cart is empty</div>
+                            <?php endif; ?>
+
+                            <div class="dropdown-divider"></div>
+                            <a href="/Customer/cart.php" class="dropdown-item text-center">View Cart</a>
                         </div>
                     </li>
+
+                    <!-- Account -->
+                    <li class="nav-item dropdown">
+                        <button id="account" type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user-circle-o"></i>
+                            <span>
+                                <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
+                                    Welcome, <?php echo htmlspecialchars($_SESSION['cname'] ?? 'Customer'); ?>!
+                                <?php else: ?>
+                                    Welcome, Guest!
+                                <?php endif; ?>
+                            </span>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="account">
+                            <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
+                                <li><a class="dropdown-item" href="/Customer/userProfile.php">My Profile</a></li>
+                                <li><a class="dropdown-item" href="/Customer/orderHistory.php">Order History</a></li>
+                                <li><a class="dropdown-item" href="/Customer/user_logout.php">Logout</a></li>
+                            <?php else: ?>
+                                <li><a class="dropdown-item" href="/Customer/user_login.php">Login</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </li>
+
                 </ul>
             </div>
-
-
         </div>
     </nav>
 
