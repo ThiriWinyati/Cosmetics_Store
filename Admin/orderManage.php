@@ -3,6 +3,32 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
+$isAdmin = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
+
+function maskName($name)
+{
+    if (empty($name)) {
+        return 'N/A';
+    }
+
+    $firstLetter = mb_substr($name, 0, 1);
+    return $firstLetter . str_repeat('*', max(mb_strlen($name) - 1, 3));
+}
+
+function maskEmail($email)
+{
+    if (empty($email) || strpos($email, '@') === false) {
+        return 'N/A';
+    }
+
+    [$localPart, $domain] = explode('@', $email, 2);
+
+    $firstLetter = mb_substr($localPart, 0, 1);
+    $maskedLocal = $firstLetter . str_repeat('*', max(mb_strlen($localPart) - 1, 3));
+
+    return $maskedLocal . '@' . $domain;
+}
+
 if (isset($_GET['delete_order_id'])) {
     admin_require_login('orderManage.php');
 }
@@ -112,6 +138,150 @@ if (isset($_GET['delete_order_id'])) {
     <link rel="icon" href="path/to/favicon.ico">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <title>Manage Orders</title>
+
+    <style>
+        .orders-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 25px;
+        }
+
+        .order-card {
+            background: #1f1f27;
+            color: #f5f5f5;
+            border: 1px solid #343442;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #3a3a48;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+        }
+
+        .order-header h5 {
+            color: #d97cb3;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .order-status {
+            background: rgba(217, 124, 179, 0.15);
+            color: #ff9ed1;
+            border: 1px solid rgba(217, 124, 179, 0.4);
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .order-details p,
+        .order-products p {
+            margin-bottom: 10px;
+            color: #dddddd;
+        }
+
+        .order-details strong,
+        .order-products strong {
+            color: #ffffff;
+        }
+
+        .order-products {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #3a3a48;
+        }
+
+        .order-products > p:last-of-type {
+            color: #d97cb3;
+            font-weight: 700;
+            margin-top: 12px;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            background: #2a2a35;
+            border: 1px solid #3b3b4a;
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            color: #eeeeee;
+        }
+
+        .order-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+
+        .order-footer button,
+        .order-footer .locked-btn {
+            flex: 1;
+            min-width: 130px;
+            border: none;
+            border-radius: 999px;
+            padding: 10px 18px;
+            font-weight: 700;
+            transition: 0.25s ease;
+        }
+
+        .accept-btn {
+            background: #d97cb3;
+            color: white;
+        }
+
+        .accept-btn:hover {
+            background: #c2185b;
+        }
+
+        .delete-btn {
+            background: #ff4d6d;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #d93655;
+        }
+
+        .locked-btn {
+            background: #3a3a45;
+            color: #bdbdbd;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 576px) {
+            .orders-container {
+                grid-template-columns: 1fr;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .order-footer {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -133,7 +303,7 @@ if (isset($_GET['delete_order_id'])) {
 
         <form method="POST" action="orderManage.php" class="mb-3">
             <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Search by customer name, email, or order ID" value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
+                <input type="text" name="searchTerm" class="form-control" placeholder="<?php echo $isAdmin ? 'Search by customer name, email, or order ID' : 'Search by order ID' ?>" value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
                 <button class="btn btn-primary" type="submit">Search</button>
             </div>
         </form>
@@ -145,8 +315,16 @@ if (isset($_GET['delete_order_id'])) {
                 $orderDate = !empty($order['Order_Date']) ? date("F j, Y", strtotime($order['Order_Date'])) : 'Not available';
                 $totalAmount = number_format((float)($order['Total_Price'] ?? 0), 2);
 
-                $customerName = htmlspecialchars($order['Customer_Name'] ?? 'Unknown customer');
-                $customerEmail = htmlspecialchars($order['Customer_Email'] ?? 'No email');
+                $rawCustomerName = $order['Customer_Name'] ?? 'Unknown customer';
+                $rawCustomerEmail = $order['Customer_Email'] ?? 'No email';
+
+                $customerName = $isAdmin
+                    ? htmlspecialchars($rawCustomerName)
+                    : htmlspecialchars(maskName($rawCustomerName));
+
+                $customerEmail = $isAdmin
+                    ? htmlspecialchars($rawCustomerEmail)
+                    : htmlspecialchars(maskEmail($rawCustomerEmail));
                 $shippingMethod = htmlspecialchars($order['Shipping_Method'] ?? 'Not selected');
                 $paymentMethod = htmlspecialchars($order['Payment_Method_Name'] ?? 'Not selected');
                 $orderStatus = htmlspecialchars($order['Status'] ?? 'Pending');
@@ -215,14 +393,33 @@ if (isset($_GET['delete_order_id'])) {
                 echo "
                 </div>
         
-                <div class='order-footer'>
-                    <!-- Accept Order Button -->
-                    <button onclick='window.location.href=\"acceptOrder.php?order_id={$orderID}\"'>Accept Order</button>
-                    <!-- Delete Order Button -->
-                    <button onclick='window.location.href=\"orderManage.php?delete_order_id={$orderID}\"'>Delete Order</button>
-                </div>
+                if ($isAdmin) {
+                    echo "
+                    <div class='order-footer'>
+                        <button class='accept-btn' onclick='window.location.href=\"acceptOrder.php?order_id={$orderID}\"'>
+                            Accept Order
+                        </button>
 
+                        <button class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this order?\") ? window.location.href=\"orderManage.php?delete_order_id={$orderID}\" : false;'>
+                            Delete Order
+                        </button>
+                    </div>";
+                } else {
+                    echo "
+                    <div class='order-footer'>
+                        <button class='locked-btn' disabled>
+                            <i class='fa fa-lock'></i> Accept Locked
+                        </button>
+
+                        <button class='locked-btn' disabled>
+                            <i class='fa fa-lock'></i> Delete Locked
+                        </button>
+                    </div>";
+                }
+
+                echo "
             </div>";
+
             }
 
             ?>
