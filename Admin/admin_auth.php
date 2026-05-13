@@ -1,31 +1,20 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
+if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
     session_start();
 }
 
-function admin_is_logged_in(): bool
+function admin_is_logged_in()
 {
-    return !empty($_SESSION['isLoggedIn']) || !empty($_SESSION['admin_id']);
+    return isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
 }
 
-function admin_login_url(?string $returnTo = null): string
+function admin_require_login($redirectPage = 'adminLogin.php')
 {
-    $url = 'adminLogin.php';
-    if ($returnTo) {
-        $url .= '?return_to=' . rawurlencode($returnTo);
+    if (!admin_is_logged_in()) {
+        echo "<script>
+                alert('This action is locked. Please log in as an admin to continue.');
+                window.location.href = '{$redirectPage}';
+              </script>";
+        exit();
     }
-    return $url;
 }
-
-function admin_require_login(?string $returnTo = null): void
-{
-    if (admin_is_logged_in()) {
-        return;
-    }
-
-    $target = $returnTo ?: ($_SERVER['REQUEST_URI'] ?? 'adminHome.php');
-
-    echo "<script>alert('Please log in as an admin to make changes.'); window.location.href = '" . admin_login_url($target) . "';</script>";
-    exit();
-}
-?>
