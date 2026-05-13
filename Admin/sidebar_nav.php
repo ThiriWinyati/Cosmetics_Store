@@ -21,145 +21,124 @@
 </head>
 
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar">
-            <nav class="nav flex-column">
-                <a href="../Admin/adminHome.php" class="nav-link">
-                    <i class="fa fa-home"></i> Home
-                </a>
-                <a href="../Admin/adminDashboard.php" class="nav-link">
-                    <i class="fa fa-tachometer-alt"></i> Dashboard
-                </a>
+    <!-- Admin Sidebar -->
+    <aside id="adminSidebar" class="admin-sidebar">
+        <nav class="admin-sidebar-nav">
 
-                <!-- Product Catalog -->
-                <a href="#" class="nav-link" onclick="toggleDropdown('productsDropdown')">
-                    <i class="fa fa-cogs"></i> Management <i class="fa fa-caret-down ms-auto"></i>
-                </a>
-                <div id="productsDropdown" class="dropdown-container">
-                    <a href="viewProduct.php" class="nav-link"><i class="fa fa-box"></i> Product</a>
-                    <a href="viewCategory.php" class="nav-link"><i class="fa fa-th-large"></i> Category</a>
-                    <a href="viewBrands.php" class="nav-link"><i class="fa fa-tags"></i> Brand</a>
-                    <a href="deliveryMethods.php" class="nav-link"><i class="fa fa-ship"></i> Shipping</a>
-
-                </div>
-
-                <!-- Customer Domain -->
-                <a href="#" class="nav-link" onclick="toggleDropdown('customerDomainDropdown')">
-                    <i class="fa fa-users"></i> Customer Domain <i class="fa fa-caret-down ms-auto"></i>
-                </a>
-                <div id="customerDomainDropdown" class="dropdown-container">
-                    <a href="viewCustomer.php" class="nav-link"><i class="fa fa-user"></i> Customer</a>
-                    <a href="admin_chat.php" class="nav-link"><i class="fas fa-comments"></i> Chats</a>
-                    <a href="admin_contact_messages.php" class="nav-link"><i class="fa fa-comment"></i>Contact Messages</a>
-                    <a href="viewReviews.php" class="nav-link"><i class="fa fa-star"></i> Reviews</a>
-                </div>
-
-                <!-- Manage Orders -->
-                <a href="#" class="nav-link" onclick="toggleDropdown('ordersDropdown')">
-                    <i class="fa fa-box-open"></i> Orders <i class="fa fa-caret-down ms-auto"></i>
-                </a>
-                <div id="ordersDropdown" class="dropdown-container">
-                    <a href="viewOrders.php" class="nav-link"><i class="fa fa-list-alt"></i> Orders</a>
-                    <a href="manageDelivery.php" class="nav-link"><i class="fa fa-truck"></i> Delivery</a>
-                    <a href="viewPaymentMethods.php" class="nav-link"><i class="fa fa-credit-card"></i> Payment</a>
-                </div>
-
-                <!-- Special Offers -->
-                <a href="viewCoupons.php" class="nav-link">
-                    <i class="fa fa-gift"></i> Special Offers
-                </a>
-
-
-            </nav>
-
-            <!-- Logout -->
-            <div class="logout">
-                <a href="adminLogout.php" class="nav-link">
-                    <i class="fa fa-sign-out-alt"></i> Logout
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div id="main">
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex align-items-center sticky-top">
-            <!-- Sidebar Toggle Button -->
-            <button id="openNav" class="btn btn-outline-primary me-3" onclick="toggleSidebar()">&#9776;</button>
-            <img src="../images/logo.png" alt="Logo" style="width: 50px; height: auto; object-fit: contain;">
-            <a href="../Admin/adminHome.php" style="text-decoration: none">
-                <h5 class="ms-2 mb-0 brand-name">Charm & Grace</h5>
+            <a href="../Admin/adminHome.php" class="admin-nav-link">
+                <i class="fa fa-home"></i>
+                <span>Home</span>
             </a>
-            <!-- Logo and Brand Name -->
-            <div class="d-flex align-items-center">
 
+            <a href="../Admin/adminDashboard.php" class="admin-nav-link">
+                <i class="fa fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <!-- Management -->
+            <button type="button" class="admin-nav-link admin-dropdown-toggle" onclick="toggleDropdown('productsDropdown')">
+                <span><i class="fa fa-cogs"></i> Management</span>
+                <i class="fa fa-caret-down"></i>
+            </button>
+
+            <div id="productsDropdown" class="admin-dropdown-container">
+                <a href="viewProduct.php" class="admin-nav-link sub-link"><i class="fa fa-box"></i> Product</a>
+                <a href="viewCategory.php" class="admin-nav-link sub-link"><i class="fa fa-th-large"></i> Category</a>
+                <a href="viewBrands.php" class="admin-nav-link sub-link"><i class="fa fa-tags"></i> Brand</a>
+                <a href="deliveryMethods.php" class="admin-nav-link sub-link"><i class="fa fa-ship"></i> Shipping</a>
             </div>
 
+            <!-- Customer Domain -->
+            <button type="button" class="admin-nav-link admin-dropdown-toggle" onclick="toggleDropdown('customerDomainDropdown')">
+                <span><i class="fa fa-users"></i> Customer Domain</span>
+                <i class="fa fa-caret-down"></i>
+            </button>
+
+            <div id="customerDomainDropdown" class="admin-dropdown-container">
+                <a href="viewCustomer.php" class="admin-nav-link sub-link"><i class="fa fa-user"></i> Customer</a>
+                <a href="admin_chat.php" class="admin-nav-link sub-link"><i class="fas fa-comments"></i> Chats</a>
+                <a href="admin_contact_messages.php" class="admin-nav-link sub-link"><i class="fa fa-comment"></i> Contact Messages</a>
+                <a href="viewReviews.php" class="admin-nav-link sub-link"><i class="fa fa-star"></i> Reviews</a>
+            </div>
+
+            <!-- Orders -->
+            <button type="button" class="admin-nav-link admin-dropdown-toggle" onclick="toggleDropdown('ordersDropdown')">
+                <span><i class="fa fa-box-open"></i> Orders</span>
+                <i class="fa fa-caret-down"></i>
+            </button>
+
+            <div id="ordersDropdown" class="admin-dropdown-container">
+                <a href="viewOrders.php" class="admin-nav-link sub-link"><i class="fa fa-list-alt"></i> Orders</a>
+                <a href="manageDelivery.php" class="admin-nav-link sub-link"><i class="fa fa-truck"></i> Delivery</a>
+                <a href="viewPaymentMethods.php" class="admin-nav-link sub-link"><i class="fa fa-credit-card"></i> Payment</a>
+            </div>
+
+            <!-- Special Offers -->
+            <a href="viewCoupons.php" class="admin-nav-link">
+                <i class="fa fa-gift"></i>
+                <span>Special Offers</span>
+            </a>
 
         </nav>
 
+        <!-- Dark overlay for mobile -->
+        <div id="adminSidebarOverlay" class="admin-sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Admin Main Content Wrapper -->
+        <div id="adminMain" class="admin-main">
+
+        <!-- Logout -->
+        <div class="admin-logout">
+            <a href="adminLogout.php" class="admin-nav-link">
+                <i class="fa fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+        <div id="main">
+            <!-- Admin Top Navbar -->
+        <nav class="admin-topbar">
+            <button id="openNav" class="admin-menu-btn" onclick="toggleSidebar()" type="button">
+                <i class="fa fa-bars"></i>
+            </button>
+
+            <a href="../Admin/adminHome.php" class="admin-brand">
+                <img src="../images/logo.png" alt="Charm & Grace Logo">
+                <span>Charm & Grace</span>
+            </a>
+        </nav>
+
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Function to toggle dropdown and set active state
-                function toggleDropdown(id) {
-                    const dropdown = document.getElementById(id);
-                    dropdown.classList.toggle('show');
-                    const link = dropdown.previousElementSibling;
-                    link.classList.toggle('active');
-                    saveActiveState();
-                }
+            function toggleSidebar() {
+                const sidebar = document.getElementById("adminSidebar");
+                const overlay = document.getElementById("adminSidebarOverlay");
 
-                // Function to save active state to localStorage
-                function saveActiveState() {
-                    const activeLinks = document.querySelectorAll('.nav-link.active');
-                    const activeDropdowns = document.querySelectorAll('.dropdown-container.show');
-                    const activeState = {
-                        links: Array.from(activeLinks).map(link => link.getAttribute('href')),
-                        dropdowns: Array.from(activeDropdowns).map(dropdown => dropdown.id)
-                    };
-                    localStorage.setItem('sidebarActiveState', JSON.stringify(activeState));
-                }
+                sidebar.classList.toggle("show");
+                overlay.classList.toggle("show");
+            }
 
-                // Function to load active state from localStorage
-                function loadActiveState() {
-                    const activeState = JSON.parse(localStorage.getItem('sidebarActiveState'));
-                    if (activeState) {
-                        activeState.links.forEach(href => {
-                            const link = document.querySelector(`.nav-link[href="${href}"]`);
-                            if (link) {
-                                link.classList.add('active');
-                            }
-                        });
-                        activeState.dropdowns.forEach(id => {
-                            const dropdown = document.getElementById(id);
-                            if (dropdown) {
-                                dropdown.classList.add('show');
-                            }
-                        });
+            function toggleDropdown(id) {
+                const dropdown = document.getElementById(id);
+                dropdown.classList.toggle("show");
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const currentPage = window.location.pathname.split("/").pop();
+
+                document.querySelectorAll(".admin-nav-link[href]").forEach(link => {
+                    const linkPage = link.getAttribute("href").split("/").pop();
+
+                    if (linkPage === currentPage) {
+                        link.classList.add("active");
+
+                        const parentDropdown = link.closest(".admin-dropdown-container");
+                        if (parentDropdown) {
+                            parentDropdown.classList.add("show");
+                        }
                     }
-                }
-
-                // Add click event listeners to nav links
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.addEventListener('click', function() {
-                        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-                        this.classList.add('active');
-                        saveActiveState();
-                    });
                 });
-
-                // Add click event listeners to dropdown toggles
-                document.querySelectorAll('.nav-link[onclick]').forEach(link => {
-                    link.addEventListener('click', function() {
-                        const dropdownId = this.getAttribute('onclick').match(/'([^']+)'/)[1];
-                        toggleDropdown(dropdownId);
-                    });
-                });
-
-                // Load active state on page load
-                loadActiveState();
             });
         </script>
 </body>
