@@ -3,6 +3,8 @@ session_start();
 require_once "../db_connect.php";
 require_once "admin_auth.php";
 
+$isAdmin = admin_is_logged_in();
+
 // Fetch all coupons or search coupons
 $searchTerm = $_POST['searchTerm'] ?? '';
 try {
@@ -161,34 +163,132 @@ try {
             justify-content: center;
             gap: 5px;
         }
+
+        .coupon-page-shell {
+            padding-top: 28px;
+        }
+
+        .coupon-page-header {
+            position: sticky;
+            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            z-index: 35;
+            padding: 14px 0 18px;
+            margin-bottom: 18px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .coupon-page-header .admin-page-title,
+        .coupon-page-header .admin-page-subtitle {
+            text-align: center;
+        }
+
+        .coupon-page-header .admin-page-title {
+            font-size: clamp(1.7rem, 2.4vw, 2.35rem);
+        }
+
+        .coupon-page-search {
+            margin-top: 18px;
+        }
+
+        .coupon-page-search .input-group {
+            flex-wrap: nowrap;
+            margin-bottom: 0;
+        }
+
+        .coupon-page-search .admin-search-input {
+            min-width: 0;
+        }
+
+        .coupon-page-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        #viewCouponsTable {
+            min-width: 1060px;
+        }
+
+        #viewCouponsTable td {
+            vertical-align: middle;
+        }
+
+        #viewCouponsTable .coupon-code {
+            font-weight: 800;
+            color: #d97cb3;
+            letter-spacing: 0.02em;
+        }
+
+        #viewCouponsTable .coupon-date {
+            white-space: nowrap;
+        }
+
+        #viewCouponsTable .coupon-amount {
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .coupon-page-header {
+                top: calc(var(--admin-topbar-height, 72px) + 6px);
+            }
+
+            .coupon-page-actions .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
 <body>
     <?php include 'sidebar_nav.php'; ?>
 
-    <!-- Main Content -->
     <div id="main-content">
-        <div class="container mt-4">
-            <a href="viewCoupons.php" class="text-decoration-none">
-                <h2 class="text-center">View Coupons</h2>
-            </a>
-
-            <!-- Search bar -->
-            <form method="POST" action="viewCoupons.php" class="mb-3">
-                <div class="input-group">
-                    <input type="text" name="searchTerm" class="form-control" placeholder="Search for coupons..." value="<?php echo htmlspecialchars($searchTerm); ?>">
-                    <button type="submit" class="btn btn-dark">Search</button>
+        <div class="admin-page-shell coupon-page-shell">
+            <section class="coupon-page-header">
+                <div>
+                    <h2 class="admin-page-title">View Coupons</h2>
+                    <p class="admin-page-subtitle">Manage promotional codes, validity windows, discounts, and minimum purchase amounts.</p>
                 </div>
-            </form>
 
-            <div class="text-end mb-3">
+                <div class="admin-toolbar coupon-page-search">
+                    <form method="POST" action="viewCoupons.php" class="w-100">
+                        <div class="input-group">
+                            <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="Search for coupons..." value="<?php echo htmlspecialchars($searchTerm); ?>">
+                            <button type="submit" class="admin-search-button px-4">Search</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="coupon-page-actions">
+                <?php if ($isAdmin): ?>
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertCouponModal">
                     <i class="fa fa-plus"></i> Insert Coupon
                 </button>
-            </div>
+                <?php else: ?>
+                    <button type="button" class="btn btn-secondary" disabled title="Admin login required">
+                        <i class="fa fa-lock"></i> Insert locked
+                    </button>
+                <?php endif; ?>
+                </div>
+            </section>
+
+            <?php if (!$isAdmin): ?>
+                <div class="alert alert-warning admin-preview-alert">
+                    <i class="fa fa-lock"></i>
+                    Coupon editing and deletion are locked in portfolio preview mode.
+                </div>
+            <?php endif; ?>
 
             <!-- Insert Coupon Modal -->
+            <?php if ($isAdmin): ?>
             <div class="modal fade" id="insertCouponModal" tabindex="-1" aria-labelledby="insertCouponModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -224,10 +324,12 @@ try {
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
 
             <!-- Coupons Table -->
-            <div class="table-container">
-                <table class="table table-hover" id="viewCouponsTable">
+            <div class="admin-table-card">
+                <div class="admin-table-scroll">
+                <table class="table table-hover admin-data-table" id="viewCouponsTable">
                     <thead>
                         <tr>
                             <th>Coupon ID</th>
@@ -242,23 +344,33 @@ try {
                     <tbody>
                         <?php foreach ($coupons as $coupon): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($coupon['Coupon_ID']); ?></td>
-                                <td><?php echo htmlspecialchars($coupon['Coupon_Code']); ?></td>
+                                <td><span class="admin-row-title">#<?php echo htmlspecialchars($coupon['Coupon_ID']); ?></span></td>
+                                <td><span class="coupon-code"><?php echo htmlspecialchars($coupon['Coupon_Code']); ?></span></td>
                                 <td><?php echo htmlspecialchars($coupon['Discount_Percentage']); ?>%</td>
-                                <td><?php echo htmlspecialchars($coupon['Valid_From']); ?></td>
-                                <td><?php echo htmlspecialchars($coupon['Valid_To']); ?></td>
-                                <td><?php echo htmlspecialchars($coupon['Minimum_Purchase_Amount']); ?></td>
+                                <td class="coupon-date"><?php echo htmlspecialchars($coupon['Valid_From']); ?></td>
+                                <td class="coupon-date"><?php echo htmlspecialchars($coupon['Valid_To']); ?></td>
+                                <td class="coupon-amount"><?php echo htmlspecialchars($coupon['Minimum_Purchase_Amount']); ?></td>
                                 <td class="action-buttons">
+                                    <?php if ($isAdmin): ?>
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCouponModal<?php echo $coupon['Coupon_ID']; ?>">
                                         <i class="fa fa-edit"></i> Edit
                                     </button>
                                     <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCouponModal<?php echo $coupon['Coupon_ID']; ?>">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
+                                    <?php else: ?>
+                                        <button class="btn btn-secondary btn-sm" disabled title="Admin login required">
+                                            <i class="fa fa-lock"></i> Edit locked
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm" disabled title="Admin login required">
+                                            <i class="fa fa-lock"></i> Delete locked
+                                        </button>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
 
                             <!-- Edit Modal -->
+                            <?php if ($isAdmin): ?>
                             <div class="modal fade" id="editCouponModal<?php echo $coupon['Coupon_ID']; ?>" tabindex="-1" aria-labelledby="editCouponModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -317,29 +429,15 @@ try {
                                     </div>
                                 </div>
                             </div>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Search function
-        document.getElementById('searchButton').addEventListener('click', function() {
-            var input = document.getElementById('searchInput').value.toLowerCase();
-            var rows = document.querySelectorAll('#viewCouponsTable tbody tr');
-
-            rows.forEach(function(row) {
-                var couponCode = row.cells[1].textContent.toLowerCase();
-                if (couponCode.includes(input)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
