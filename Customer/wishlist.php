@@ -14,17 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_favourites_id'
     $favouritesIdToRemove = intval($_POST['remove_favourites_id']);
 
     try {
-        // Remove from the favourites table in the database
-        $stmt = $conn->prepare("DELETE FROM favourites WHERE FavouritesID = :favouritesIdToRemove");
+        $stmt = $conn->prepare("DELETE FROM favourites WHERE FavouritesID = :favouritesIdToRemove AND Customer_ID = :customer_id");
         $stmt->bindParam(':favouritesIdToRemove', $favouritesIdToRemove, PDO::PARAM_INT);
+        $stmt->bindParam(':customer_id', $_SESSION['customer_id'], PDO::PARAM_INT);
         $stmt->execute();
 
-        // Remove from session and reindex the array
-        $_SESSION['wishlist'] = array_values(array_filter($_SESSION['wishlist'], function ($item) use ($favouritesIdToRemove) {
-            return $item['favourites_id'] !== $favouritesIdToRemove;
-        }));
-
-        // Redirect to refresh the page after removal
         header("Location: wishlist.php");
         exit();
     } catch (PDOException $e) {
@@ -33,14 +27,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_favourites_id'
 }
 
 // Fetch unique wishlist items (only one record per product)
-$query = "SELECT f.FavouritesID, p.Name AS Product_Name, p.Price, 
-                 pi.Image_Path AS Image_Path, p.Product_ID, p.Brand_ID
+$query = "SELECT 
+            f.FavouritesID, 
+            p.Name AS Product_Name, 
+            p.Price, 
+            COALESCE(MIN(pi.Image_Path), p.Image_Path) AS Image_Path,
+            p.Product_ID, 
+            p.Brand_ID
           FROM favourites f
           JOIN products p ON f.Product_ID = p.Product_ID
           LEFT JOIN product_images pi ON p.Product_ID = pi.Product_ID
           WHERE f.Customer_ID = ?
-          GROUP BY f.FavouritesID, p.Name, p.Price, p.Product_ID, p.Brand_ID
-          ORDER BY f.DateAdded ASC"; // Sort by date added or any other preference
+          GROUP BY 
+            f.FavouritesID, 
+            p.Name, 
+            p.Price, 
+            p.Image_Path,
+            p.Product_ID, 
+            p.Brand_ID,
+            f.DateAdded
+          ORDER BY f.DateAdded ASC";
 
 $stmt = $conn->prepare($query);
 $stmt->execute([$_SESSION['customer_id']]);
@@ -193,7 +199,10 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             <tbody>
                                 <?php foreach ($_SESSION['wishlist'] as $index => $item): ?>
                                     <tr>
-                                        <td><img src="<?php echo !empty($item['image_path']) ? htmlspecialchars($item['image_path']) : 'default-image.jpg'; ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>"></td>
+                                        <td>
+                                            <img src="<?php echo !empty($item['image_path']) ? htmlspecialchars($item['image_path']) : '../images/default-image.jpg'; ?>" 
+                                                alt="<?php echo htmlspecialchars($item['product_name']); ?>">
+                                        </td>
                                         <td><?php echo htmlspecialchars($item['product_name']); ?></td>
                                         <td>$<?php echo number_format($item['price'], 2); ?></td>
                                         <td class="wishlist-table-actions">
