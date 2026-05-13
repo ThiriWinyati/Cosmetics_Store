@@ -3132,11 +3132,11 @@ html[data-theme="dark"] .customer-navbar #account + .dropdown-menu .dropdown-div
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   min-height: 40px;
-  padding: 8px 12px;
+  padding: 6px 12px 6px 8px;
   border: 1px solid var(--customer-border);
-  border-radius: 10px;
+  border-radius: 999px;
   background: var(--customer-surface-soft);
   color: var(--customer-text);
   line-height: 1;
@@ -3146,6 +3146,38 @@ html[data-theme="dark"] .customer-navbar #account + .dropdown-menu .dropdown-div
 .theme-toggle-btn:hover {
   border-color: var(--customer-accent);
   color: var(--customer-accent);
+}
+
+.theme-toggle-track {
+  position: relative;
+  width: 46px;
+  height: 24px;
+  border-radius: 999px;
+  background-color: #dfe3e8;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.2s ease;
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  color: #532923;
+  font-size: 11px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle-text {
+  min-width: 34px;
+  font-weight: 600;
 }
 
 .theme-toggle-btn .theme-icon-light {
@@ -3158,6 +3190,15 @@ html[data-theme="dark"] .theme-toggle-btn .theme-icon-dark {
 
 html[data-theme="dark"] .theme-toggle-btn .theme-icon-light {
   display: inline-block;
+}
+
+html[data-theme="dark"] .theme-toggle-track {
+  background-color: var(--customer-accent);
+}
+
+html[data-theme="dark"] .theme-toggle-thumb {
+  color: #d07600;
+  transform: translateX(22px);
 }
 
 html[data-theme="dark"] .card,

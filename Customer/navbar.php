@@ -85,8 +85,12 @@ if (!empty($cartItems)) {
                     <li class="nav-item theme-toggle-item">
                         <button id="themeToggle" type="button" class="theme-toggle-btn" aria-label="Switch to dark mode"
                             aria-pressed="false">
-                            <i class="fa fa-moon-o theme-icon-dark" aria-hidden="true"></i>
-                            <i class="fa fa-sun-o theme-icon-light" aria-hidden="true"></i>
+                            <span class="theme-toggle-track" aria-hidden="true">
+                                <span class="theme-toggle-thumb">
+                                    <i class="fa fa-moon-o theme-icon-dark" aria-hidden="true"></i>
+                                    <i class="fa fa-sun-o theme-icon-light" aria-hidden="true"></i>
+                                </span>
+                            </span>
                             <span class="theme-toggle-text">Dark</span>
                         </button>
                     </li>
