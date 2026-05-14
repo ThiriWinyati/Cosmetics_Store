@@ -142,6 +142,12 @@ if ($isAdmin) {
             font-weight: 700;
         }
 
+        .chat-conversation-toggle,
+        .chat-conversation-close,
+        .chat-conversation-backdrop {
+            display: none;
+        }
+
         #customer-list {
             overflow-y: auto;
             padding-right: 4px;
@@ -500,6 +506,17 @@ if ($isAdmin) {
             color: #ff9ccc;
         }
 
+        html[data-theme="dark"] .chat-conversation-toggle {
+            background: #ff7fbd;
+            color: #151518;
+        }
+
+        html[data-theme="dark"] .chat-conversation-close {
+            background: #2a2a35;
+            color: #f5f5f5;
+            border-color: #343442;
+        }
+
         body.dark-mode .locked-chat-card,
         html[data-theme="dark"] .locked-chat-card,
         .dark-mode .locked-chat-card {
@@ -525,9 +542,27 @@ if ($isAdmin) {
             }
 
             .customer-panel {
-                margin-bottom: 20px;
+                position: fixed;
+                left: 12px;
+                right: 12px;
+                bottom: calc(84px + env(safe-area-inset-bottom));
+                z-index: 20020;
                 height: auto;
-                max-height: 320px;
+                max-height: min(72vh, 560px);
+                transform: translateY(18px);
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: transform 0.2s ease, opacity 0.2s ease, visibility 0.2s ease;
+            }
+
+            .customer-panel .chat-history-heading {
+                align-items: flex-start;
+            }
+
+            .customer-panel .chat-history-heading > div {
+                flex: 1 1 auto;
+                min-width: 0;
             }
 
             .chat-history-top {
@@ -538,6 +573,71 @@ if ($isAdmin) {
             .chat-panel {
                 height: 70vh;
                 min-height: 520px;
+            }
+
+            .chat-panel h5 {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .chat-conversation-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                position: sticky;
+                top: calc(var(--admin-topbar-height, 82px) + 10px);
+                z-index: 40;
+                width: 100%;
+                min-height: 46px;
+                margin: 0 0 16px;
+                border: 0;
+                border-radius: 999px;
+                background: #d97cb3;
+                color: #ffffff;
+                font-weight: 800;
+                box-shadow: 0 10px 22px rgba(217, 124, 179, 0.25);
+            }
+
+            .chat-conversation-close {
+                width: 38px;
+                height: 38px;
+                border: 1px solid #f0d6e4;
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: #ffffff;
+                color: #333333;
+            }
+
+            .chat-conversation-backdrop {
+                position: fixed;
+                inset: 0;
+                z-index: 20010;
+                display: block;
+                background: rgba(0, 0, 0, 0.42);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.2s ease;
+            }
+
+            body.chat-conversations-open {
+                overflow: hidden;
+            }
+
+            body.chat-conversations-open .customer-panel {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+
+            body.chat-conversations-open .chat-conversation-backdrop {
+                opacity: 1;
+                pointer-events: auto;
             }
 
             .admin-chat-composer {
@@ -582,14 +682,24 @@ if ($isAdmin) {
         <div class="admin-chat-wrapper">
             <h3 class="chat-title">Admin Chat Interface</h3>
 
+            <button type="button" class="chat-conversation-toggle" aria-controls="customerConversationPanel" aria-expanded="false">
+                <i class="fa fa-comments"></i>
+                <span>Conversations</span>
+                <span class="chat-history-count"><?php echo count($customers); ?></span>
+            </button>
+            <div class="chat-conversation-backdrop" data-chat-conversation-close aria-hidden="true"></div>
+
             <div class="chat-layout">
-                <aside class="customer-panel">
+                <aside class="customer-panel" id="customerConversationPanel" aria-label="Customer conversations">
                     <div class="chat-history-heading">
                         <div>
                             <h5>Conversations</h5>
                             <p class="chat-history-subtitle">All read and unread messages</p>
                         </div>
                         <span class="chat-history-count"><?php echo count($customers); ?> chats</span>
+                        <button type="button" class="chat-conversation-close" data-chat-conversation-close aria-label="Close conversations">
+                            <i class="fa fa-times"></i>
+                        </button>
                     </div>
 
                     <ul id="customer-list" class="list-group">
@@ -648,6 +758,40 @@ if ($isAdmin) {
             let selectedCustomerId = null;
 
             $(document).ready(function() {
+                const conversationToggle = $('.chat-conversation-toggle');
+
+                function openConversations() {
+                    $('body').addClass('chat-conversations-open');
+                    conversationToggle.attr('aria-expanded', 'true');
+                }
+
+                function closeConversations() {
+                    $('body').removeClass('chat-conversations-open');
+                    conversationToggle.attr('aria-expanded', 'false');
+                }
+
+                conversationToggle.on('click', function() {
+                    if ($('body').hasClass('chat-conversations-open')) {
+                        closeConversations();
+                    } else {
+                        openConversations();
+                    }
+                });
+
+                $('[data-chat-conversation-close]').on('click', closeConversations);
+
+                $(document).on('keydown', function(event) {
+                    if (event.key === 'Escape') {
+                        closeConversations();
+                    }
+                });
+
+                $(window).on('resize', function() {
+                    if (window.matchMedia('(min-width: 769px)').matches) {
+                        closeConversations();
+                    }
+                });
+
                 const storedCustomerId = localStorage.getItem('selectedCustomerId');
 
                 if (storedCustomerId && $(`.customer[data-customer-id="${storedCustomerId}"]`).length) {
@@ -667,6 +811,10 @@ if ($isAdmin) {
                 localStorage.setItem('selectedCustomerId', selectedCustomerId);
                 setActiveCustomer($(this));
                 loadMessages();
+                if (window.matchMedia('(max-width: 768px)').matches) {
+                    $('body').removeClass('chat-conversations-open');
+                    $('.chat-conversation-toggle').attr('aria-expanded', 'false');
+                }
             });
 
             $('#send-message').click(function() {

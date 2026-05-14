@@ -1554,7 +1554,9 @@ body {
 footer {
   position: relative;
   width: 100%;
+  max-width: 100%;
   margin-top: 50px;
+  overflow-x: hidden;
   background-color: #343a40; /* Dark background */
   color: #ffffff; /* Light text */
   font-family: "Poppins", sans-serif; /* Fashionable font */
@@ -1598,6 +1600,17 @@ footer .fab {
 
 footer .fab:hover {
   transform: scale(1.2); /* Enlarge on hover */
+}
+
+footer .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+footer p,
+footer a,
+footer li {
+  overflow-wrap: anywhere;
 }
 
 /* Centering Form */
@@ -4052,6 +4065,37 @@ html[data-theme="dark"] footer a:hover {
   color: var(--customer-accent) !important;
 }
 
+html[data-theme="dark"] .live-chat-status {
+  background-color: #eaf8ee !important;
+  color: #145f32 !important;
+}
+
+html[data-theme="dark"] .live-chat-status span {
+  background-color: #21b357 !important;
+}
+
+.shop-products-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 260px));
+  justify-content: center;
+  justify-items: center;
+  gap: 28px !important;
+  width: 100%;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.shop-products-grid > [class*="col-"] {
+  width: 100% !important;
+  max-width: 260px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.shop-products-grid .card1 {
+  max-width: 260px;
+}
+
 html[data-theme="dark"] .carousel-control-prev,
 html[data-theme="dark"] .carousel-control-next {
   opacity: 0.9;
@@ -4071,27 +4115,29 @@ html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
 
 html[data-theme="dark"] #brandsCarousel .carousel-control-prev,
 html[data-theme="dark"] #brandsCarousel .carousel-control-next {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
   top: 50%;
   transform: translateY(-50%);
-  border: 1px solid var(--customer-border);
+  border: 2px solid rgba(255, 255, 255, 0.82);
   border-radius: 50%;
-  background-color: rgba(36, 36, 40, 0.92);
+  background-color: rgba(255, 134, 186, 0.96);
+  box-shadow: 0 10px 26px rgba(255, 134, 186, 0.32), 0 0 0 2px rgba(0, 0, 0, 0.28);
   opacity: 1;
 }
 
 html[data-theme="dark"] #brandsCarousel .carousel-control-prev:hover,
 html[data-theme="dark"] #brandsCarousel .carousel-control-next:hover {
-  border-color: var(--customer-accent);
-  background-color: rgba(45, 45, 50, 0.96);
+  border-color: #ffffff;
+  background-color: #ffaad0;
 }
 
 html[data-theme="dark"] #brandsCarousel .carousel-control-prev-icon,
 html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   margin-top: 0;
+  filter: brightness(0) invert(1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
 }
 
 @media (max-width: 991px) {
@@ -4126,6 +4172,32 @@ html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
+  }
+
+  .products-display h3 {
+    text-align: center;
+  }
+
+  .shop-products-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, min(100%, 440px));
+    justify-content: center;
+    justify-items: center;
+    gap: 28px !important;
+    width: 100%;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .shop-products-grid > [class*="col-"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .shop-products-grid .card1 {
+    max-width: 100%;
   }
 
   .shop-filter-toggle {
@@ -4224,5 +4296,16 @@ html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
     right: 14px;
     width: 52px;
     height: 52px;
+  }
+
+  footer {
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  footer .container {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }

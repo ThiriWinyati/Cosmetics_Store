@@ -369,6 +369,83 @@ try {
                 max-width: 100%;
             }
         }
+
+        @media (max-width: 1100px) {
+            .dashboard-container {
+                padding: 12px 0;
+                gap: 18px;
+            }
+
+            .dashboard-container .row,
+            .charts-container {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 18px;
+            }
+
+            .chart-box {
+                padding: 18px;
+                overflow-x: auto;
+            }
+
+            .chart-box h4 {
+                font-size: clamp(1.12rem, 4.8vw, 1.45rem);
+                line-height: 1.25;
+            }
+
+            .chart,
+            .chart-container {
+                min-height: 260px;
+            }
+
+            canvas {
+                min-height: 260px;
+                max-height: 340px;
+            }
+
+            .table {
+                table-layout: auto;
+                min-width: 520px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 8px 0;
+            }
+
+            .chart-box {
+                padding: 16px 14px;
+                border-radius: 14px;
+            }
+
+            .filter-chart-container {
+                gap: 14px;
+            }
+
+            .filter-container {
+                max-width: 100%;
+            }
+
+            .chart,
+            .chart-container {
+                min-height: 240px;
+            }
+
+            canvas {
+                min-height: 240px;
+                max-height: 300px;
+            }
+
+            .donut-chart-container canvas {
+                min-height: 220px;
+                max-height: 260px;
+            }
+
+            .small-pie-chart-container canvas {
+                max-width: 140px;
+                max-height: 140px;
+            }
+        }
     </style>
 </head>
 

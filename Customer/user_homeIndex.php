@@ -187,9 +187,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
   <title>Home - Cosmetics Shop</title>
   <style>
     .custom-btn {
-      margin-left: 290px;
-      margin-top: 140px;
-      width: 180px;
+      margin: 0;
+      width: clamp(128px, 20vw, 180px);
+      min-height: 48px;
       background-color: black;
       color: pink;
     }
@@ -249,6 +249,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
     .product-image {
       display: block;
     }
+
+    .home-hero-overlay {
+      align-items: center;
+      justify-content: flex-start;
+      padding: clamp(20px, 7vw, 90px);
+    }
+
+    @media (max-width: 768px) {
+      .home-hero-overlay {
+        align-items: flex-end;
+        justify-content: flex-end;
+        padding: 18px;
+      }
+
+      #shop-btn {
+        width: auto;
+        min-width: 116px;
+        min-height: 42px;
+        padding: 8px 18px;
+        font-size: 0.95rem;
+        border-radius: 8px;
+      }
+    }
   </style>
 </head>
 
@@ -261,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
       Your browser does not support the video tag.
     </video>
 
-    <div class="card-img-overlay d-flex align-items-center">
+    <div class="card-img-overlay d-flex home-hero-overlay">
       <a href="products.php" class="btn btn-primary btn-lg custom-btn" id="shop-btn">Shop Now</a>
     </div>
   </div>

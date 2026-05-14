@@ -269,16 +269,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
             flex: 1;
         }
 
-        .footer {
-            width: 125%;
-            text-align: center;
-            margin-top: 2..00px;
-            margin-left: -270px;
-            margin-right: 200px;
-            margin-bottom: -400px;
-
-        }
-
         .pagination-container {
             margin-top: auto;
         }
@@ -435,7 +425,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
                 <h3 class="mb-4">Products</h3>
                 <div class="row">
                     <?php if (!empty($paginatedProducts)): ?>
-                        <div class="row justify-content-center g-4">
+                        <div class="row justify-content-center g-4 shop-products-grid">
                             <?php foreach ($paginatedProducts as $product): ?>
                                 <?php
                                 $imageArray = !empty($product['image_paths']) ? explode(',', $product['image_paths']) : [];
@@ -538,14 +528,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
                         </ul>
                     </nav>
                 </div>
-
-                <?php include 'footer.php'; ?>
             </div>
 
 
         </div>
 
     </div>
+
+    <?php include 'footer.php'; ?>
 
 
 
