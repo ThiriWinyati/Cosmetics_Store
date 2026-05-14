@@ -152,7 +152,36 @@ require_once __DIR__ . "/admin_auth.php";
                 dropdown.classList.toggle("show");
             }
 
+            function mountAdminModal(modal) {
+                if (!modal) {
+                    return;
+                }
+
+                if (modal.parentElement !== document.body) {
+                    document.body.appendChild(modal);
+                }
+
+                modal.style.zIndex = "20050";
+            }
+
+            document.addEventListener("click", function (event) {
+                const trigger = event.target.closest('[data-bs-toggle="modal"][data-bs-target]');
+
+                if (!trigger) {
+                    return;
+                }
+
+                const targetSelector = trigger.getAttribute("data-bs-target");
+                mountAdminModal(document.querySelector(targetSelector));
+            }, true);
+
+            document.addEventListener("show.bs.modal", function (event) {
+                mountAdminModal(event.target);
+            }, true);
+
             document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".modal").forEach(mountAdminModal);
+
                 const currentPage = window.location.pathname.split("/").pop();
 
                 document.querySelectorAll(".admin-nav-link[href]").forEach(link => {

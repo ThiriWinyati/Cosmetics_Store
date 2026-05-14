@@ -1524,6 +1524,8 @@ body {
   --admin-sidebar-bg: #fde1eb;
   --admin-sidebar-hover: #ffffff;
   --admin-shadow: rgba(15, 23, 42, 0.12);
+  --bs-backdrop-zindex: 20040;
+  --bs-modal-zindex: 20050;
 }
 
 html[data-theme="dark"] {
@@ -1850,12 +1852,14 @@ html[data-theme="dark"] .btn-close {
   z-index: 20040 !important;
 }
 
-.modal {
+.modal,
+.modal.show {
   z-index: 20050 !important;
 }
 
-.modal-dialog {
+.modal.show .modal-dialog {
   margin-top: calc(var(--admin-topbar-height, 72px) + 24px);
+  transform: none;
 }
 
 .modal-content {
@@ -2195,7 +2199,6 @@ html[data-theme="dark"] .admin-main #main-content > .container > a.text-decorati
 
 .admin-table-card {
   position: relative;
-  z-index: 0;
   clear: both;
   overflow: hidden;
   border: 1px solid #ececf1;
