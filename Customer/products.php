@@ -73,64 +73,85 @@ if ($stmt && $stmt->rowCount() > 0) {
 
 // Handle sorting
 $sortOption = $_POST['sort'] ?? 'random'; // Default to 'random'
-$filterQuery = "SELECT p.Product_ID, p.Name, p.Price, p.Image_Path,
-                GROUP_CONCAT(i.image_path SEPARATOR ',') AS image_paths,
-                COUNT(oi.Product_ID) AS order_count
-                FROM products p 
-                INNER JOIN product_images i ON p.Product_ID = i.Product_ID 
+$filterQuery = "SELECT 
+                    p.Product_ID, 
+                    p.Name, 
+                    p.Price, 
+                    p.Image_Path,
+                    GROUP_CONCAT(DISTINCT i.image_path SEPARATOR ',') AS image_paths,
+                    COUNT(DISTINCT oi.Order_Item_ID) AS order_count
+                FROM products p
+                INNER JOIN product_images i ON p.Product_ID = i.Product_ID
                 LEFT JOIN order_items oi ON p.Product_ID = oi.Product_ID
-                WHERE p.Product_ID IN (
-                    SELECT Product_ID 
-                    FROM products 
-                    WHERE 1=1";
+                LEFT JOIN categories c ON p.Category_ID = c.Category_ID
+                LEFT JOIN brands b ON p.brand_id = b.brand_id
+                LEFT JOIN shades s ON p.Product_ID = s.product_id
+                WHERE 1=1";
+$queryParams = [];
 
 // Check if categories are selected, if not, do not filter by category
 if (!empty($_POST['categories']) && $_POST['categories'][0] != '') {
-    $categoriesFilter = implode(',', array_map('intval', $_POST['categories']));
-    $filterQuery .= " AND Category_ID IN ($categoriesFilter)";
+    $selectedCategories = array_values(array_filter(array_map('intval', $_POST['categories'])));
+    if (!empty($selectedCategories)) {
+        $categoryPlaceholders = implode(',', array_fill(0, count($selectedCategories), '?'));
+        $filterQuery .= " AND p.Category_ID IN ($categoryPlaceholders)";
+        array_push($queryParams, ...$selectedCategories);
+    }
 }
 
 // Check if brands are selected, if not, do not filter by brand
 if (!empty($_POST['brands']) && $_POST['brands'][0] != '') {
-    $brandsFilter = implode(',', array_map('intval', $_POST['brands']));
-    $filterQuery .= " AND Brand_ID IN ($brandsFilter)";
+    $selectedBrands = array_values(array_filter(array_map('intval', $_POST['brands'])));
+    if (!empty($selectedBrands)) {
+        $brandPlaceholders = implode(',', array_fill(0, count($selectedBrands), '?'));
+        $filterQuery .= " AND p.brand_id IN ($brandPlaceholders)";
+        array_push($queryParams, ...$selectedBrands);
+    }
 }
 
 // Check if search term is provided
-if (!empty($_POST['search'])) {
-    $searchTerm = htmlspecialchars($_POST['search']);
+if (!empty(trim($_POST['search'] ?? ''))) {
+    $searchTerm = trim($_POST['search']);
+    $searchWords = preg_split('/\s+/', $searchTerm);
+    $keywordConditions = [];
 
-    // Split the search term into individual words
-    $searchWords = explode(' ', $searchTerm);
-
-    // Initialize the search condition
-    $searchCondition = '';
-
-    // Loop through each word and add it to the search condition
     foreach ($searchWords as $word) {
-        if (!empty($word)) {
-            if (!empty($searchCondition)) {
-                $searchCondition .= " OR ";
-            }
-            $searchCondition .= "(p.Name LIKE '%$word%' OR p.Description LIKE '%$word%')";
+        $word = trim($word);
+
+        if ($word === '') {
+            continue;
         }
+
+        $keywordConditions[] = "(
+            p.Name LIKE ? OR
+            p.Description LIKE ? OR
+            c.Category_Name LIKE ? OR
+            b.brand_name LIKE ? OR
+            s.shade_name LIKE ? OR
+            CAST(p.Price AS CHAR) LIKE ? OR
+            CAST(p.Product_ID AS CHAR) LIKE ?
+        )";
+
+        $keyword = '%' . $word . '%';
+        array_push($queryParams, $keyword, $keyword, $keyword, $keyword, $keyword, $keyword, $keyword);
     }
 
-    // Add the search condition to the filter query
-    if (!empty($searchCondition)) {
-        $filterQuery .= " AND ($searchCondition)";
+    if (!empty($keywordConditions)) {
+        $filterQuery .= " AND (" . implode(" OR ", $keywordConditions) . ")";
     }
 }
 
 // Price Range Filters
 if (!empty($_POST['priceMin'])) {
     $priceMin = floatval($_POST['priceMin']);
-    $filterQuery .= " AND Price >= $priceMin";
+    $filterQuery .= " AND p.Price >= ?";
+    $queryParams[] = $priceMin;
 }
 
 if (!empty($_POST['priceMax'])) {
     $priceMax = floatval($_POST['priceMax']);
-    $filterQuery .= " AND Price <= $priceMax";
+    $filterQuery .= " AND p.Price <= ?";
+    $queryParams[] = $priceMax;
 }
 
 // Check if filter is set in the query string
@@ -141,7 +162,7 @@ if ($filter === 'new' || $sortOption === 'latest') {
     $filterQuery .= " AND p.is_popular = 1"; // Show only popular products
 }
 
-$filterQuery .= ") GROUP BY p.Product_ID";
+$filterQuery .= " GROUP BY p.Product_ID, p.Name, p.Price, p.Image_Path, p.created_at";
 
 // Apply sorting
 if ($sortOption === 'popular') {
@@ -153,7 +174,8 @@ if ($sortOption === 'popular') {
 }
 
 // Fetch filtered products
-$stmt = $conn->query($filterQuery);
+$stmt = $conn->prepare($filterQuery);
+$stmt->execute($queryParams);
 
 if ($stmt && $stmt->rowCount() > 0) {
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
