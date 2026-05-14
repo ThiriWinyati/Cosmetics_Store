@@ -283,10 +283,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
       <source src="../images/banner.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-
-    <div class="card-img-overlay d-flex home-hero-overlay">
-      <a href="products.php" class="btn btn-primary btn-lg custom-btn" id="shop-btn">Shop Now</a>
-    </div>
   </div>
 
   </div>
