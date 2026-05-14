@@ -338,10 +338,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
         </div>
 
         <div class="row">
+            <button type="button" class="shop-filter-toggle" aria-controls="shopFilterPanel" aria-expanded="false" aria-label="Open product filters">
+                <i class="fas fa-sliders-h" aria-hidden="true"></i>
+            </button>
+            <div class="shop-filter-backdrop" data-filter-close aria-hidden="true"></div>
+
             <!-- Sidebar for Filters -->
-            <div class="col-md-3">
-                <div class="filter-section mb-5">
-                    <h5>Filter Products</h5>
+            <div class="col-md-3 shop-filter-column">
+                <div class="filter-section mb-5" id="shopFilterPanel" aria-label="Product filters">
+                    <div class="shop-filter-header">
+                        <h5>Filter Products</h5>
+                        <button type="button" class="shop-filter-close" data-filter-close aria-label="Close product filters">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
                     <form method="POST" action="">
                         <!-- Show Dropdown -->
                         <div class="mb-3">
@@ -544,6 +554,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
         document.addEventListener('DOMContentLoaded', function() {
             const categoryToggle = document.querySelector('[data-bs-target="#categoriesCollapse"]');
             const brandToggle = document.querySelector('[data-bs-target="#brandsCollapse"]');
+            const filterToggle = document.querySelector('.shop-filter-toggle');
+            const filterPanel = document.querySelector('#shopFilterPanel');
+            const filterBackdrop = document.querySelector('.shop-filter-backdrop');
+            const filterCloseButtons = document.querySelectorAll('[data-filter-close]');
 
             categoryToggle.addEventListener('click', function() {
                 const icon = categoryToggle.querySelector('i');
@@ -555,6 +569,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
                 const icon = brandToggle.querySelector('i');
                 icon.classList.toggle('fa-plus');
                 icon.classList.toggle('fa-minus');
+            });
+
+            function closeFilters() {
+                document.body.classList.remove('shop-filter-open');
+                filterToggle?.setAttribute('aria-expanded', 'false');
+            }
+
+            function openFilters() {
+                document.body.classList.add('shop-filter-open');
+                filterToggle?.setAttribute('aria-expanded', 'true');
+                filterPanel?.querySelector('select, input, button')?.focus({ preventScroll: true });
+            }
+
+            filterToggle?.addEventListener('click', function() {
+                if (document.body.classList.contains('shop-filter-open')) {
+                    closeFilters();
+                } else {
+                    openFilters();
+                }
+            });
+
+            filterCloseButtons.forEach(function(button) {
+                button.addEventListener('click', closeFilters);
+            });
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeFilters();
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.matchMedia('(min-width: 992px)').matches) {
+                    closeFilters();
+                }
             });
         });
     </script>

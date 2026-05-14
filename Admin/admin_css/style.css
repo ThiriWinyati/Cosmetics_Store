@@ -2442,3 +2442,243 @@ html[data-theme="dark"] .admin-search-button {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   Final Admin Responsive Safety Layer
+   ========================================================= */
+
+html,
+body {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  overflow-x: clip !important;
+}
+
+body {
+  padding: 0 !important;
+}
+
+.admin-main,
+.admin-home-wrapper,
+.admin-home-hero,
+.admin-main > .container,
+.admin-main > .container-fluid,
+.admin-main #main-content,
+.admin-page-shell {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.admin-main {
+  overflow-x: clip !important;
+}
+
+.admin-topbar {
+  min-width: 0;
+}
+
+.admin-brand {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.admin-brand span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-main img,
+.admin-main video,
+.admin-main canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.admin-main .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.admin-main [class*="col-"] {
+  min-width: 0;
+}
+
+.admin-main .card,
+.admin-main .admin-card,
+.admin-main .dashboard-card,
+.admin-main .quick-link-card,
+.admin-main .welcome-card,
+.admin-main .admin-stat-card,
+.admin-main .admin-table-card,
+.admin-main .message-card {
+  max-width: 100%;
+}
+
+.admin-main .table-container,
+.admin-main .table-responsive,
+.admin-main .admin-table-card {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-home-wrapper {
+  padding: clamp(16px, 3vw, 30px);
+}
+
+.admin-home-hero {
+  display: grid;
+  gap: clamp(18px, 3vw, 32px);
+  justify-items: center;
+}
+
+.admin-home-gif-wrapper,
+.welcome-card,
+.quick-links {
+  width: min(100%, 760px);
+}
+
+.welcome-card h2,
+.welcome-card p,
+.quick-link-card h3,
+.quick-link-card p,
+.quick-link-card a {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --admin-topbar-height: 82px;
+  }
+
+  .admin-main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding-top: var(--admin-topbar-height) !important;
+  }
+
+  .admin-topbar {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    min-height: var(--admin-topbar-height);
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .admin-menu-btn {
+    position: static !important;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 42px;
+  }
+
+  .admin-brand {
+    flex: 1 1 auto;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    font-size: clamp(1.05rem, 5vw, 1.5rem) !important;
+    line-height: 1.1;
+  }
+
+  .admin-brand img {
+    width: clamp(44px, 13vw, 58px) !important;
+    flex: 0 0 auto;
+  }
+
+  .admin-brand span {
+    display: block;
+    max-width: 15ch;
+    line-height: 1.08;
+  }
+
+  .admin-theme-toggle {
+    flex: 0 0 auto;
+    min-width: 64px;
+    padding: 5px 7px !important;
+  }
+
+  .admin-home-wrapper {
+    padding: 18px 12px 34px;
+  }
+
+  .admin-home-gif-wrapper {
+    margin: 8px auto 12px;
+    justify-content: center;
+  }
+
+  .admin-home-gif {
+    max-width: min(68vw, 220px) !important;
+  }
+
+  .welcome-card,
+  .quick-link-card {
+    padding: 22px 16px;
+    border-radius: 14px;
+  }
+
+  .welcome-card h2 {
+    font-size: clamp(1.28rem, 7vw, 1.8rem) !important;
+  }
+
+  .welcome-card p {
+    font-size: clamp(0.98rem, 4.8vw, 1.18rem) !important;
+  }
+
+  .quick-links {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .quick-link-card h3 {
+    font-size: clamp(1.1rem, 5.6vw, 1.35rem) !important;
+  }
+
+  .quick-link-card p,
+  .quick-link-card a {
+    font-size: clamp(0.95rem, 4.6vw, 1.05rem);
+  }
+}
+
+@media (max-width: 420px) {
+  :root {
+    --admin-topbar-height: 76px;
+  }
+
+  .admin-topbar {
+    gap: 6px;
+    padding: 9px 8px;
+  }
+
+  .admin-menu-btn {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .admin-brand {
+    gap: 6px;
+    font-size: clamp(0.95rem, 5.7vw, 1.25rem) !important;
+  }
+
+  .admin-brand span {
+    max-width: 12ch;
+  }
+
+  .admin-theme-toggle {
+    min-width: 58px;
+    transform: scale(0.92);
+    transform-origin: right center;
+  }
+
+  .admin-main > .container,
+  .admin-main > .container-fluid,
+  .admin-main #main-content,
+  .admin-page-shell {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}

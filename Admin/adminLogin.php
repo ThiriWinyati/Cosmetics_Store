@@ -78,16 +78,20 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            min-height: 100dvh;
             background-color: #f8f9fa;
             margin: 0;
+            padding: 24px;
             font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
         }
 
         .login-container {
             display: flex;
-            width: 80%;
+            width: min(100%, 900px);
             max-width: 900px;
+            min-height: 520px;
             background-color: #fff;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -144,6 +148,12 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
             justify-content: center;
             align-items: center;
             position: relative;
+            min-height: 100%;
+        }
+
+        .animation-container dotlottie-player {
+            width: min(300px, 80%);
+            height: min(300px, 80%);
         }
 
         .animation-container::before,
@@ -214,6 +224,77 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
         html[data-theme="dark"] .animation-container::before,
         html[data-theme="dark"] .animation-container::after {
             display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                padding: 18px;
+            }
+
+            .login-container {
+                flex-direction: column;
+                width: 100%;
+                max-width: 520px;
+                min-height: auto;
+                border-radius: 10px;
+            }
+
+            .animation-container {
+                min-height: 220px;
+                flex: none;
+            }
+
+            .animation-container::before,
+            .animation-container::after {
+                width: 72px;
+                height: 72px;
+            }
+
+            .animation-container dotlottie-player {
+                width: 210px !important;
+                height: 210px !important;
+            }
+
+            .login-form {
+                padding: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .login-container {
+                border-radius: 8px;
+            }
+
+            .animation-container {
+                min-height: 170px;
+            }
+
+            .animation-container dotlottie-player {
+                width: 160px !important;
+                height: 160px !important;
+            }
+
+            .login-form {
+                padding: 22px 18px;
+            }
+
+            .login-form h4 {
+                font-size: 1.25rem;
+            }
+
+            .login-form .form-control {
+                min-height: 48px;
+                height: auto;
+            }
+
+            .login-form .alert {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>

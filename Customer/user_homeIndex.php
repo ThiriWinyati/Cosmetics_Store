@@ -564,12 +564,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
   </div>
 
   <!-- New Products Section -->
-  <div class="container mt-5">
+  <div class="container mt-5 products-section home-products-section">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="carousel-title text-center">New Arrivals</h4>
       <a href="products.php?filter=new" class="btn btn-link view-more-btn text-decoration-none">View More</a>
     </div>
-    <div class="row justify-content-center g-2"> <!-- Adjusted spacing -->
+    <div class="row justify-content-center g-4"> <!-- Adjusted spacing -->
       <?php foreach (array_slice($products, 0, 5) as $product): ?>
         <?php
         $imageArray = explode(',', $product['images']);
@@ -587,8 +587,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
           array_unshift($imageArray, $product['Image_Path']);
         }
         ?>
-        <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-2 d-flex align-items-stretch"> <!-- Adjusted spacing -->
-          <div class="card1 border-0 shadow-sm rounded position-relative" style="width: 200px; height: 350px;">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex align-items-stretch"> <!-- Adjusted spacing -->
+          <div class="card1 border-0 shadow-sm rounded position-relative" style="width: 100%; height: 350px;">
             <div class="card-image-wrapper" style="position: relative;">
               <div class="image-buttons">
                 <form method="post" action="user_homeIndex.php">
@@ -656,12 +656,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
   </div>
 
   <!-- Popular Products Section -->
-  <div class="container mt-5 justify-content-center align-items-center">
+  <div class="container mt-5 justify-content-center align-items-center products-section home-products-section">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="carousel-title text-center">Popular Products</h4>
       <a href="products.php?filter=popular" class="btn btn-link view-more-btn text-decoration-none">View More</a>
     </div>
-    <div class="row justify-content-center g-2"> <!-- Adjusted spacing -->
+    <div class="row justify-content-center g-4"> <!-- Adjusted spacing -->
       <?php foreach (array_slice($popularProducts, 0, 5) as $product): ?>
         <?php
         $imageArray = explode(',', $product['images']);
@@ -679,8 +679,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
           array_unshift($imageArray, $product['Image_Path']);
         }
         ?>
-        <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-4 d-flex align-items-stretch"> <!-- Adjusted spacing -->
-          <div class="card1 border-0 shadow-sm rounded position-relative" style="width: 200px; height: 350px;">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex align-items-stretch"> <!-- Adjusted spacing -->
+          <div class="card1 border-0 shadow-sm rounded position-relative" style="width: 100%; height: 350px;">
             <div class="card-image-wrapper" style="position: relative;">
               <div class="image-buttons">
                 <form method="post" action="user_homeIndex.php">

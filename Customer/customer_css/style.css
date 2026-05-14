@@ -1186,6 +1186,24 @@ body {
   overflow-y: auto;
 }
 
+.shop-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.shop-filter-header h5 {
+  margin: 0;
+}
+
+.shop-filter-toggle,
+.shop-filter-close,
+.shop-filter-backdrop {
+  display: none;
+}
+
 /* Ensure the dropdowns are scrollable */
 .product-collapse {
   max-height: 200px; /* Limit the height of the dropdowns */
@@ -2885,6 +2903,23 @@ span {
   }
 }
 
+.home-products-section .row {
+  justify-content: center !important;
+}
+
+@media (max-width: 576px) {
+  .home-products-section .row {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 560px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .home-products-section .card1 {
+    max-width: 100%;
+  }
+}
+
 /* =========================================================
    Realistic Available Brands Carousel
    4 brands per slide on desktop, 2 per row on mobile
@@ -3250,6 +3285,14 @@ body {
 
 html[data-theme="dark"] .customer-navbar .navbar-toggler-icon {
   filter: invert(1);
+}
+
+html[data-theme="dark"] .customer-navbar .navbar-nav .nav-link,
+html[data-theme="dark"] .customer-navbar .navbar-nav .nav-link:visited,
+html[data-theme="dark"] .customer-navbar .navbar-nav .nav-link:hover,
+html[data-theme="dark"] .customer-navbar .navbar-nav .nav-link:focus {
+  color: var(--customer-text) !important;
+  opacity: 1 !important;
 }
 
 .customer-navbar .navbar-collapse {
@@ -3712,6 +3755,18 @@ html[data-theme="dark"] .filter-sidebar .form-check-input:checked {
   border-color: var(--customer-accent);
 }
 
+html[data-theme="dark"] .shop-filter-toggle {
+  background-color: var(--customer-accent);
+  color: #1a1a1a;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.48);
+}
+
+html[data-theme="dark"] .shop-filter-close {
+  color: var(--customer-text);
+  border-color: var(--customer-border);
+  background-color: var(--customer-surface-soft);
+}
+
 html[data-theme="dark"] .product-collapse {
   scrollbar-color: var(--customer-accent) var(--customer-surface-soft);
 }
@@ -4055,5 +4110,119 @@ html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
     position: static;
     max-height: none;
     overflow-y: visible;
+  }
+}
+
+@media (max-width: 991px) {
+  .shop-filter-column {
+    flex: 0 0 0 !important;
+    width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+  }
+
+  .products-display {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .shop-filter-toggle {
+    position: fixed;
+    right: 18px;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    z-index: 100060;
+    width: 56px;
+    height: 56px;
+    border: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #dc6496;
+    color: #ffffff;
+    font-size: 1.25rem;
+    box-shadow: 0 14px 28px rgba(220, 100, 150, 0.36);
+  }
+
+  .shop-filter-toggle:hover,
+  .shop-filter-toggle:focus {
+    background-color: #c84f83;
+    outline: none;
+  }
+
+  .shop-filter-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100040;
+    display: block;
+    background: rgba(0, 0, 0, 0.42);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .filter-section#shopFilterPanel {
+    position: fixed !important;
+    right: 16px;
+    bottom: calc(86px + env(safe-area-inset-bottom));
+    left: 16px;
+    z-index: 100050;
+    width: auto;
+    max-width: 420px;
+    max-height: min(74vh, 620px);
+    margin: 0 0 0 auto !important;
+    overflow-y: auto;
+    border-radius: 12px;
+    transform: translateY(16px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.2s ease, opacity 0.2s ease, visibility 0.2s ease;
+  }
+
+  .shop-filter-close {
+    width: 38px;
+    height: 38px;
+    border: 1px solid #f4c8dc;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: #333333;
+  }
+
+  body.shop-filter-open {
+    overflow: hidden;
+  }
+
+  body.shop-filter-open .shop-filter-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.shop-filter-open .filter-section#shopFilterPanel {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-section#shopFilterPanel {
+    right: 12px;
+    bottom: calc(80px + env(safe-area-inset-bottom));
+    left: 12px;
+    max-height: min(76vh, 560px);
+    padding: 14px;
+  }
+
+  .shop-filter-toggle {
+    right: 14px;
+    width: 52px;
+    height: 52px;
   }
 }
