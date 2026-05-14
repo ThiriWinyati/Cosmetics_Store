@@ -4076,24 +4076,47 @@ html[data-theme="dark"] .live-chat-status span {
 
 .shop-products-grid {
   display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 260px));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 340px));
   justify-content: center;
   justify-items: center;
   gap: 28px !important;
   width: 100%;
+  max-width: 1120px;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
 .shop-products-grid > [class*="col-"] {
   width: 100% !important;
-  max-width: 260px !important;
+  max-width: 340px !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
 
 .shop-products-grid .card1 {
-  max-width: 260px;
+  max-width: 340px;
+}
+
+.products-display > .row {
+  width: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  justify-content: center;
+}
+
+.card1 .card-carousel .carousel-control-prev,
+.card1 .card-carousel .carousel-control-next {
+  opacity: 1;
+}
+
+.card1 .card-carousel .carousel-control-prev-icon,
+.card1 .card-carousel .carousel-control-next-icon {
+  filter: brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9));
+}
+
+html[data-theme="dark"] .card1 .card-carousel .carousel-control-prev-icon,
+html[data-theme="dark"] .card1 .card-carousel .carousel-control-next-icon {
+  filter: brightness(0) invert(1) drop-shadow(0 1px 4px rgba(0, 0, 0, 1)) !important;
 }
 
 html[data-theme="dark"] .carousel-control-prev,
@@ -4180,24 +4203,25 @@ html[data-theme="dark"] #brandsCarousel .carousel-control-next-icon {
 
   .shop-products-grid {
     display: grid !important;
-    grid-template-columns: minmax(0, min(100%, 440px));
+    grid-template-columns: minmax(0, min(100%, 340px));
     justify-content: center;
     justify-items: center;
     gap: 28px !important;
     width: 100%;
+    max-width: 100%;
     margin-left: auto !important;
     margin-right: auto !important;
   }
 
   .shop-products-grid > [class*="col-"] {
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 340px !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 
   .shop-products-grid .card1 {
-    max-width: 100%;
+    max-width: 340px;
   }
 
   .shop-filter-toggle {
