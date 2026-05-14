@@ -29,6 +29,15 @@ if ($isAdmin) {
                     c.Name AS customer_name,
                     MAX(cm.timestamp) AS last_timestamp,
                     SUBSTRING_INDEX(GROUP_CONCAT(cm.message ORDER BY cm.timestamp DESC SEPARATOR '|||'), '|||', 1) AS last_message,
+                    SUBSTRING_INDEX(
+                        GROUP_CONCAT(
+                            CASE WHEN cm.admin_id IS NULL THEN 'Customer' ELSE 'Admin' END
+                            ORDER BY cm.timestamp DESC SEPARATOR '|||'
+                        ),
+                        '|||',
+                        1
+                    ) AS last_sender,
+                    COUNT(cm.message) AS message_count,
                     SUM(CASE WHEN cm.admin_read = 0 AND cm.admin_id IS NULL THEN 1 ELSE 0 END) AS new_messages
                 FROM chat_messages cm
                 LEFT JOIN customers c ON cm.customer_id = c.Customer_ID
@@ -120,6 +129,13 @@ if ($isAdmin) {
             margin-bottom: 0;
         }
 
+        .chat-history-subtitle {
+            margin: 3px 0 0;
+            color: #7a7f89;
+            font-size: 0.82rem;
+            line-height: 1.3;
+        }
+
         .chat-history-count {
             color: #7a7f89;
             font-size: 0.85rem;
@@ -180,8 +196,20 @@ if ($isAdmin) {
             overflow: hidden;
         }
 
-        .chat-history-badge {
+        .chat-history-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
             margin-top: 8px;
+            color: #8b9099;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .chat-history-status {
+            border-radius: 999px;
+            padding: 5px 9px;
         }
 
         .chat-panel {
@@ -319,6 +347,8 @@ if ($isAdmin) {
 
         html[data-theme="dark"] .chat-history-preview,
         html[data-theme="dark"] .chat-history-time,
+        html[data-theme="dark"] .chat-history-subtitle,
+        html[data-theme="dark"] .chat-history-meta-row,
         html[data-theme="dark"] .active-chat-name,
         html[data-theme="dark"] .chat-history-count {
             color: #b8bcc6;
@@ -372,7 +402,10 @@ if ($isAdmin) {
             <div class="chat-layout">
                 <aside class="customer-panel">
                     <div class="chat-history-heading">
-                        <h5>Chat History</h5>
+                        <div>
+                            <h5>Conversations</h5>
+                            <p class="chat-history-subtitle">All read and unread messages</p>
+                        </div>
                         <span class="chat-history-count"><?php echo count($customers); ?> chats</span>
                     </div>
 
@@ -382,7 +415,9 @@ if ($isAdmin) {
                                 <?php
                                     $customerName = htmlspecialchars($customer['customer_name'] ?? 'Unknown customer');
                                     $lastMessage = htmlspecialchars($customer['last_message'] ?? 'No messages yet.');
+                                    $lastSender = htmlspecialchars($customer['last_sender'] ?? 'Message');
                                     $lastTime = !empty($customer['last_timestamp']) ? date('M j, H:i', strtotime($customer['last_timestamp'])) : '';
+                                    $messageCount = (int)($customer['message_count'] ?? 0);
                                     $unreadCount = (int)($customer['new_messages'] ?? 0);
                                 ?>
                                 <li class="list-group-item customer"
@@ -392,17 +427,21 @@ if ($isAdmin) {
                                         <span class="chat-history-name"><?php echo $customerName; ?></span>
                                         <span class="chat-history-time"><?php echo htmlspecialchars($lastTime); ?></span>
                                     </div>
-                                    <p class="chat-history-preview"><?php echo $lastMessage; ?></p>
-                                    <?php if ($unreadCount > 0): ?>
-                                        <span class="badge bg-primary chat-history-badge">
-                                            <?php echo $unreadCount; ?> new
+                                    <p class="chat-history-preview">
+                                        <strong><?php echo $lastSender; ?>:</strong>
+                                        <?php echo $lastMessage; ?>
+                                    </p>
+                                    <div class="chat-history-meta-row">
+                                        <span><?php echo $messageCount; ?> messages</span>
+                                        <span class="badge <?php echo $unreadCount > 0 ? 'bg-primary' : 'bg-secondary'; ?> chat-history-status">
+                                            <?php echo $unreadCount > 0 ? $unreadCount . ' unread' : 'Read'; ?>
                                         </span>
-                                    <?php endif; ?>
+                                    </div>
                                 </li>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <li class="list-group-item text-center">
-                                No chat history yet.
+                                No customer conversations yet.
                             </li>
                         <?php endif; ?>
                     </ul>
@@ -485,6 +524,11 @@ if ($isAdmin) {
                         }, function(data) {
                             $('#chat-box').html(data);
                             $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                            const activeItem = $(`.customer[data-customer-id="${selectedCustomerId}"]`);
+                            activeItem.find('.chat-history-status')
+                                .removeClass('bg-primary')
+                                .addClass('bg-secondary')
+                                .text('Read');
                         });
                     });
                 }
