@@ -27,71 +27,89 @@ if (!$customer) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = htmlspecialchars($_POST['name']);
-    $email = htmlspecialchars($_POST['email']);
-    $phone = htmlspecialchars($_POST['phone']);
-    $address = htmlspecialchars($_POST['address']);
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $address = trim($_POST['address'] ?? '');
 
-    $profile_picture = $customer['Profile_Picture'];
+    $profile_picture = $customer['Profile_Picture'] ?? null;
+    $uploadError = null;
 
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['profile_picture']['error'] !== UPLOAD_ERR_OK) {
-            echo "<script>alert('There was an error uploading your profile picture.');</script>";
+            $uploadError = 'There was an error uploading your profile picture.';
         } else {
             $uploadDir = __DIR__ . '/../uploads/profile_pictures/';
             $dbUploadPath = '../uploads/profile_pictures/';
 
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
-            }
-
-            $allowedMimeTypes = [
-                'image/jpeg' => ['jpg', 'jpeg'],
-                'image/png' => ['png'],
-                'image/gif' => ['gif'],
-                'image/webp' => ['webp'],
-            ];
-
-            $fileType = mime_content_type($_FILES['profile_picture']['tmp_name']);
-            $fileExtension = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
-
-            if (!isset($allowedMimeTypes[$fileType]) || !in_array($fileExtension, $allowedMimeTypes[$fileType], true)) {
-                echo "<script>alert('Only JPG, PNG, GIF, and WEBP image files are allowed.');</script>";
+            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
+                $uploadError = 'Could not create the profile picture upload folder.';
+            } elseif (!is_writable($uploadDir)) {
+                $uploadError = 'The profile picture upload folder is not writable.';
             } else {
-                $fileName = 'customer_' . $customer_id . '_' . bin2hex(random_bytes(8)) . '.' . $fileExtension;
-                $filePath = $uploadDir . $fileName;
+                $allowedMimeTypes = [
+                    'image/jpeg' => ['jpg', 'jpeg'],
+                    'image/png' => ['png'],
+                    'image/gif' => ['gif'],
+                    'image/webp' => ['webp'],
+                ];
 
-                if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $filePath)) {
-                    $profile_picture = $dbUploadPath . $fileName;
+                $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+                $fileType = $fileInfo ? finfo_file($fileInfo, $_FILES['profile_picture']['tmp_name']) : false;
+                if ($fileInfo) {
+                    finfo_close($fileInfo);
+                }
+
+                $fileExtension = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
+
+                if (!isset($allowedMimeTypes[$fileType]) || !in_array($fileExtension, $allowedMimeTypes[$fileType], true)) {
+                    $uploadError = 'Only JPG, PNG, GIF, and WEBP image files are allowed.';
+                } elseif ($_FILES['profile_picture']['size'] > 5 * 1024 * 1024) {
+                    $uploadError = 'Profile picture must be 5MB or smaller.';
                 } else {
-                    echo "<script>alert('Could not save your profile picture. Please try again.');</script>";
+                    $safeExtension = $allowedMimeTypes[$fileType][0];
+                    $fileName = 'customer_' . $customer_id . '_' . bin2hex(random_bytes(8)) . '.' . $safeExtension;
+                    $filePath = $uploadDir . $fileName;
+
+                    if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $filePath)) {
+                        $profile_picture = $dbUploadPath . $fileName;
+                    } else {
+                        $uploadError = 'Could not save your profile picture. Please try again.';
+                    }
                 }
             }
         }
     }
 
-    $updateQuery = "UPDATE customers 
-                    SET Name = :name, 
-                        Email = :email, 
-                        Phone = :phone, 
-                        Address = :address, 
-                        Profile_Picture = :profile_picture 
-                    WHERE Customer_ID = :customer_id";
-
-    $updateStmt = $conn->prepare($updateQuery);
-    $updateStmt->bindParam(':name', $name);
-    $updateStmt->bindParam(':email', $email);
-    $updateStmt->bindParam(':phone', $phone);
-    $updateStmt->bindParam(':address', $address);
-    $updateStmt->bindParam(':profile_picture', $profile_picture);
-    $updateStmt->bindParam(':customer_id', $customer_id, PDO::PARAM_INT);
-
-    if ($updateStmt->execute()) {
-        echo "<script>alert('Profile updated successfully.');</script>";
-        echo "<script>window.location.href = '/Customer/userProfile.php';</script>";
-        exit();
+    if ($uploadError !== null) {
+        echo "<script>alert(" . json_encode($uploadError) . ");</script>";
     } else {
-        echo "<script>alert('An error occurred while updating the profile.');</script>";
+        $updateQuery = "UPDATE customers 
+                        SET Name = :name, 
+                            Email = :email, 
+                            Phone = :phone, 
+                            Address = :address, 
+                            Profile_Picture = :profile_picture 
+                        WHERE Customer_ID = :customer_id";
+
+        $updateStmt = $conn->prepare($updateQuery);
+
+        $updated = $updateStmt->execute([
+            ':name' => $name,
+            ':email' => $email,
+            ':phone' => $phone,
+            ':address' => $address,
+            ':profile_picture' => $profile_picture,
+            ':customer_id' => $customer_id,
+        ]);
+
+        if ($updated) {
+            echo "<script>alert('Profile updated successfully.');</script>";
+            echo "<script>window.location.href = '/Customer/userProfile.php';</script>";
+            exit();
+        } else {
+            echo "<script>alert('An error occurred while updating the profile.');</script>";
+        }
     }
 }
 ?>
@@ -113,84 +131,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="icon" href="path/to/favicon.ico">
     <title>Edit Profile - Charm & Grace</title>
-    <style>
-        /* Custom Styles for Edit Profile */
-        .edit-profile-form-container {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            padding: 25px;
-            background-color: #ffffff;
-        }
-
-        .edit-profile-form-header {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .edit-profile-title {
-            font-weight: 600;
-            font-size: 2rem;
-        }
-
-        .edit-profile-field {
-            margin-bottom: 15px;
-        }
-
-        .edit-profile-label {
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .edit-profile-input-text,
-        .edit-profile-textarea {
-            width: 100%;
-            padding: 10px;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .edit-profile-btn-update {
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .edit-profile-card {
-            padding: 20px;
-        }
-
-        .edit-profile-btn-container {
-            text-align: center;
-        }
-
-        .edit-profile-alert {
-            color: red;
-        }
-
-        /* Profile image circle */
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .rounded-circle {
-            border-radius: 50%;
-        }
-
-        /* Centering profile image */
-        .profile-image-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-    </style>
 </head>
 
-<body>
+<body class="edit-profile-page">
 
     <?php include 'navbar.php'; ?>
 
-    <div class="container mt-5">
+    <div class="container edit-profile-page-container">
         <div class="edit-profile-form-container">
             <!-- Profile Picture Section -->
             <div class="profile-image-container">

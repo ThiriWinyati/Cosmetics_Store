@@ -60,42 +60,68 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../Customer/customer_css/style.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <title>Order History - Charm & Grace</title>
 </head>
 
-<body>
+<body class="order-history-page">
     <?php include 'navbar.php'; ?>
 
-    <div class="container mt-5">
-        <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+    <div class="container order-history-container">
+        <nav class="order-history-breadcrumb" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="user_homeIndex.php" style="color: black; text-decoration:none;">Home</a></li>
+                <li class="breadcrumb-item"><a href="user_homeIndex.php">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Order History</li>
             </ol>
         </nav>
 
-        <h2 class="text-center mb-4">Your Order History</h2>
+        <div class="order-history-heading">
+            <span>Account</span>
+            <h2>Your Order History</h2>
+            <p>Review your recent orders, delivery status, and purchased products.</p>
+        </div>
 
         <?php if (empty($orders)): ?>
-            <p class="text-center">You have no previous orders.</p>
+            <div class="order-empty-state">
+                <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                <p>You have no previous orders.</p>
+                <a href="products.php">Start Shopping</a>
+            </div>
         <?php else: ?>
             <?php foreach ($orders as $order): ?>
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>Order ID: #<?php echo $order['Order_ID']; ?> | Status: <?php echo $order['OrderStatus']; ?></h5>
-                        <p>Order Date: <?php echo date("F j, Y, g:i a", strtotime($order['Order_Date'])); ?></p>
-                        <p><strong>Shipping Status:</strong> <?php echo $order['Shipping_Status'] ?? 'Not available'; ?></p>
+                <div class="card mb-4 order-history-card">
+                    <div class="card-header order-history-card-header">
+                        <div>
+                            <span class="order-card-eyebrow">Order #<?php echo $order['Order_ID']; ?></span>
+                            <h5><?php echo date("F j, Y, g:i a", strtotime($order['Order_Date'])); ?></h5>
+                        </div>
+                        <div class="order-status-group">
+                            <span class="order-status-pill"><?php echo htmlspecialchars($order['OrderStatus']); ?></span>
+                            <span class="order-status-pill shipping"><?php echo htmlspecialchars($order['Shipping_Status'] ?? 'Not available'); ?></span>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p><strong>Total Price:</strong> $<?php echo number_format($order['Total_Price'], 2); ?></p>
-                        <p><strong>Shipping Address:</strong> <?php echo htmlspecialchars($order['Shipping_Address']); ?></p>
-                        <p><strong>Phone:</strong> <?php echo htmlspecialchars($order['Phone']); ?></p>
+                    <div class="card-body order-history-card-body">
+                        <div class="order-summary-grid">
+                            <div class="order-summary-item">
+                                <span>Total Price</span>
+                                <strong>$<?php echo number_format($order['Total_Price'], 2); ?></strong>
+                            </div>
+                            <div class="order-summary-item">
+                                <span>Shipping Address</span>
+                                <strong><?php echo htmlspecialchars($order['Shipping_Address']); ?></strong>
+                            </div>
+                            <div class="order-summary-item">
+                                <span>Phone</span>
+                                <strong><?php echo htmlspecialchars($order['Phone']); ?></strong>
+                            </div>
+                        </div>
 
-                        <h6>Ordered Products:</h6>
-                        <table class="table table-bordered">
+                        <h6 class="ordered-products-title">Ordered Products</h6>
+                        <div class="order-products-table-wrap">
+                        <table class="table table-bordered order-products-table">
                             <thead class="table-dark">
                                 <tr>
                                     <th>Product Name</th>
@@ -116,17 +142,18 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                 for ($i = 0; $i < count($productIDs); $i++): ?>
                                     <tr>
-                                        <td><?php echo htmlspecialchars($productNames[$i]); ?></td>
-                                        <td><?php echo $quantities[$i]; ?></td>
-                                        <td>$<?php echo number_format($unitPrices[$i], 2); ?></td>
-                                        <td>$<?php echo number_format($subtotals[$i], 2); ?></td>
-                                        <td>
-                                            <a href="viewDetails.php?id=<?php echo $productIDs[$i]; ?>" class="btn btn-info">View Product</a>
+                                        <td data-label="Product Name"><?php echo htmlspecialchars($productNames[$i]); ?></td>
+                                        <td data-label="Quantity"><?php echo $quantities[$i]; ?></td>
+                                        <td data-label="Unit Price">$<?php echo number_format($unitPrices[$i], 2); ?></td>
+                                        <td data-label="Subtotal">$<?php echo number_format($subtotals[$i], 2); ?></td>
+                                        <td data-label="Action">
+                                            <a href="viewDetails.php?id=<?php echo $productIDs[$i]; ?>" class="btn btn-info order-view-product-btn">View Product</a>
                                         </td>
                                     </tr>
                                 <?php endfor; ?>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
