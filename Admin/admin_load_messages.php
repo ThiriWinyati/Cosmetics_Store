@@ -32,20 +32,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($message['admin_id'] != null) {
             // Admin message
-            echo '<div class="d-flex justify-content-end mb-3">
-                    <div class="bg-primary text-white p-2 rounded">
-                        <strong>' . htmlspecialchars($message['admin_name']) . '</strong><br>
-                        ' . htmlspecialchars($message['message']) . '<br>
-                        <small>' . $messageTime . '</small>
+            echo '<div class="admin-message-row admin">
+                    <div class="admin-message-bubble">
+                        <strong>' . htmlspecialchars($message['admin_name']) . '</strong>
+                        <span>' . htmlspecialchars($message['message']) . '</span>
+                        <small>' . htmlspecialchars($messageTime) . '</small>
                     </div>
                   </div>';
         } else {
             // Customer message
-            echo '<div class="d-flex justify-content-start mb-3">
-                    <div class="bg-light p-2 rounded">
-                        <strong>Customer</strong><br>
-                        ' . htmlspecialchars($message['message']) . '<br>
-                        <small>' . $messageTime . '</small>
+            echo '<div class="admin-message-row customer">
+                    <div class="admin-message-bubble">
+                        <strong>Customer</strong>
+                        <span>' . htmlspecialchars($message['message']) . '</span>
+                        <small>' . htmlspecialchars($messageTime) . '</small>
                     </div>
                   </div>';
         }

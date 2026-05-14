@@ -260,21 +260,111 @@ if ($isAdmin) {
             box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
+        .date-header {
+            display: table;
+            margin: 10px auto 18px !important;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: #f5f5f7;
+            color: #6c757d;
+            border: 1px solid #e5e5ea;
+            font-size: 0.8rem;
+            font-weight: 800 !important;
+        }
+
+        .admin-message-row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .admin-message-row.admin {
+            justify-content: flex-end;
+        }
+
+        .admin-message-row.customer {
+            justify-content: flex-start;
+        }
+
+        .admin-message-bubble {
+            width: fit-content;
+            max-width: min(78%, 480px);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 10px 13px;
+            border-radius: 16px;
+            overflow-wrap: anywhere;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .admin-message-row.admin .admin-message-bubble {
+            background: #0d6efd;
+            color: #ffffff;
+            border-bottom-right-radius: 5px;
+        }
+
+        .admin-message-row.customer .admin-message-bubble {
+            background: #f3f4f6;
+            color: #222222;
+            border-bottom-left-radius: 5px;
+        }
+
+        .admin-message-bubble strong {
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .admin-message-bubble span {
+            line-height: 1.45;
+        }
+
+        .admin-message-bubble small {
+            align-self: flex-end;
+            opacity: 0.72;
+            font-size: 0.78rem;
+        }
+
+        .admin-chat-composer {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            padding-top: 14px;
+            background: transparent;
+        }
+
         #admin-message {
-            border-radius: 14px;
-            margin-top: 14px;
+            min-height: 46px;
+            height: 46px;
+            max-height: 46px;
+            resize: none;
+            border-radius: 999px;
+            padding: 10px 16px;
+            line-height: 1.4;
+            overflow: hidden;
         }
 
         #send-message {
-            border-radius: 12px;
+            min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            border-radius: 999px;
             background-color: #d97cb3;
-            border-color: #d97cb3;
-            padding: 8px 22px;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-weight: 700;
+            white-space: nowrap;
+            width: auto !important;
+            transition: background-color 0.2s ease, transform 0.2s ease;
         }
 
         #send-message:hover {
             background-color: #c2185b;
-            border-color: #c2185b;
+            transform: translateY(-1px);
         }
 
         .locked-chat-wrapper {
@@ -343,6 +433,33 @@ if ($isAdmin) {
             background: #15151b;
             color: #f5f5f5;
             border-color: #343442;
+        }
+
+        html[data-theme="dark"] #admin-message {
+            background: #202026;
+            border-color: #343442;
+            color: #f5f5f5;
+        }
+
+        html[data-theme="dark"] #admin-message::placeholder {
+            color: #b8bcc6;
+        }
+
+        html[data-theme="dark"] .date-header {
+            background: #25252d;
+            color: #d4d6dd;
+            border-color: #343442;
+        }
+
+        html[data-theme="dark"] .admin-message-row.customer .admin-message-bubble {
+            background: #2b2b34;
+            color: #f5f5f5;
+            border: 1px solid #3a3a46;
+        }
+
+        html[data-theme="dark"] .admin-message-row.admin .admin-message-bubble {
+            background: #0d6efd;
+            color: #ffffff;
         }
 
         body.dark-mode #customer-list .list-group-item,
@@ -421,6 +538,15 @@ if ($isAdmin) {
             .chat-panel {
                 height: 70vh;
                 min-height: 520px;
+            }
+
+            .admin-chat-composer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #send-message {
+                width: 100%;
             }
 
             .locked-chat-card {
@@ -507,8 +633,13 @@ if ($isAdmin) {
                         </p>
                     </div>
 
-                    <textarea id="admin-message" class="form-control" rows="3" placeholder="Type your message"></textarea>
-                    <button id="send-message" class="btn btn-primary mt-2">Send</button>
+                    <div class="admin-chat-composer">
+                        <textarea id="admin-message" class="form-control" rows="1" placeholder="Write a message..."></textarea>
+                        <button id="send-message" class="btn btn-primary" type="button">
+                            <i class="fa fa-paper-plane"></i>
+                            <span>Send</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
