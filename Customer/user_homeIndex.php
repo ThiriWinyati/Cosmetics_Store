@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../Customer/customer_css/style.css">
+  <link rel="stylesheet" href="../Customer/customer_css/style.css?v=20260514-home-products">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <title>Home - Cosmetics Shop</title>
@@ -584,19 +584,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
 
   <!-- New Products Section -->
   <div class="container mt-5 products-section home-products-section">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="carousel-title text-center">New Arrivals</h4>
+    <div class="home-products-header">
+      <h4 class="carousel-title">New Arrivals</h4>
       <a href="products.php?filter=new" class="btn btn-link view-more-btn text-decoration-none">View More</a>
     </div>
     <?php $newProductSlides = array_chunk(array_slice($products, 0, 8), 4); ?>
-    <div id="newProductsCarousel" class="carousel slide home-product-carousel" data-bs-ride="carousel">
-      <div class="carousel-indicators home-product-carousel-indicators">
-        <?php foreach ($newProductSlides as $slideIndex => $productSlide): ?>
-          <button type="button" data-bs-target="#newProductsCarousel" data-bs-slide-to="<?php echo $slideIndex; ?>" class="<?php echo $slideIndex === 0 ? 'active' : ''; ?>" <?php echo $slideIndex === 0 ? 'aria-current="true"' : ''; ?> aria-label="New arrivals slide <?php echo $slideIndex + 1; ?>"></button>
-        <?php endforeach; ?>
-      </div>
-      <div class="carousel-inner">
-        <?php foreach ($newProductSlides as $slideIndex => $productSlide): ?>
+    <?php if (empty($newProductSlides)): ?>
+      <div class="home-products-empty">New arrivals will be available soon.</div>
+    <?php else: ?>
+      <div id="newProductsCarousel" class="carousel slide home-product-carousel" data-bs-ride="false">
+        <div class="carousel-indicators home-product-carousel-indicators">
+          <?php foreach ($newProductSlides as $slideIndex => $productSlide): ?>
+            <button type="button" data-bs-target="#newProductsCarousel" data-bs-slide-to="<?php echo $slideIndex; ?>" class="<?php echo $slideIndex === 0 ? 'active' : ''; ?>" <?php echo $slideIndex === 0 ? 'aria-current="true"' : ''; ?> aria-label="New arrivals slide <?php echo $slideIndex + 1; ?>"></button>
+          <?php endforeach; ?>
+        </div>
+        <div class="carousel-inner">
+          <?php foreach ($newProductSlides as $slideIndex => $productSlide): ?>
           <div class="carousel-item <?php echo $slideIndex === 0 ? 'active' : ''; ?>">
             <div class="home-product-slide-grid">
               <?php foreach ($productSlide as $product): ?>
@@ -663,17 +666,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
               <?php endforeach; ?>
             </div>
           </div>
-        <?php endforeach; ?>
+          <?php endforeach; ?>
+        </div>
+        <button class="carousel-control-prev home-product-carousel-control" type="button" data-bs-target="#newProductsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next home-product-carousel-control" type="button" data-bs-target="#newProductsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
       </div>
-      <button class="carousel-control-prev home-product-carousel-control" type="button" data-bs-target="#newProductsCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next home-product-carousel-control" type="button" data-bs-target="#newProductsCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
+    <?php endif; ?>
   </div>
 
   <!-- FAQs and Contact Us Section -->
@@ -694,19 +698,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
 
   <!-- Popular Products Section -->
   <div class="container mt-5 justify-content-center align-items-center products-section home-products-section">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="carousel-title text-center">Popular Products</h4>
+    <div class="home-products-header">
+      <h4 class="carousel-title">Popular Products</h4>
       <a href="products.php?filter=popular" class="btn btn-link view-more-btn text-decoration-none">View More</a>
     </div>
     <?php $popularProductSlides = array_chunk(array_slice($popularProducts, 0, 8), 4); ?>
-    <div id="popularProductsCarousel" class="carousel slide home-product-carousel" data-bs-ride="carousel">
-      <div class="carousel-indicators home-product-carousel-indicators">
-        <?php foreach ($popularProductSlides as $slideIndex => $productSlide): ?>
-          <button type="button" data-bs-target="#popularProductsCarousel" data-bs-slide-to="<?php echo $slideIndex; ?>" class="<?php echo $slideIndex === 0 ? 'active' : ''; ?>" <?php echo $slideIndex === 0 ? 'aria-current="true"' : ''; ?> aria-label="Popular products slide <?php echo $slideIndex + 1; ?>"></button>
-        <?php endforeach; ?>
-      </div>
-      <div class="carousel-inner">
-        <?php foreach ($popularProductSlides as $slideIndex => $productSlide): ?>
+    <?php if (empty($popularProductSlides)): ?>
+      <div class="home-products-empty">Popular products will be available soon.</div>
+    <?php else: ?>
+      <div id="popularProductsCarousel" class="carousel slide home-product-carousel" data-bs-ride="false">
+        <div class="carousel-indicators home-product-carousel-indicators">
+          <?php foreach ($popularProductSlides as $slideIndex => $productSlide): ?>
+            <button type="button" data-bs-target="#popularProductsCarousel" data-bs-slide-to="<?php echo $slideIndex; ?>" class="<?php echo $slideIndex === 0 ? 'active' : ''; ?>" <?php echo $slideIndex === 0 ? 'aria-current="true"' : ''; ?> aria-label="Popular products slide <?php echo $slideIndex + 1; ?>"></button>
+          <?php endforeach; ?>
+        </div>
+        <div class="carousel-inner">
+          <?php foreach ($popularProductSlides as $slideIndex => $productSlide): ?>
           <div class="carousel-item <?php echo $slideIndex === 0 ? 'active' : ''; ?>">
             <div class="home-product-slide-grid">
               <?php foreach ($productSlide as $product): ?>
@@ -773,17 +780,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
               <?php endforeach; ?>
             </div>
           </div>
-        <?php endforeach; ?>
+          <?php endforeach; ?>
+        </div>
+        <button class="carousel-control-prev home-product-carousel-control" type="button" data-bs-target="#popularProductsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next home-product-carousel-control" type="button" data-bs-target="#popularProductsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
       </div>
-      <button class="carousel-control-prev home-product-carousel-control" type="button" data-bs-target="#popularProductsCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next home-product-carousel-control" type="button" data-bs-target="#popularProductsCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
+    <?php endif; ?>
   </div>
 
   <?php include 'footer.php'; ?>
