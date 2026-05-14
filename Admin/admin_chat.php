@@ -168,9 +168,10 @@ if ($isAdmin) {
 
         .chat-history-top {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) max-content;
+            grid-template-columns: minmax(0, 1fr) 102px 64px;
             align-items: center;
-            gap: 14px;
+            column-gap: 10px;
+            width: 100%;
         }
 
         .chat-history-name {
@@ -183,18 +184,12 @@ if ($isAdmin) {
             text-overflow: ellipsis;
         }
 
-        .chat-history-side {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-
         .chat-history-time {
             white-space: nowrap;
             color: #8b9099;
             font-size: 0.78rem;
             font-weight: 700;
+            text-align: right;
         }
 
         .chat-history-preview {
@@ -222,11 +217,14 @@ if ($isAdmin) {
         .chat-history-status {
             border-radius: 999px;
             padding: 5px 10px;
-            min-width: 48px;
+            min-width: 58px;
+            justify-self: end;
+            text-align: center;
         }
 
         .chat-panel {
-            min-height: min(72vh, 720px);
+            height: min(72vh, 720px);
+            min-height: 560px;
             display: flex;
             flex-direction: column;
         }
@@ -253,7 +251,7 @@ if ($isAdmin) {
 
         #chat-box {
             flex: 1;
-            min-height: 420px;
+            min-height: 0;
             overflow-y: auto;
             border-radius: 14px;
             border: 1px solid #dddddd;
@@ -415,8 +413,36 @@ if ($isAdmin) {
                 max-height: 320px;
             }
 
+            .chat-history-top {
+                grid-template-columns: minmax(0, 1fr) 88px 58px;
+                column-gap: 8px;
+            }
+
+            .chat-panel {
+                height: 70vh;
+                min-height: 520px;
+            }
+
             .locked-chat-card {
                 padding: 32px 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-history-top {
+                grid-template-columns: minmax(0, 1fr) 1fr;
+                row-gap: 6px;
+            }
+
+            .chat-history-time {
+                grid-column: 1;
+                text-align: left;
+            }
+
+            .chat-history-status {
+                grid-column: 2;
+                grid-row: 1 / span 2;
+                align-self: center;
             }
         }
     </style>
@@ -453,11 +479,9 @@ if ($isAdmin) {
                                     data-customer-name="<?php echo $customerName; ?>">
                                     <div class="chat-history-top">
                                         <span class="chat-history-name"><?php echo $customerName; ?></span>
-                                        <span class="chat-history-side">
-                                            <span class="chat-history-time"><?php echo htmlspecialchars($lastTime); ?></span>
-                                            <span class="badge <?php echo $unreadCount > 0 ? 'bg-primary' : 'bg-secondary'; ?> chat-history-status">
-                                                <?php echo $unreadCount > 0 ? 'Unread' : 'Read'; ?>
-                                            </span>
+                                        <span class="chat-history-time"><?php echo htmlspecialchars($lastTime); ?></span>
+                                        <span class="badge <?php echo $unreadCount > 0 ? 'bg-primary' : 'bg-secondary'; ?> chat-history-status">
+                                            <?php echo $unreadCount > 0 ? 'Unread' : 'Read'; ?>
                                         </span>
                                     </div>
                                 </li>

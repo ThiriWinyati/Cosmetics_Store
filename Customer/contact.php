@@ -94,12 +94,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name'])) {
 
                 <div id="chat-box" class="chat-box">
                     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-                    <dotlottie-player src="https://lottie.host/6d1fc1d2-d7ad-408d-aea7-9a5ec8750064/BfFh09CGTI.lottie" background="transparent" speed="1" style="width: 300px; height: 300px; margin-left: 150px" loop autoplay></dotlottie-player>
-                    <h5>Live Chat with our Team</h5>
-                    <p>Please wait for a while. We'll reach out to you soon!</p>
-                    <div id="chat-container" style="border: 1px solid #ccc; height: 300px; overflow-y: auto; padding: 10px; margin-bottom: 10px;"></div>
-                    <input type="text" id="chat-input" placeholder="Type your message..." onkeypress="checkEnter(event)" class="form-control">
-                    <button class="btn btn-primary mt-3" onclick="sendMessage()">Send</button>
+                    <div class="live-chat-card">
+                        <div class="live-chat-header">
+                            <div class="live-chat-agent">
+                                <div class="live-chat-avatar">
+                                    <i class="fa fa-headset"></i>
+                                </div>
+                                <div>
+                                    <h5>Live Chat</h5>
+                                    <p>Charm & Grace support</p>
+                                </div>
+                            </div>
+                            <span class="live-chat-status">
+                                <span></span>
+                                Online
+                            </span>
+                        </div>
+
+                        <div class="live-chat-intro">
+                            <dotlottie-player src="https://lottie.host/6d1fc1d2-d7ad-408d-aea7-9a5ec8750064/BfFh09CGTI.lottie" background="transparent" speed="1" loop autoplay></dotlottie-player>
+                            <div>
+                                <strong>How can we help?</strong>
+                                <p>Please leave your question here. Our team will reply in this chat.</p>
+                            </div>
+                        </div>
+
+                        <div id="chat-container" class="live-chat-messages"></div>
+
+                        <div class="live-chat-composer">
+                            <input type="text" id="chat-input" placeholder="Write a message..." onkeypress="checkEnter(event)" class="form-control">
+                            <button class="btn btn-primary" onclick="sendMessage()">
+                                <i class="fa fa-paper-plane"></i>
+                                <span>Send</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -209,8 +238,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name'])) {
                     .then(data => {
                         input.value = '';
                         loadMessages();
-                        var thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'));
-                        thankYouModal.show();
                     });
             }
         }
@@ -235,6 +262,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name'])) {
                         const messageWrapper = document.createElement('div');
                         messageWrapper.className = message.sender_type === 'admin' ? 'message-wrapper admin' : 'message-wrapper customer';
 
+                        const bubbleDiv = document.createElement('div');
+                        bubbleDiv.className = 'message-bubble';
+
                         const senderDiv = document.createElement('div');
                         senderDiv.className = 'sender';
                         senderDiv.textContent = message.display_name;
@@ -247,12 +277,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name'])) {
                         timeDiv.className = 'time';
                         timeDiv.textContent = message.formatted_time;
 
-                        messageWrapper.appendChild(senderDiv);
-                        messageWrapper.appendChild(messageDiv);
-                        messageWrapper.appendChild(timeDiv);
+                        bubbleDiv.appendChild(senderDiv);
+                        bubbleDiv.appendChild(messageDiv);
+                        bubbleDiv.appendChild(timeDiv);
+                        messageWrapper.appendChild(bubbleDiv);
 
                         chatContainer.appendChild(messageWrapper);
                     });
+
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
                 });
         }
 
