@@ -26,6 +26,61 @@ if (!$customer) {
     exit();
 }
 
+function formatUploadLimit($bytes)
+{
+    if ($bytes >= 1048576) {
+        return round($bytes / 1048576, 1) . 'MB';
+    }
+
+    return round($bytes / 1024) . 'KB';
+}
+
+function parsePhpUploadSize($value)
+{
+    $value = trim((string) $value);
+    $unit = strtolower(substr($value, -1));
+    $number = (float) $value;
+
+    if ($unit === 'g') {
+        return (int) ($number * 1024 * 1024 * 1024);
+    }
+
+    if ($unit === 'm') {
+        return (int) ($number * 1024 * 1024);
+    }
+
+    if ($unit === 'k') {
+        return (int) ($number * 1024);
+    }
+
+    return (int) $number;
+}
+
+function getProfileUploadErrorMessage($errorCode)
+{
+    $serverLimit = min(
+        parsePhpUploadSize(ini_get('upload_max_filesize')),
+        parsePhpUploadSize(ini_get('post_max_size'))
+    );
+    $limitText = $serverLimit > 0 ? formatUploadLimit($serverLimit) : 'the server limit';
+
+    switch ($errorCode) {
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            return "That image is larger than the server upload limit ({$limitText}). Please choose a smaller image.";
+        case UPLOAD_ERR_PARTIAL:
+            return 'The image was only partially uploaded. Please try again.';
+        case UPLOAD_ERR_NO_TMP_DIR:
+            return 'The server is missing a temporary upload folder.';
+        case UPLOAD_ERR_CANT_WRITE:
+            return 'The server could not write the uploaded image.';
+        case UPLOAD_ERR_EXTENSION:
+            return 'A server extension stopped the image upload.';
+        default:
+            return 'There was an error uploading your profile picture. Please try again.';
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -37,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['profile_picture']['error'] !== UPLOAD_ERR_OK) {
-            $uploadError = 'There was an error uploading your profile picture.';
+            $uploadError = getProfileUploadErrorMessage($_FILES['profile_picture']['error']);
         } else {
             $uploadDir = __DIR__ . '/../uploads/profile_pictures/';
             $dbUploadPath = '../uploads/profile_pictures/';
@@ -153,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <!-- Display current profile information in the form -->
-            <form method="POST" action="editProfile.php" enctype="multipart/form-data">
+            <form method="POST" action="editProfile.php" enctype="multipart/form-data" id="editProfileForm">
                 <div class="edit-profile-field">
                     <label for="name" class="edit-profile-label">Name</label>
                     <input type="text" id="name" name="name" class="edit-profile-input-text"
@@ -179,7 +234,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="edit-profile-field">
                     <label for="profile_picture" class="edit-profile-label">Profile Picture</label>
-                    <input type="file" id="profile_picture" name="profile_picture" class="form-control">
+                    <input type="hidden" name="MAX_FILE_SIZE" value="5242880">
+                    <input type="file" id="profile_picture" name="profile_picture" class="form-control" accept="image/jpeg,image/png,image/gif,image/webp">
+                    <small class="edit-profile-help-text">JPG, PNG, GIF, or WEBP. Large JPG/PNG images will be resized before upload.</small>
                 </div>
 
                 <!-- Update Profile Button -->
@@ -197,7 +254,82 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <?php include 'footer.php'; ?>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('editProfileForm');
+            const fileInput = document.getElementById('profile_picture');
+
+            if (!form || !fileInput || typeof DataTransfer === 'undefined') {
+                return;
+            }
+
+            form.addEventListener('submit', async function(event) {
+                const file = fileInput.files && fileInput.files[0];
+
+                if (!file || form.dataset.profileImagePrepared === 'true') {
+                    return;
+                }
+
+                const compressibleTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                const maxUploadBytes = 1800 * 1024;
+
+                if (!compressibleTypes.includes(file.type) || file.size <= maxUploadBytes) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                try {
+                    const resizedFile = await resizeProfileImage(file, 1200, 0.82);
+                    const transfer = new DataTransfer();
+                    transfer.items.add(resizedFile);
+                    fileInput.files = transfer.files;
+                    form.dataset.profileImagePrepared = 'true';
+                    form.submit();
+                } catch (error) {
+                    alert('This image is too large to upload. Please choose a smaller JPG, PNG, GIF, or WEBP image.');
+                }
+            });
+
+            function resizeProfileImage(file, maxSize, quality) {
+                return new Promise(function(resolve, reject) {
+                    const image = new Image();
+                    const reader = new FileReader();
+
+                    reader.onerror = reject;
+                    reader.onload = function() {
+                        image.src = reader.result;
+                    };
+
+                    image.onerror = reject;
+                    image.onload = function() {
+                        const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.max(1, Math.round(image.width * scale));
+                        canvas.height = Math.max(1, Math.round(image.height * scale));
+
+                        const context = canvas.getContext('2d');
+                        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                        canvas.toBlob(function(blob) {
+                            if (!blob) {
+                                reject(new Error('Could not resize image.'));
+                                return;
+                            }
+
+                            const newName = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+                            resolve(new File([blob], newName, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now()
+                            }));
+                        }, 'image/jpeg', quality);
+                    };
+
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

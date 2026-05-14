@@ -4803,6 +4803,13 @@ html[data-theme="dark"] .profile-action-danger i {
   text-decoration: underline;
 }
 
+.edit-profile-help-text {
+  color: #7b6671;
+  display: block;
+  font-size: 0.86rem;
+  margin-top: 8px;
+}
+
 html[data-theme="dark"] .edit-profile-page {
   background: var(--customer-bg);
 }
@@ -4862,6 +4869,10 @@ html[data-theme="dark"] .edit-profile-btn-update:hover {
 
 html[data-theme="dark"] .edit-profile-page .btn-link {
   color: var(--customer-accent) !important;
+}
+
+html[data-theme="dark"] .edit-profile-help-text {
+  color: var(--customer-muted) !important;
 }
 
 @media (max-width: 576px) {
