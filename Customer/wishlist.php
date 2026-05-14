@@ -78,167 +78,80 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <title>Wishlist - Cosmetics Shop</title>
-    <style>
-        .wishlist-container {
-            margin-top: 50px;
-        }
-
-        .wishlist-table {
-            width: 100%;
-            margin-bottom: 1rem;
-            color: #212529;
-            border-collapse: collapse;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .wishlist-table th,
-        .wishlist-table td {
-            padding: 0.75rem;
-            vertical-align: top;
-            text-align: center;
-        }
-
-        .wishlist-table thead th {
-            vertical-align: bottom;
-            border-bottom: 2px solid #dee2e6;
-            background-color: transparent;
-            color: #fff;
-        }
-
-        .wishlist-table tbody+tbody {
-            border-top: 2px solid #dee2e6;
-        }
-
-        .wishlist-table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        .wishlist-table-hover tbody tr:hover {
-            background-color: rgba(0, 0, 0, 0.075);
-        }
-
-        .wishlist-table img {
-            border-radius: 10px;
-            object-fit: cover;
-            height: 100px;
-            width: 100px;
-        }
-
-        .wishlist-table-actions .btn {
-            width: 50%;
-            padding: 5px;
-            border-radius: 10px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            margin-bottom: 5px;
-            font-size: 0.8rem;
-        }
-
-        .wishlist-table-actions .btn-primary {
-            background-color: white;
-            border: 1px solid black;
-            color: black;
-        }
-
-        .wishlist-table-actions .btn-primary:hover {
-            background-color: black;
-            border: none;
-            color: white;
-        }
-
-        .wishlist-table-actions .btn-success {
-            background-color: white;
-            border: 1px solid black;
-            color: black;
-        }
-
-        .wishlist-table-actions .btn-success:hover {
-            background-color: black;
-            border: none;
-            color: white;
-        }
-
-        .wishlist-table-actions .btn-danger {
-            background-color: transparent;
-            border: none;
-            color: black;
-        }
-    </style>
 </head>
 
-<body>
+<body class="wishlist-page">
     <?php include 'navbar.php'; ?>
 
-    <div class="container mt-4">
-        <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+    <main class="container wishlist-page-container">
+        <nav class="wishlist-breadcrumb" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="user_homeIndex.php" style="color: black; text-decoration:none;">Home</a></li>
+                <li class="breadcrumb-item"><a href="user_homeIndex.php">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
             </ol>
         </nav>
 
-        <div class="card shadow-lg">
-            <div class="card-body">
-                <h3 class="text-center mb-4">Your Wishlist</h3>
+        <section class="wishlist-hero">
+            <span>Saved Favorites</span>
+            <h1>Your Wishlist</h1>
+            <p>Keep your favorite Charm & Grace picks close and move them to cart when you are ready.</p>
+        </section>
 
-                <?php if (empty($_SESSION['wishlist'])): ?>
-                    <p class="text-center">Your wishlist is empty. Start adding items!</p>
-                <?php else: ?>
-                    <div class="table-responsive">
-                        <table class="table wishlist-table wishlist-table-hover">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th> </th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($_SESSION['wishlist'] as $index => $item): ?>
-                                    <tr>
-                                        <td>
-                                            <img src="<?php echo !empty($item['image_path']) ? htmlspecialchars($item['image_path']) : '../images/default-image.jpg'; ?>" 
-                                                alt="<?php echo htmlspecialchars($item['product_name']); ?>">
-                                        </td>
-                                        <td><?php echo htmlspecialchars($item['product_name']); ?></td>
-                                        <td>$<?php echo number_format($item['price'], 2); ?></td>
-                                        <td class="wishlist-table-actions">
-                                            <a href="viewDetails.php?id=<?php echo $item['product_id']; ?>" class="btn btn-primary">
-                                                <i class="fa fa-eye"></i> View Details
-                                            </a>
-                                            <form method="POST" action="add_to_cart.php" style="display:inline;">
-                                                <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
-                                                <button type="submit" class="btn btn-success">
-                                                    <i class="fa fa-cart-plus"></i> Add to Cart
-                                                </button>
-                                            </form>
+        <?php if (empty($_SESSION['wishlist'])): ?>
+            <section class="wishlist-empty-state">
+                <i class="fa fa-heart-o" aria-hidden="true"></i>
+                <h2>Your wishlist is empty</h2>
+                <p>Start saving products you love and they will appear here.</p>
+                <a href="products.php" class="wishlist-primary-link">Browse Products</a>
+            </section>
+        <?php else: ?>
+            <section class="wishlist-grid" aria-label="Wishlist products">
+                <?php foreach ($_SESSION['wishlist'] as $item): ?>
+                    <article class="wishlist-product-card">
+                        <form method="POST" action="wishlist.php" class="wishlist-remove-form">
+                            <input type="hidden" name="remove_favourites_id" value="<?php echo $item['favourites_id']; ?>">
+                            <button type="submit" class="wishlist-remove-btn" aria-label="Remove <?php echo htmlspecialchars($item['product_name']); ?> from wishlist" onclick="return confirm('Are you sure you want to remove this item from your wishlist?')">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </form>
 
-                                        </td>
-                                        <td class="wishlist-table-actions">
-                                            <form method="POST" action="wishlist.php" style="display:inline;">
-                                                <input type="hidden" name="remove_favourites_id" value="<?php echo $item['favourites_id']; ?>">
-                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this item from your wishlist?')">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
+                        <a href="viewDetails.php?id=<?php echo $item['product_id']; ?>" class="wishlist-image-link">
+                            <img src="<?php echo !empty($item['image_path']) ? htmlspecialchars($item['image_path']) : '../images/default-image.jpg'; ?>"
+                                alt="<?php echo htmlspecialchars($item['product_name']); ?>">
+                        </a>
 
-                <div class="text-center mt-3">
-                    <a href="products.php" class="btn btn-primary">Continue Shopping</a>
-                </div>
+                        <div class="wishlist-product-info">
+                            <h2><?php echo htmlspecialchars($item['product_name']); ?></h2>
+                            <p>$<?php echo number_format($item['price'], 2); ?></p>
+                        </div>
+
+                        <div class="wishlist-actions">
+                            <a href="viewDetails.php?id=<?php echo $item['product_id']; ?>" class="wishlist-secondary-link">
+                                <i class="fa fa-eye"></i> View Details
+                            </a>
+                            <form method="POST" action="add_to_cart.php">
+                                <input type="hidden" name="add_to_cart" value="1">
+                                <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
+                                <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($item['product_name']); ?>">
+                                <input type="hidden" name="price" value="<?php echo htmlspecialchars($item['price']); ?>">
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="image_path" value="<?php echo htmlspecialchars($item['image_path']); ?>">
+                                <button type="submit" class="wishlist-primary-btn">
+                                    <i class="fa fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </section>
+
+            <div class="wishlist-footer-action">
+                <a href="products.php" class="wishlist-primary-link">Continue Shopping</a>
             </div>
-        </div>
+        <?php endif; ?>
+    </main>
 
-        <?php include 'footer.php'; ?>
+    <?php include 'footer.php'; ?>
 </body>
 
 </html>

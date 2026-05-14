@@ -51,6 +51,17 @@ $paymentStmt = $conn->prepare($paymentQuery);
 $paymentStmt->execute();
 $paymentMethods = $paymentStmt->fetchAll(PDO::FETCH_ASSOC);
 
+if (empty($_SESSION['cart'])) {
+    echo "<script>alert('Your cart is empty. Please add products before checkout.');</script>";
+    echo "<script>window.location.href = 'cart.php';</script>";
+    exit();
+}
+
+$selectedShippingMethodID = $_POST['shipping_method'] ?? $_POST['selected_shipping_method'] ?? ($shippingMethods[0]['Shipping_Method_ID'] ?? null);
+if ($selectedShippingMethodID !== null) {
+    $_POST['shipping_method'] = $selectedShippingMethodID;
+}
+
 // Calculate the total amount for the products
 $productTotalAmount = 0;
 foreach ($_SESSION['cart'] as $item) {
@@ -105,13 +116,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['apply_coupon'])) {
 // Include the shipping cost after applying the coupon discount
 // Get the shipping cost
 $shippingCost = 0;
-if (isset($_POST['shipping_method'])) {
-    $shippingMethodID = $_POST['shipping_method'];
+if ($selectedShippingMethodID !== null) {
+    $shippingMethodID = $selectedShippingMethodID;
     $shippingQuery = "SELECT Cost FROM shippingmethods WHERE Shipping_Method_ID = ?";
     $stmt = $conn->prepare($shippingQuery);
     $stmt->execute([$shippingMethodID]);
     $shippingMethod = $stmt->fetch(PDO::FETCH_ASSOC);
-    $shippingCost = $shippingMethod['Cost'];
+    $shippingCost = $shippingMethod ? $shippingMethod['Cost'] : 0;
 }
 
 // Calculate the total amount
@@ -121,7 +132,7 @@ $totalAmount = $newTotalAmount + $shippingCost;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['complete_order'])) {
     try {
         // Ensure the shipping method exists
-        $shippingMethodID = $_POST['shipping_method'];
+        $shippingMethodID = $_POST['shipping_method'] ?? $selectedShippingMethodID;
         $shippingQuery = "SELECT * FROM shippingmethods WHERE Shipping_Method_ID = ?";
         $stmt = $conn->prepare($shippingQuery);
         $stmt->execute([$shippingMethodID]);

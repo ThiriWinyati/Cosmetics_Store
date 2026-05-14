@@ -20,18 +20,24 @@ try {
     echo "Error fetching shipping methods: " . $e->getMessage();
 }
 
+$defaultShippingMethod = $shippingMethods[0] ?? [
+    'Shipping_Method_ID' => '',
+    'Shipping_Method' => 'Shipping unavailable',
+    'Cost' => 0,
+];
+
 // Update cart logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['quantity'])) {
     foreach ($_POST['quantity'] as $index => $newQuantity) {
         $cartId = intval($_POST['cart_id'][$index]);
         $newQuantity = intval($newQuantity);
 
-        // Fetch the available stock quantity for the product
-        $stmt = $conn->prepare("SELECT s.Quantity FROM shopping_cart sc JOIN shades s ON sc.shade_id = s.shade_id WHERE sc.Cart_ID = ?");
+        // Shade-specific stock may be empty for products added without a selected shade.
+        $stmt = $conn->prepare("SELECT s.Quantity FROM shopping_cart sc LEFT JOIN shades s ON sc.shade_id = s.shade_id WHERE sc.Cart_ID = ?");
         $stmt->execute([$cartId]);
         $stockQuantity = $stmt->fetchColumn();
 
-        if ($newQuantity > 0 && $newQuantity <= $stockQuantity) {
+        if ($newQuantity > 0 && ($stockQuantity === false || $stockQuantity === null || $newQuantity <= (int)$stockQuantity)) {
             try {
                 // Update the quantity in the shopping_cart table using Cart_ID
                 $stmt = $conn->prepare("UPDATE shopping_cart SET Quantity = ? WHERE Cart_ID = ?");
@@ -62,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_cart_id'])) {
         $stmt->execute();
 
         // Remove from session and reindex the array
-        $_SESSION['cart'] = array_values(array_filter($_SESSION['cart'], function ($item) use ($cartIdToRemove) {
+        $_SESSION['cart'] = array_values(array_filter($_SESSION['cart'] ?? [], function ($item) use ($cartIdToRemove) {
             return $item['cart_id'] !== $cartIdToRemove;
         }));
 
@@ -148,241 +154,120 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <title>Cart - Cosmetics Shop</title>
-    <style>
-        .cart-table {
-            background-color: rgba(255, 255, 255, 0.8);
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        .cart-table th,
-        .cart-table td {
-            border: none;
-            padding: 15px;
-            text-align: left;
-        }
-
-        .cart-table th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-        }
-
-        .cart-table tbody tr:nth-child(even) {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        .total-cart {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            margin-top: 20px;
-            max-width: 400px;
-            margin-left: auto;
-        }
-
-        .total-cart h4 {
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .total-cart .total-row img {}
-
-        .total-cart .total-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .total-cart .total-row span {
-            display: inline-block;
-            width: 100px;
-            text-align: right;
-        }
-
-        .total-cart .checkout-btn {
-            margin-top: 10px;
-            width: 100%;
-            padding: 10px;
-            background-color: black;
-            border-radius: 10px;
-            border: none;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .total-cart .checkout-btn:hover {
-            background-color: white;
-            border: 1px solid black;
-        }
-
-        .total-cart .continue-shopping-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            border-radius: 10px;
-            border: none;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .total-cart .continue-shopping-btn:hover {
-            background-color: #0056b3;
-            color: white;
-        }
-
-        .btn-quantity {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            border-radius: 50%;
-        }
-
-        .quantity-input {
-            width: 50px;
-            text-align: center;
-        }
-
-        .clear-all-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: black;
-            border-radius: 10px;
-            border: none;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
-        }
-
-        .clear-all-btn:hover {
-            background-color: white;
-            color: black;
-            border: 1px solid black;
-        }
-
-        .faded-line {
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
 
-<body>
+<body class="cart-page">
 
     <?php include 'navbar.php' ?>
-
-
-
-    <div class="container mt-5">
-        <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+    <main class="container cart-page-container">
+        <nav class="cart-breadcrumb" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="user_homeIndex.php" style="color: black; text-decoration:none;">Home</a></li>
-                <li class="breadcrumb-item"><a href="products.php" style="color: black; text-decoration:none;">Shop</a></li>
+                <li class="breadcrumb-item"><a href="user_homeIndex.php">Home</a></li>
+                <li class="breadcrumb-item"><a href="products.php">Shop</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Cart</li>
             </ol>
         </nav>
-        <h3 class="text-center mb-4">Your Shopping Cart</h3>
-        <div class="card shadow-lg">
-            <div class="card-body" style="max-width: 100%; overflow-x: auto;">
+        <section class="cart-hero">
+            <span>Shopping Bag</span>
+            <h1>Your Shopping Cart</h1>
+            <p>Review quantities, shipping, and your order total before checkout.</p>
+        </section>
 
-                <form method="POST" action="cart.php" id="cart-form">
-                    <table class="cart-table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th></th>
-                                <th>Shade</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $totalAmount = 0;
-                            foreach ($_SESSION['cart'] as $index => $item) {
-                                $total = $item['price'] * $item['quantity'];
-                                $totalAmount += $total;
-                            ?>
-                                <tr id="cart-row-<?php echo $index; ?>">
-                                    <td>
+        <?php
+        $totalAmount = 0;
+        foreach ($_SESSION['cart'] as $item) {
+            $totalAmount += $item['price'] * $item['quantity'];
+        }
+        ?>
+
+        <?php if (empty($_SESSION['cart'])): ?>
+            <section class="cart-empty-state">
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                <h2>Your cart is empty</h2>
+                <p>Add products you love and they will appear here.</p>
+                <a href="products.php" class="cart-primary-link">Start Shopping</a>
+            </section>
+        <?php else: ?>
+            <div class="cart-layout">
+                <section class="cart-items-panel">
+                    <form method="POST" action="cart.php" id="cart-form">
+                        <div class="cart-items-list">
+                            <?php foreach ($_SESSION['cart'] as $index => $item): ?>
+                                <?php $total = $item['price'] * $item['quantity']; ?>
+                                <article class="cart-item-card" id="cart-row-<?php echo $index; ?>">
+                                    <div class="cart-item-image">
                                         <?php if (!empty($item['image_path'])): ?>
-                                            <img src="<?php echo htmlspecialchars($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>" class="img-fluid" style="border-radius: 10px; object-fit: cover; height: 100px; width: 100px;">
+                                            <img src="<?php echo htmlspecialchars($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
                                         <?php else: ?>
-                                            <img src="default-image.jpg" alt="Default Image" class="img-fluid" style="max-width: 100px;">
+                                            <img src="../images/default-image.jpg" alt="Default Image">
                                         <?php endif; ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($item['product_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($item['shade_name'] ?? 'N/A'); ?></td>
+                                    </div>
 
-                                    <td>$<?php echo number_format($item['price'], 2); ?></td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <button class="btn btn-quantity btn-outline-secondary" type="button" onclick="updateQuantity(<?php echo $index; ?>, -1)">-</button>
-                                            <input type="number" name="quantity[<?php echo $index; ?>]" class="form-control quantity-input mx-2" value="<?php echo $item['quantity']; ?>" id="quantity-<?php echo $index; ?>" readonly>
-                                            <button class="btn btn-quantity btn-outline-secondary" type="button" onclick="updateQuantity(<?php echo $index; ?>, 1)">+</button>
+                                    <div class="cart-item-info">
+                                        <h2><?php echo htmlspecialchars($item['product_name']); ?></h2>
+                                        <p>Shade: <?php echo htmlspecialchars($item['shade_name'] ?? 'N/A'); ?></p>
+                                        <span>$<?php echo number_format($item['price'], 2); ?></span>
+                                    </div>
+
+                                    <div class="cart-item-quantity">
+                                        <div class="cart-quantity-controls">
+                                            <button class="btn btn-quantity" type="button" onclick="updateQuantity(<?php echo $index; ?>, -1)" aria-label="Decrease quantity">-</button>
+                                            <input type="number" name="quantity[<?php echo $index; ?>]" class="form-control quantity-input" value="<?php echo $item['quantity']; ?>" id="quantity-<?php echo $index; ?>" readonly>
+                                            <button class="btn btn-quantity" type="button" onclick="updateQuantity(<?php echo $index; ?>, 1)" aria-label="Increase quantity">+</button>
                                         </div>
-                                        <small class="text-muted">Stock: <?php echo $item['stock_quantity']; ?></small>
-                                    </td>
+                                        <small>Stock: <?php echo $item['stock_quantity'] ?? 'N/A'; ?></small>
+                                    </div>
 
-                                    <td>$<?php echo number_format($total, 2); ?></td>
+                                    <div class="cart-item-total">
+                                        <span>Item Total</span>
+                                        <strong>$<?php echo number_format($total, 2); ?></strong>
+                                    </div>
 
-                                    <td>
-                                        <button type="button" class="btn btn-danger" onclick="removeFromCart(<?php echo $item['cart_id']; ?>)">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-
-                                </tr>
-
+                                    <button type="button" class="cart-remove-btn" onclick="removeFromCart(<?php echo $item['cart_id']; ?>)" aria-label="Remove <?php echo htmlspecialchars($item['product_name']); ?>">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </article>
                                 <input type="hidden" name="cart_id[<?php echo $index; ?>]" value="<?php echo $item['cart_id']; ?>">
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </form>
+                            <?php endforeach; ?>
+                        </div>
+                    </form>
 
-                <form method="POST" action="cart.php" class="mt-3">
-                    <button type="submit" name="clear_all" class="btn clear-all-btn">Clear All</button>
-                </form>
+                    <form method="POST" action="cart.php" class="cart-clear-form">
+                        <button type="submit" name="clear_all" class="cart-clear-btn">Clear All</button>
+                    </form>
+                </section>
 
-                <div class="faded-line"></div>
-
-                <div class="total-cart">
+                <aside class="total-cart cart-summary-panel">
                     <h4>Cart Total</h4>
                     <div class="total-row">
-                        <span>Subtotal:</span>
-                        <span id="subtotal">$<?php echo number_format($totalAmount, 2); ?></span>
+                        <span>Subtotal</span>
+                        <strong id="subtotal">$<?php echo number_format($totalAmount, 2); ?></strong>
                     </div>
                     <div class="total-row">
-                        <span>Shipping:</span>
-                        <span id="shipping-cost">$<?php echo number_format($shippingMethods[0]['Cost'], 2); ?></span>
+                        <span>Shipping</span>
+                        <strong id="shipping-cost">$<?php echo number_format($defaultShippingMethod['Cost'], 2); ?></strong>
                     </div>
-                    <div class="total-row">
-                        <span>Total:</span>
-                        <span id="total">$<?php echo number_format($totalAmount + $shippingMethods[0]['Cost'], 2); ?></span>
+                    <div class="total-row total-row-grand">
+                        <span>Total</span>
+                        <strong id="total">$<?php echo number_format($totalAmount + $defaultShippingMethod['Cost'], 2); ?></strong>
                     </div>
-                    <select id="shipping_method" class="form-select mt-3" onchange="updateTotal()">
+
+                    <label for="shipping_method" class="cart-summary-label">Shipping Method</label>
+                    <select id="shipping_method" class="form-select" onchange="updateTotal()">
                         <?php foreach ($shippingMethods as $method): ?>
                             <option value="<?php echo $method['Cost']; ?>" data-id="<?php echo $method['Shipping_Method_ID']; ?>"><?php echo $method['Shipping_Method']; ?> - $<?php echo number_format($method['Cost'], 2); ?></option>
                         <?php endforeach; ?>
                     </select>
+
                     <form method="POST" action="checkout.php">
-                        <input type="hidden" name="selected_shipping_method" id="selected_shipping_method" value="<?php echo $shippingMethods[0]['Shipping_Method_ID']; ?>">
-                        <button type="submit" class="btn checkout-btn">Proceed to Checkout</button>
+                        <input type="hidden" name="selected_shipping_method" id="selected_shipping_method" value="<?php echo $defaultShippingMethod['Shipping_Method_ID']; ?>">
+                        <button type="submit" class="btn checkout-btn" <?php echo empty($shippingMethods) ? 'disabled' : ''; ?>>Proceed to Checkout</button>
                     </form>
                     <a href="products.php" class="btn continue-shopping-btn">Continue Shopping</a>
-                </div>
+                </aside>
             </div>
-        </div>
-    </div>
+        <?php endif; ?>
+    </main>
 
     <?php include 'footer.php'; ?>
 
@@ -393,7 +278,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             let newQuantity = currentQuantity + change;
             const maxQuantity = <?php echo json_encode(array_column($_SESSION['cart'], 'stock_quantity')); ?>[index];
 
-            if (newQuantity > 0 && newQuantity <= maxQuantity) {
+            if (newQuantity > 0 && (maxQuantity === null || maxQuantity === '' || newQuantity <= maxQuantity)) {
                 quantityInput.value = newQuantity;
                 document.getElementById('cart-form').submit();
             } else {
@@ -403,11 +288,15 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
         function updateTotal() {
             const subtotal = parseFloat(document.getElementById('subtotal').innerText.replace('$', ''));
-            const shipping = parseFloat(document.getElementById('shipping_method').value);
+            const shippingMethod = document.getElementById('shipping_method');
+            if (!shippingMethod || !shippingMethod.selectedOptions.length) {
+                return;
+            }
+            const shipping = parseFloat(shippingMethod.value) || 0;
             const total = subtotal + shipping;
             document.getElementById('shipping-cost').innerText = `$${shipping.toFixed(2)}`;
             document.getElementById('total').innerText = `$${total.toFixed(2)}`;
-            document.getElementById('selected_shipping_method').value = document.getElementById('shipping_method').selectedOptions[0].getAttribute('data-id');
+            document.getElementById('selected_shipping_method').value = shippingMethod.selectedOptions[0].getAttribute('data-id') || '';
         }
 
         function removeFromCart(cartId) {
