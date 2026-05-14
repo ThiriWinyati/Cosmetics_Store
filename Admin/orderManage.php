@@ -140,6 +140,40 @@ if (isset($_GET['delete_order_id'])) {
     <title>Manage Orders</title>
 
     <style>
+        .order-manage-shell {
+            padding-top: 28px;
+        }
+
+        .order-manage-page-header {
+            text-align: center;
+            padding: 14px 0 12px;
+            margin-bottom: 24px;
+            background: transparent;
+        }
+
+        .order-manage-page-header .admin-page-title {
+            font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+            line-height: 1.2;
+        }
+
+        .order-manage-page-header .admin-page-subtitle {
+            max-width: 760px;
+            margin: 8px auto 0;
+            line-height: 1.6;
+        }
+
+        .order-manage-toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 26px;
+        }
+
+        .order-manage-toolbar .input-group {
+            margin-bottom: 0;
+            flex-wrap: nowrap;
+        }
+
         .orders-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -300,6 +334,16 @@ if (isset($_GET['delete_order_id'])) {
         }
 
         @media (max-width: 576px) {
+            .order-manage-toolbar .input-group {
+                flex-wrap: wrap;
+            }
+
+            .order-manage-toolbar .admin-search-input,
+            .order-manage-toolbar .admin-search-button {
+                width: 100%;
+                border-radius: 10px !important;
+            }
+
             .orders-container {
                 grid-template-columns: 1fr;
             }
@@ -321,24 +365,26 @@ if (isset($_GET['delete_order_id'])) {
 
 
 
-    <div class="container">
-        <a href="orderManage.php" class="text-decoration-none">
-            <h2 class="text-center">Manage Orders</h2>
-        </a>
-        <p class="text-center">Here you can view and manage all customer orders with their details.</p>
+    <div class="admin-page-shell order-manage-shell">
+        <section class="order-manage-page-header">
+            <h2 class="admin-page-title">Manage Orders</h2>
+            <p class="admin-page-subtitle">Here you can view and manage all customer orders with their details.</p>
+        </section>
 
-        <div class="text-start mb-3">
-            <a href="viewOrders.php" class="btn btn-outline-primary">
-                <i class="fa fa-arrow-left"></i> Back to Orders
-            </a>
-        </div>
-
-        <form method="POST" action="orderManage.php" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="searchTerm" class="form-control" placeholder="<?php echo $isAdmin ? 'Search by customer name, email, or order ID' : 'Search by order ID' ?>" value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
-                <button class="btn btn-primary" type="submit">Search</button>
+        <div class="order-manage-toolbar">
+            <div class="text-start">
+                <a href="viewOrders.php" class="btn btn-outline-primary">
+                    <i class="fa fa-arrow-left"></i> Back to Orders
+                </a>
             </div>
-        </form>
+
+            <form method="POST" action="orderManage.php">
+                <div class="input-group">
+                    <input type="text" name="searchTerm" class="form-control admin-search-input" placeholder="<?php echo $isAdmin ? 'Search by customer name, email, or order ID' : 'Search by order ID' ?>" value="<?php echo htmlspecialchars($searchTerm ?? ''); ?>">
+                    <button class="admin-search-button px-4" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
 
         <div class="orders-container">
             <?php

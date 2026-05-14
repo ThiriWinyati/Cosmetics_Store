@@ -1845,6 +1845,24 @@ html[data-theme="dark"] .btn-close {
   filter: invert(1) grayscale(100%) brightness(200%);
 }
 
+/* Keep Bootstrap popups above the fixed admin sidebar and topbar. */
+.modal-backdrop {
+  z-index: 20040 !important;
+}
+
+.modal {
+  z-index: 20050 !important;
+}
+
+.modal-dialog {
+  margin-top: calc(var(--admin-topbar-height, 72px) + 24px);
+}
+
+.modal-content {
+  position: relative;
+  z-index: 1;
+}
+
 html[data-theme="dark"] hr,
 html[data-theme="dark"] .border,
 html[data-theme="dark"] .border-top,
