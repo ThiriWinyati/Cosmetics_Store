@@ -167,9 +167,9 @@ if ($isAdmin) {
         }
 
         .chat-history-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: start;
             gap: 10px;
         }
 
@@ -177,6 +177,8 @@ if ($isAdmin) {
             display: block;
             font-weight: 800;
             color: #222222;
+            line-height: 1.25;
+            overflow-wrap: anywhere;
         }
 
         .chat-history-time {
@@ -223,6 +225,19 @@ if ($isAdmin) {
             font-size: 0.9rem;
             font-weight: 600;
             margin-left: 6px;
+        }
+
+        .active-chat-id {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 8px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: #f7e4ee;
+            color: #9b3e72;
+            font-size: 0.78rem;
+            font-weight: 800;
+            vertical-align: middle;
         }
 
         #chat-box {
@@ -354,6 +369,11 @@ if ($isAdmin) {
             color: #b8bcc6;
         }
 
+        html[data-theme="dark"] .active-chat-id {
+            background: #3a2634;
+            color: #ff9ccc;
+        }
+
         body.dark-mode .locked-chat-card,
         html[data-theme="dark"] .locked-chat-card,
         .dark-mode .locked-chat-card {
@@ -415,7 +435,6 @@ if ($isAdmin) {
                                 <?php
                                     $customerName = htmlspecialchars($customer['customer_name'] ?? 'Unknown customer');
                                     $lastMessage = htmlspecialchars($customer['last_message'] ?? 'No messages yet.');
-                                    $lastSender = htmlspecialchars($customer['last_sender'] ?? 'Message');
                                     $lastTime = !empty($customer['last_timestamp']) ? date('M j, H:i', strtotime($customer['last_timestamp'])) : '';
                                     $messageCount = (int)($customer['message_count'] ?? 0);
                                     $unreadCount = (int)($customer['new_messages'] ?? 0);
@@ -428,7 +447,6 @@ if ($isAdmin) {
                                         <span class="chat-history-time"><?php echo htmlspecialchars($lastTime); ?></span>
                                     </div>
                                     <p class="chat-history-preview">
-                                        <strong><?php echo $lastSender; ?>:</strong>
                                         <?php echo $lastMessage; ?>
                                     </p>
                                     <div class="chat-history-meta-row">
@@ -451,6 +469,7 @@ if ($isAdmin) {
                     <h5>
                         Chat with Customer
                         <span id="active-chat-name" class="active-chat-name">No customer selected</span>
+                        <span id="active-chat-id" class="active-chat-id d-none"></span>
                     </h5>
 
                     <div id="chat-box">
@@ -538,6 +557,9 @@ if ($isAdmin) {
                 $('.customer').removeClass('active');
                 item.addClass('active');
                 $('#active-chat-name').text(item.data('customer-name') || 'Selected customer');
+                $('#active-chat-id')
+                    .removeClass('d-none')
+                    .text('ID #' + item.data('customer-id'));
             }
         </script>
 
