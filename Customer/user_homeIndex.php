@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../Customer/customer_css/style.css?v=20260514-home-products">
+  <link rel="stylesheet" href="../Customer/customer_css/style.css?v=20260514-home-products-grid">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <title>Home - Cosmetics Shop</title>
@@ -588,94 +588,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
       <h4 class="carousel-title">New Arrivals</h4>
       <a href="products.php?filter=new" class="btn btn-link view-more-btn text-decoration-none">View More</a>
     </div>
-    <?php $newProductSlides = array_chunk(array_slice($products, 0, 8), 4); ?>
-    <?php if (empty($newProductSlides)): ?>
+    <?php $newProductsGrid = array_slice($products, 0, 4); ?>
+    <?php if (empty($newProductsGrid)): ?>
       <div class="home-products-empty">New arrivals will be available soon.</div>
     <?php else: ?>
-      <div id="newProductsCarousel" class="carousel slide home-product-carousel" data-bs-ride="false">
-        <div class="carousel-indicators home-product-carousel-indicators">
-          <?php foreach ($newProductSlides as $slideIndex => $productSlide): ?>
-            <button type="button" data-bs-target="#newProductsCarousel" data-bs-slide-to="<?php echo $slideIndex; ?>" class="<?php echo $slideIndex === 0 ? 'active' : ''; ?>" <?php echo $slideIndex === 0 ? 'aria-current="true"' : ''; ?> aria-label="New arrivals slide <?php echo $slideIndex + 1; ?>"></button>
-          <?php endforeach; ?>
-        </div>
-        <div class="carousel-inner">
-          <?php foreach ($newProductSlides as $slideIndex => $productSlide): ?>
-          <div class="carousel-item <?php echo $slideIndex === 0 ? 'active' : ''; ?>">
-            <div class="home-product-slide-grid">
-              <?php foreach ($productSlide as $product): ?>
-                <?php
-                $imageArray = !empty($product['images']) ? explode(',', $product['images']) : [];
-                $productID = $product['Product_ID'];
-                $avgRatingQuery = "SELECT AVG(Rating) AS avg_rating, COUNT(Rating) AS total_reviews FROM reviews WHERE Product_ID = ?";
-                $stmt = $conn->prepare($avgRatingQuery);
-                $stmt->execute([$productID]);
-                $avgRatingResult = $stmt->fetch(PDO::FETCH_ASSOC);
-                $avgRating = $avgRatingResult['avg_rating'] ? round($avgRatingResult['avg_rating'], 1) : 0;
-                $totalReviews = $avgRatingResult['total_reviews'];
+      <div class="home-product-grid">
+        <?php foreach ($newProductsGrid as $product): ?>
+          <?php
+          $imageArray = !empty($product['images']) ? explode(',', $product['images']) : [];
+          $productID = $product['Product_ID'];
+          $avgRatingQuery = "SELECT AVG(Rating) AS avg_rating, COUNT(Rating) AS total_reviews FROM reviews WHERE Product_ID = ?";
+          $stmt = $conn->prepare($avgRatingQuery);
+          $stmt->execute([$productID]);
+          $avgRatingResult = $stmt->fetch(PDO::FETCH_ASSOC);
+          $avgRating = $avgRatingResult['avg_rating'] ? round($avgRatingResult['avg_rating'], 1) : 0;
+          $totalReviews = $avgRatingResult['total_reviews'];
 
-                if (!empty($product['Image_Path'])) {
-                  array_unshift($imageArray, $product['Image_Path']);
-                }
-                $cardCarouselId = 'new-product-carousel-' . $product['Product_ID'];
-                ?>
-                <div class="home-product-slide-card">
-                  <div class="card1 border-0 shadow-sm rounded position-relative">
-                    <div class="card-image-wrapper" style="position: relative;">
-                      <div class="image-buttons">
-                        <form method="post" action="user_homeIndex.php">
-                          <input type="hidden" name="product_id" value="<?php echo $product['Product_ID']; ?>">
-                          <button name="add_to_wishlist" class="btn btn-light btn-circle shadow"><i class="fas fa-heart"></i></button>
-                        </form>
-                        <a href="viewDetails.php?id=<?php echo $product['Product_ID']; ?>" style="text-decoration: none;">
-                          <button class="btn btn-light btn-circle shadow"><i class="fas fa-eye"></i></button>
-                        </a>
-                      </div>
-                      <img src="<?php echo $product['Image_Path']; ?>" class="d-block w-100 rounded-top product-image main-image" alt="<?php echo $product['Name']; ?>" style="height: 200px; object-fit: contain;">
-                      <div id="<?php echo $cardCarouselId; ?>" class="carousel slide card-carousel" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                          <?php foreach ($imageArray as $index => $image): ?>
-                            <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                              <img src="<?php echo $image; ?>" class="d-block w-100 rounded-top" alt="<?php echo $product['Name']; ?>" style="height: 200px; object-fit: contain;">
-                            </div>
-                          <?php endforeach; ?>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $cardCarouselId; ?>" data-bs-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $cardCarouselId; ?>" data-bs-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Next</span>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <span class="card-title fw-bold text-truncate"><?php echo $product['Name']; ?></span>
-                      <div class="mt-2">
-                        <span class="text-warning">
-                          <?php for ($i = 0; $i < 5; $i++): ?>
-                            <i class="fa<?php echo $i < $avgRating ? 's' : 'r'; ?> fa-star"></i>
-                          <?php endfor; ?>
-                        </span>
-                        <p class="card-text text-muted"><?php echo $avgRating; ?> stars (<?php echo $totalReviews; ?> reviews)</p>
-                        <span class="text">$<?php echo $product['Price']; ?></span>
-                      </div>
-                    </div>
-                  </div>
+          if (!empty($product['Image_Path'])) {
+            array_unshift($imageArray, $product['Image_Path']);
+          }
+          $cardCarouselId = 'new-product-carousel-' . $product['Product_ID'];
+          ?>
+          <div class="home-product-slide-card">
+            <div class="card1 border-0 shadow-sm rounded position-relative">
+              <div class="card-image-wrapper" style="position: relative;">
+                <div class="image-buttons">
+                  <form method="post" action="user_homeIndex.php">
+                    <input type="hidden" name="product_id" value="<?php echo $product['Product_ID']; ?>">
+                    <button name="add_to_wishlist" class="btn btn-light btn-circle shadow"><i class="fas fa-heart"></i></button>
+                  </form>
+                  <a href="viewDetails.php?id=<?php echo $product['Product_ID']; ?>" style="text-decoration: none;">
+                    <button class="btn btn-light btn-circle shadow"><i class="fas fa-eye"></i></button>
+                  </a>
                 </div>
-              <?php endforeach; ?>
+                <img src="<?php echo $product['Image_Path']; ?>" class="d-block w-100 rounded-top product-image main-image" alt="<?php echo $product['Name']; ?>" style="height: 200px; object-fit: contain;">
+                <div id="<?php echo $cardCarouselId; ?>" class="carousel slide card-carousel" data-bs-ride="carousel">
+                  <div class="carousel-inner">
+                    <?php foreach ($imageArray as $index => $image): ?>
+                      <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                        <img src="<?php echo $image; ?>" class="d-block w-100 rounded-top" alt="<?php echo $product['Name']; ?>" style="height: 200px; object-fit: contain;">
+                      </div>
+                    <?php endforeach; ?>
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $cardCarouselId; ?>" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $cardCarouselId; ?>" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body text-center">
+                <span class="card-title fw-bold text-truncate"><?php echo $product['Name']; ?></span>
+                <div class="mt-2">
+                  <span class="text-warning">
+                    <?php for ($i = 0; $i < 5; $i++): ?>
+                      <i class="fa<?php echo $i < $avgRating ? 's' : 'r'; ?> fa-star"></i>
+                    <?php endfor; ?>
+                  </span>
+                  <p class="card-text text-muted"><?php echo $avgRating; ?> stars (<?php echo $totalReviews; ?> reviews)</p>
+                  <span class="text">$<?php echo $product['Price']; ?></span>
+                </div>
+              </div>
             </div>
           </div>
-          <?php endforeach; ?>
-        </div>
-        <button class="carousel-control-prev home-product-carousel-control" type="button" data-bs-target="#newProductsCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next home-product-carousel-control" type="button" data-bs-target="#newProductsCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+        <?php endforeach; ?>
       </div>
     <?php endif; ?>
   </div>
@@ -702,94 +681,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_wishlist'])) {
       <h4 class="carousel-title">Popular Products</h4>
       <a href="products.php?filter=popular" class="btn btn-link view-more-btn text-decoration-none">View More</a>
     </div>
-    <?php $popularProductSlides = array_chunk(array_slice($popularProducts, 0, 8), 4); ?>
-    <?php if (empty($popularProductSlides)): ?>
+    <?php $popularProductsGrid = array_slice($popularProducts, 0, 4); ?>
+    <?php if (empty($popularProductsGrid)): ?>
       <div class="home-products-empty">Popular products will be available soon.</div>
     <?php else: ?>
-      <div id="popularProductsCarousel" class="carousel slide home-product-carousel" data-bs-ride="false">
-        <div class="carousel-indicators home-product-carousel-indicators">
-          <?php foreach ($popularProductSlides as $slideIndex => $productSlide): ?>
-            <button type="button" data-bs-target="#popularProductsCarousel" data-bs-slide-to="<?php echo $slideIndex; ?>" class="<?php echo $slideIndex === 0 ? 'active' : ''; ?>" <?php echo $slideIndex === 0 ? 'aria-current="true"' : ''; ?> aria-label="Popular products slide <?php echo $slideIndex + 1; ?>"></button>
-          <?php endforeach; ?>
-        </div>
-        <div class="carousel-inner">
-          <?php foreach ($popularProductSlides as $slideIndex => $productSlide): ?>
-          <div class="carousel-item <?php echo $slideIndex === 0 ? 'active' : ''; ?>">
-            <div class="home-product-slide-grid">
-              <?php foreach ($productSlide as $product): ?>
-                <?php
-                $imageArray = !empty($product['images']) ? explode(',', $product['images']) : [];
-                $productID = $product['Product_ID'];
-                $avgRatingQuery = "SELECT AVG(Rating) AS avg_rating, COUNT(Rating) AS total_reviews FROM reviews WHERE Product_ID = ?";
-                $stmt = $conn->prepare($avgRatingQuery);
-                $stmt->execute([$productID]);
-                $avgRatingResult = $stmt->fetch(PDO::FETCH_ASSOC);
-                $avgRating = $avgRatingResult['avg_rating'] ? round($avgRatingResult['avg_rating'], 1) : 0;
-                $totalReviews = $avgRatingResult['total_reviews'];
+      <div class="home-product-grid">
+        <?php foreach ($popularProductsGrid as $product): ?>
+          <?php
+          $imageArray = !empty($product['images']) ? explode(',', $product['images']) : [];
+          $productID = $product['Product_ID'];
+          $avgRatingQuery = "SELECT AVG(Rating) AS avg_rating, COUNT(Rating) AS total_reviews FROM reviews WHERE Product_ID = ?";
+          $stmt = $conn->prepare($avgRatingQuery);
+          $stmt->execute([$productID]);
+          $avgRatingResult = $stmt->fetch(PDO::FETCH_ASSOC);
+          $avgRating = $avgRatingResult['avg_rating'] ? round($avgRatingResult['avg_rating'], 1) : 0;
+          $totalReviews = $avgRatingResult['total_reviews'];
 
-                if (!empty($product['Image_Path'])) {
-                  array_unshift($imageArray, $product['Image_Path']);
-                }
-                $cardCarouselId = 'popular-product-carousel-' . $product['Product_ID'];
-                ?>
-                <div class="home-product-slide-card">
-                  <div class="card1 border-0 shadow-sm rounded position-relative">
-                    <div class="card-image-wrapper" style="position: relative;">
-                      <div class="image-buttons">
-                        <form method="post" action="user_homeIndex.php">
-                          <input type="hidden" name="product_id" value="<?php echo $product['Product_ID']; ?>">
-                          <button name="add_to_wishlist" class="btn btn-light btn-circle shadow"><i class="fas fa-heart"></i></button>
-                        </form>
-                        <a href="viewDetails.php?id=<?php echo $product['Product_ID']; ?>" style="text-decoration: none;">
-                          <button class="btn btn-light btn-circle shadow"><i class="fas fa-eye"></i></button>
-                        </a>
-                      </div>
-                      <img src="<?php echo $product['Image_Path']; ?>" class="d-block w-100 rounded-top product-image main-image" alt="<?php echo $product['Name']; ?>" style="height: 200px; object-fit: contain;">
-                      <div id="<?php echo $cardCarouselId; ?>" class="carousel slide card-carousel">
-                        <div class="carousel-inner">
-                          <?php foreach ($imageArray as $index => $image): ?>
-                            <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                              <img src="<?php echo $image; ?>" class="d-block w-100 rounded-top" alt="<?php echo $product['Name']; ?>" style="height: 200px; object-fit: contain;">
-                            </div>
-                          <?php endforeach; ?>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $cardCarouselId; ?>" data-bs-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $cardCarouselId; ?>" data-bs-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Next</span>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <span class="card-title fw-bold text-truncate"><?php echo $product['Name']; ?></span>
-                      <div class="mt-2">
-                        <span class="text-warning">
-                          <?php for ($i = 0; $i < 5; $i++): ?>
-                            <i class="fa<?php echo $i < $avgRating ? 's' : 'r'; ?> fa-star"></i>
-                          <?php endfor; ?>
-                        </span>
-                        <p class="card-text text-muted"><?php echo $avgRating; ?> stars (<?php echo $totalReviews; ?> reviews)</p>
-                        <span class="text">$<?php echo $product['Price']; ?></span>
-                      </div>
-                    </div>
-                  </div>
+          if (!empty($product['Image_Path'])) {
+            array_unshift($imageArray, $product['Image_Path']);
+          }
+          $cardCarouselId = 'popular-product-carousel-' . $product['Product_ID'];
+          ?>
+          <div class="home-product-slide-card">
+            <div class="card1 border-0 shadow-sm rounded position-relative">
+              <div class="card-image-wrapper" style="position: relative;">
+                <div class="image-buttons">
+                  <form method="post" action="user_homeIndex.php">
+                    <input type="hidden" name="product_id" value="<?php echo $product['Product_ID']; ?>">
+                    <button name="add_to_wishlist" class="btn btn-light btn-circle shadow"><i class="fas fa-heart"></i></button>
+                  </form>
+                  <a href="viewDetails.php?id=<?php echo $product['Product_ID']; ?>" style="text-decoration: none;">
+                    <button class="btn btn-light btn-circle shadow"><i class="fas fa-eye"></i></button>
+                  </a>
                 </div>
-              <?php endforeach; ?>
+                <img src="<?php echo $product['Image_Path']; ?>" class="d-block w-100 rounded-top product-image main-image" alt="<?php echo $product['Name']; ?>" style="height: 200px; object-fit: contain;">
+                <div id="<?php echo $cardCarouselId; ?>" class="carousel slide card-carousel">
+                  <div class="carousel-inner">
+                    <?php foreach ($imageArray as $index => $image): ?>
+                      <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                        <img src="<?php echo $image; ?>" class="d-block w-100 rounded-top" alt="<?php echo $product['Name']; ?>" style="height: 200px; object-fit: contain;">
+                      </div>
+                    <?php endforeach; ?>
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $cardCarouselId; ?>" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $cardCarouselId; ?>" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body text-center">
+                <span class="card-title fw-bold text-truncate"><?php echo $product['Name']; ?></span>
+                <div class="mt-2">
+                  <span class="text-warning">
+                    <?php for ($i = 0; $i < 5; $i++): ?>
+                      <i class="fa<?php echo $i < $avgRating ? 's' : 'r'; ?> fa-star"></i>
+                    <?php endfor; ?>
+                  </span>
+                  <p class="card-text text-muted"><?php echo $avgRating; ?> stars (<?php echo $totalReviews; ?> reviews)</p>
+                  <span class="text">$<?php echo $product['Price']; ?></span>
+                </div>
+              </div>
             </div>
           </div>
-          <?php endforeach; ?>
-        </div>
-        <button class="carousel-control-prev home-product-carousel-control" type="button" data-bs-target="#popularProductsCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next home-product-carousel-control" type="button" data-bs-target="#popularProductsCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+        <?php endforeach; ?>
       </div>
     <?php endif; ?>
   </div>
