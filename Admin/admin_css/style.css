@@ -2682,3 +2682,28 @@ body {
     padding-right: 10px !important;
   }
 }
+
+/* Keep the admin home GIF modest on wide screens. */
+.admin-home-gif-wrapper {
+  margin: clamp(16px, 3vw, 28px) auto clamp(22px, 4vw, 36px) !important;
+}
+
+.admin-home-gif {
+  width: min(100%, 520px) !important;
+  max-width: 32vw !important;
+  max-height: 46vh !important;
+  object-fit: contain !important;
+}
+
+@media (max-width: 1200px) {
+  .admin-home-gif {
+    max-width: min(46vw, 420px) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-home-gif {
+    max-width: min(64vw, 240px) !important;
+    max-height: 28vh !important;
+  }
+}
