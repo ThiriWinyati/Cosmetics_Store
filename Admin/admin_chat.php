@@ -151,7 +151,7 @@ if ($isAdmin) {
             border-radius: 14px;
             margin-bottom: 10px;
             border: 1px solid #f0d6e4;
-            padding: 12px;
+            padding: 14px 16px;
             cursor: pointer;
             transition: 0.2s ease;
         }
@@ -168,9 +168,9 @@ if ($isAdmin) {
 
         .chat-history-top {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            align-items: start;
-            gap: 10px;
+            grid-template-columns: minmax(0, 1fr) max-content;
+            align-items: center;
+            gap: 14px;
         }
 
         .chat-history-name {
@@ -178,13 +178,23 @@ if ($isAdmin) {
             font-weight: 800;
             color: #222222;
             line-height: 1.25;
-            overflow-wrap: anywhere;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-history-side {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
         }
 
         .chat-history-time {
             white-space: nowrap;
             color: #8b9099;
             font-size: 0.78rem;
+            font-weight: 700;
         }
 
         .chat-history-preview {
@@ -211,7 +221,8 @@ if ($isAdmin) {
 
         .chat-history-status {
             border-radius: 999px;
-            padding: 5px 9px;
+            padding: 5px 10px;
+            min-width: 48px;
         }
 
         .chat-panel {
@@ -434,9 +445,7 @@ if ($isAdmin) {
                             <?php foreach ($customers as $customer): ?>
                                 <?php
                                     $customerName = htmlspecialchars($customer['customer_name'] ?? 'Unknown customer');
-                                    $lastMessage = htmlspecialchars($customer['last_message'] ?? 'No messages yet.');
                                     $lastTime = !empty($customer['last_timestamp']) ? date('M j, H:i', strtotime($customer['last_timestamp'])) : '';
-                                    $messageCount = (int)($customer['message_count'] ?? 0);
                                     $unreadCount = (int)($customer['new_messages'] ?? 0);
                                 ?>
                                 <li class="list-group-item customer"
@@ -444,15 +453,11 @@ if ($isAdmin) {
                                     data-customer-name="<?php echo $customerName; ?>">
                                     <div class="chat-history-top">
                                         <span class="chat-history-name"><?php echo $customerName; ?></span>
-                                        <span class="chat-history-time"><?php echo htmlspecialchars($lastTime); ?></span>
-                                    </div>
-                                    <p class="chat-history-preview">
-                                        <?php echo $lastMessage; ?>
-                                    </p>
-                                    <div class="chat-history-meta-row">
-                                        <span><?php echo $messageCount; ?> messages</span>
-                                        <span class="badge <?php echo $unreadCount > 0 ? 'bg-primary' : 'bg-secondary'; ?> chat-history-status">
-                                            <?php echo $unreadCount > 0 ? $unreadCount . ' unread' : 'Read'; ?>
+                                        <span class="chat-history-side">
+                                            <span class="chat-history-time"><?php echo htmlspecialchars($lastTime); ?></span>
+                                            <span class="badge <?php echo $unreadCount > 0 ? 'bg-primary' : 'bg-secondary'; ?> chat-history-status">
+                                                <?php echo $unreadCount > 0 ? 'Unread' : 'Read'; ?>
+                                            </span>
                                         </span>
                                     </div>
                                 </li>
