@@ -46,79 +46,83 @@ $profile_picture = !empty($customer['Profile_Picture']) ? $customer['Profile_Pic
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="icon" href="path/to/favicon.ico">
     <title>User Profile - Charm & Grace</title>
-    <style>
-        .profile-card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            padding: 25px;
-            background-color: #ffffff;
-        }
-
-        .profile-card h4 {
-            font-size: 1.25rem;
-            font-weight: 500;
-        }
-
-        .profile-card .btn-update {
-            width: 200px;
-            margin-top: 20px;
-        }
-
-        .profile-info p {
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .profile-header {
-            margin-bottom: 30px;
-        }
-
-        .header-title {
-            font-weight: 600;
-            font-size: 2rem;
-        }
-
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .rounded-circle {
-            border-radius: 50%;
-        }
-    </style>
 </head>
 
-<body>
+<body class="customer-profile-page">
     <?php include 'navbar.php'; ?>
 
-    <div class="container mt-5">
+    <div class="container profile-page-container">
         <div class="profile-header text-center">
             <h3 class="header-title">Your Profile</h3>
         </div>
 
         <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-10 col-sm-12">
-                <div class="profile-card text-center">
-                    <?php if ($profile_picture): ?>
-                        <!-- Display profile image if available -->
-                        <img src="<?= htmlspecialchars($profile_picture); ?>" alt="Profile Picture" class="rounded-circle profile-image">
-                    <?php else: ?>
-                        <!-- Display default user icon if no profile picture -->
-                        <i class="fa fa-user-circle fa-5x" aria-hidden="true"></i>
-                    <?php endif; ?>
+            <div class="col-12 col-xl-10">
+                <div class="profile-card">
+                    <div class="profile-summary">
+                        <div class="profile-avatar-wrap">
+                            <?php if ($profile_picture): ?>
+                                <img src="<?= htmlspecialchars($profile_picture); ?>" alt="Profile Picture" class="rounded-circle profile-image">
+                            <?php else: ?>
+                                <i class="fa fa-user-circle profile-default-icon" aria-hidden="true"></i>
+                            <?php endif; ?>
+                        </div>
 
-                    <div class="profile-info mt-3">
-                        <h4 class="mb-3">Profile Information</h4>
-                        <p><strong>Name:</strong> <?= htmlspecialchars($customer['Name']); ?></p>
-                        <p><strong>Email:</strong> <?= htmlspecialchars($customer['Email']); ?></p>
-                        <p><strong>Phone:</strong> <?= htmlspecialchars($customer['Phone']); ?></p>
-                        <p><strong>Address:</strong> <?= htmlspecialchars($customer['Address']); ?></p>
+                        <div class="profile-intro">
+                            <span class="profile-eyebrow">Charm & Grace Account</span>
+                            <h4><?= htmlspecialchars($customer['Name']); ?></h4>
+                            <p><?= htmlspecialchars($customer['Email']); ?></p>
+                        </div>
                     </div>
 
-                    <div class="text-center">
-                        <a href="/Customer/editProfile.php" class="btn btn-primary btn-update">Edit Profile</a>
+                    <div class="profile-content-grid">
+                        <div class="profile-info">
+                            <h4>Profile Information</h4>
+                            <div class="profile-detail-list">
+                                <div class="profile-detail-item">
+                                    <span>Name</span>
+                                    <strong><?= htmlspecialchars($customer['Name']); ?></strong>
+                                </div>
+                                <div class="profile-detail-item">
+                                    <span>Email</span>
+                                    <strong><?= htmlspecialchars($customer['Email']); ?></strong>
+                                </div>
+                                <div class="profile-detail-item">
+                                    <span>Phone</span>
+                                    <strong><?= htmlspecialchars($customer['Phone']); ?></strong>
+                                </div>
+                                <div class="profile-detail-item profile-detail-wide">
+                                    <span>Address</span>
+                                    <strong><?= htmlspecialchars($customer['Address']); ?></strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-actions-panel">
+                            <h4>Quick Actions</h4>
+                            <div class="profile-actions-grid">
+                                <a href="/Customer/editProfile.php" class="profile-action-card">
+                                    <i class="fa-solid fa-user-pen"></i>
+                                    <span>Edit Profile</span>
+                                </a>
+                                <a href="/Customer/orderHistory.php" class="profile-action-card">
+                                    <i class="fa-solid fa-receipt"></i>
+                                    <span>Order History</span>
+                                </a>
+                                <a href="/Customer/wishlist.php" class="profile-action-card">
+                                    <i class="fa-solid fa-heart"></i>
+                                    <span>Wishlist</span>
+                                </a>
+                                <a href="/Customer/cart.php" class="profile-action-card">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    <span>My Cart</span>
+                                </a>
+                                <a href="/Customer/user_logout.php" class="profile-action-card profile-action-danger">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
