@@ -302,7 +302,7 @@ $paginatedReviews = array_slice($reviews, $startReviewIndex, $reviewsPerPage);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="../Customer/customer_css/style.css">
+    <link rel="stylesheet" href="../Customer/customer_css/style.css?v=20260514-product-reviews">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="../Customer/customer_Javascript/imageThumbnail.js"></script>
     <script src="../Customer/customer_Javascript/addToCart.js"></script>
@@ -382,6 +382,77 @@ $paginatedReviews = array_slice($reviews, $startReviewIndex, $reviewsPerPage);
         .review-form .stars label:hover,
         .review-form .stars label:hover~label {
             color: gold;
+        }
+
+        html[data-theme="dark"] #reviews h4,
+        html[data-theme="dark"] #reviews .review-form .form-label,
+        html[data-theme="dark"] #reviews .review-form p,
+        html[data-theme="dark"] #reviews .review .customer-name,
+        html[data-theme="dark"] #reviews .review .review-text {
+            color: var(--customer-text) !important;
+        }
+
+        html[data-theme="dark"] #reviews .text-muted {
+            color: var(--customer-muted) !important;
+        }
+
+        html[data-theme="dark"] #reviews .review-section,
+        html[data-theme="dark"] #reviews .review-form {
+            background-color: var(--customer-surface) !important;
+            border: 1px solid var(--customer-border);
+            box-shadow: 0 16px 36px var(--customer-shadow);
+        }
+
+        html[data-theme="dark"] #reviews .review {
+            background-color: var(--customer-surface-soft) !important;
+            border: 1px solid var(--customer-border);
+            box-shadow: 0 10px 24px var(--customer-shadow);
+        }
+
+        html[data-theme="dark"] #reviews .review .review-date {
+            color: var(--customer-muted) !important;
+        }
+
+        html[data-theme="dark"] #reviews .review-form .form-control {
+            background-color: #1c1c20 !important;
+            border-color: var(--customer-border) !important;
+            color: var(--customer-text) !important;
+        }
+
+        html[data-theme="dark"] #reviews .review-form .form-control:focus {
+            border-color: var(--customer-accent) !important;
+            box-shadow: 0 0 0 0.2rem rgba(255, 134, 186, 0.18) !important;
+        }
+
+        html[data-theme="dark"] #reviews .review-form .stars label {
+            color: #6b6b72;
+        }
+
+        html[data-theme="dark"] #reviews .review-form .stars input[type="radio"]:checked~label,
+        html[data-theme="dark"] #reviews .review-form .stars label:hover,
+        html[data-theme="dark"] #reviews .review-form .stars label:hover~label,
+        html[data-theme="dark"] #reviews .review .rating i {
+            color: #ffc83d !important;
+        }
+
+        html[data-theme="dark"] #reviews .btn-dark {
+            background-color: var(--customer-accent) !important;
+            border-color: var(--customer-accent) !important;
+            color: #1a1a1a !important;
+            font-weight: 800;
+        }
+
+        html[data-theme="dark"] #reviews .pagination .page-link {
+            background-color: var(--customer-surface-soft) !important;
+            border-color: var(--customer-border) !important;
+            color: var(--customer-text) !important;
+        }
+
+        html[data-theme="dark"] #reviews .pagination .page-item.active .page-link,
+        html[data-theme="dark"] #reviews .pagination .page-link:hover {
+            background-color: var(--customer-accent) !important;
+            border-color: var(--customer-accent) !important;
+            color: #1a1a1a !important;
         }
 
         .shade-tab {

@@ -26,7 +26,45 @@ if (!$customer) {
     exit();
 }
 
-$profile_picture = !empty($customer['Profile_Picture']) ? $customer['Profile_Picture'] : null;
+function getCustomerProfilePictureSrc($path)
+{
+    $path = trim((string) $path);
+    if ($path === '') {
+        return null;
+    }
+
+    if (preg_match('/^(https?:)?\/\//i', $path) || strpos($path, 'data:') === 0) {
+        return $path;
+    }
+
+    $path = str_replace('\\', '/', $path);
+    $uploadsPosition = strpos($path, 'uploads/');
+
+    if ($uploadsPosition !== false) {
+        $path = substr($path, $uploadsPosition);
+    }
+
+    $path = ltrim($path, '/');
+
+    if (strpos($path, '../') === 0) {
+        $src = $path;
+    } elseif (strpos($path, 'uploads/') === 0) {
+        $src = '../' . $path;
+    } else {
+        $src = '../uploads/profile_pictures/' . basename($path);
+    }
+
+    $filePath = realpath(__DIR__ . '/' . $src);
+    $uploadsRoot = realpath(__DIR__ . '/../uploads');
+
+    if ($filePath === false || $uploadsRoot === false || strpos($filePath, $uploadsRoot) !== 0) {
+        return null;
+    }
+
+    return $src;
+}
+
+$profile_picture = getCustomerProfilePictureSrc($customer['Profile_Picture'] ?? '');
 ?>
 
 
@@ -41,7 +79,7 @@ $profile_picture = !empty($customer['Profile_Picture']) ? $customer['Profile_Pic
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../Customer/customer_css/style.css">
+    <link rel="stylesheet" href="../Customer/customer_css/style.css?v=20260514-cart-profile">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="icon" href="path/to/favicon.ico">
@@ -62,7 +100,8 @@ $profile_picture = !empty($customer['Profile_Picture']) ? $customer['Profile_Pic
                     <div class="profile-summary">
                         <div class="profile-avatar-wrap">
                             <?php if ($profile_picture): ?>
-                                <img src="<?= htmlspecialchars($profile_picture); ?>" alt="Profile Picture" class="rounded-circle profile-image">
+                                <img src="<?= htmlspecialchars($profile_picture); ?>" alt="Profile Picture" class="rounded-circle profile-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                                <i class="fa fa-user-circle profile-default-icon" aria-hidden="true" style="display: none;"></i>
                             <?php else: ?>
                                 <i class="fa fa-user-circle profile-default-icon" aria-hidden="true"></i>
                             <?php endif; ?>
