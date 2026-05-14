@@ -2101,6 +2101,23 @@ html[data-theme="dark"] .admin-main #main-content > .container > a.text-decorati
   gap: 10px;
 }
 
+.admin-table-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0 0 18px;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  clear: both;
+}
+
+.admin-table-action-row .btn {
+  min-width: 150px;
+}
+
 .admin-summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -2159,6 +2176,9 @@ html[data-theme="dark"] .admin-main #main-content > .container > a.text-decorati
 }
 
 .admin-table-card {
+  position: relative;
+  z-index: 0;
+  clear: both;
   overflow: hidden;
   border: 1px solid #ececf1;
   border-radius: 16px;
@@ -2205,7 +2225,7 @@ html[data-theme="dark"] .admin-main #main-content > .container > a.text-decorati
 .admin-data-table thead th {
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 10;
   background: #30303a !important;
   color: #ffffff !important;
   border-color: #42424d !important;

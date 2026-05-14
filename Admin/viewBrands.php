@@ -231,7 +231,7 @@ if (isset($_GET['deleteBrandId'])) {
 
         .brand-page-header {
             position: relative;
-            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            top: auto;
             z-index: 35;
             padding: 14px 0 20px;
             margin-bottom: 22px;
@@ -314,7 +314,9 @@ if (isset($_GET['deleteBrandId'])) {
                 </form>
             </div>
 
-            <div class="brand-page-actions">
+        </section>
+
+        <div class="admin-table-action-row brand-page-actions">
             <?php if ($isAdmin): ?>
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertBrandModal">
                     <i class="fa fa-plus"></i> Insert New Brand
@@ -324,8 +326,7 @@ if (isset($_GET['deleteBrandId'])) {
                     <i class="fa fa-lock"></i> Insert locked
                 </button>
             <?php endif; ?>
-            </div>
-        </section>
+        </div>
 
         <div class="admin-table-card">
             <div class="admin-table-scroll">

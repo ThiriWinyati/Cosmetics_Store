@@ -170,7 +170,7 @@ try {
 
         .coupon-page-header {
             position: relative;
-            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            top: auto;
             z-index: 35;
             padding: 14px 0 20px;
             margin-bottom: 22px;
@@ -271,17 +271,6 @@ try {
                     </form>
                 </div>
 
-                <div class="coupon-page-actions">
-                <?php if ($isAdmin): ?>
-                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertCouponModal">
-                    <i class="fa fa-plus"></i> Insert Coupon
-                </button>
-                <?php else: ?>
-                    <button type="button" class="btn btn-secondary" disabled title="Admin login required">
-                        <i class="fa fa-lock"></i> Insert locked
-                    </button>
-                <?php endif; ?>
-                </div>
             </section>
 
             <?php if (!$isAdmin): ?>
@@ -290,6 +279,18 @@ try {
                     Coupon editing and deletion are locked in portfolio preview mode.
                 </div>
             <?php endif; ?>
+
+            <div class="admin-table-action-row coupon-page-actions">
+                <?php if ($isAdmin): ?>
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertCouponModal">
+                        <i class="fa fa-plus"></i> Insert Coupon
+                    </button>
+                <?php else: ?>
+                    <button type="button" class="btn btn-secondary" disabled title="Admin login required">
+                        <i class="fa fa-lock"></i> Insert locked
+                    </button>
+                <?php endif; ?>
+            </div>
 
             <!-- Insert Coupon Modal -->
             <?php if ($isAdmin): ?>

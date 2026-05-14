@@ -166,7 +166,7 @@ try {
 
         .category-page-header {
             position: relative;
-            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            top: auto;
             z-index: 35;
             padding: 14px 0 20px;
             margin-bottom: 22px;
@@ -247,7 +247,9 @@ try {
                 </form>
             </div>
 
-            <div class="category-page-actions">
+        </section>
+
+        <div class="admin-table-action-row category-page-actions">
             <?php if ($isAdmin): ?>
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertModal">
                     <i class="fa fa-plus"></i> Insert New Category
@@ -257,8 +259,7 @@ try {
                     <i class="fa fa-lock"></i> Insert locked
                 </button>
             <?php endif; ?>
-            </div>
-        </section>
+        </div>
 
         <div class="admin-table-card">
             <div class="admin-table-scroll">

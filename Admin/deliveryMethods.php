@@ -239,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
 
         .shipping-page-header {
             position: relative;
-            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            top: auto;
             z-index: 35;
             padding: 14px 0 20px;
             margin-bottom: 22px;
@@ -320,7 +320,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
                 </form>
             </div>
 
-            <div class="shipping-page-actions">
+        </section>
+
+        <div class="admin-table-action-row shipping-page-actions">
             <?php if ($isAdmin): ?>
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#insertDeliveryMethodModal">
                     <i class="fa fa-plus"></i> Insert Delivery Method
@@ -330,8 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteDeliveryMethod'
                     <i class="fa fa-lock"></i> Insert locked
                 </button>
             <?php endif; ?>
-            </div>
-        </section>
+        </div>
 
         <div class="admin-table-card">
             <div class="admin-table-scroll">

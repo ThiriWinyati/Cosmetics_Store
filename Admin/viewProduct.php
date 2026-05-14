@@ -348,7 +348,7 @@ foreach ($products ?? [] as $productSummary) {
 
         .product-page-header {
             position: relative;
-            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            top: auto;
             z-index: 35;
             padding: 14px 0 20px;
             margin-bottom: 22px;
@@ -490,18 +490,19 @@ foreach ($products ?? [] as $productSummary) {
                 </form>
             </div>
 
-            <div class="product-page-actions">
-                <?php if ($isAdmin): ?>
-                    <a href="insertProduct.php" class="btn btn-outline-primary text-decoration-none">
-                        <i class="fa fa-plus"></i> Insert Product
-                    </a>
-                <?php else: ?>
-                    <button type="button" class="btn btn-secondary" disabled title="Admin login required">
-                        <i class="fa fa-lock"></i> Insert locked
-                    </button>
-                <?php endif; ?>
-            </div>
         </section>
+
+        <div class="admin-table-action-row product-page-actions">
+            <?php if ($isAdmin): ?>
+                <a href="insertProduct.php" class="btn btn-outline-primary text-decoration-none">
+                    <i class="fa fa-plus"></i> Insert Product
+                </a>
+            <?php else: ?>
+                <button type="button" class="btn btn-secondary" disabled title="Admin login required">
+                    <i class="fa fa-lock"></i> Insert locked
+                </button>
+            <?php endif; ?>
+        </div>
 
         <div class="admin-table-card">
             <div class="admin-table-scroll">

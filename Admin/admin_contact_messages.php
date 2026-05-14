@@ -78,7 +78,7 @@ $totalMessages = count($messagesList);
 
         .contact-message-header {
             position: relative;
-            top: calc(var(--admin-topbar-height, 72px) + 10px);
+            top: auto;
             z-index: 35;
             padding: 14px 0 20px;
             margin-bottom: 22px;
