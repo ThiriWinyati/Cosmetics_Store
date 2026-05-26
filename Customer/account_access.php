@@ -36,6 +36,11 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
             isolation: isolate;
         }
 
+        .access-container {
+            padding-left: clamp(28px, 6vw, 92px);
+            padding-right: clamp(20px, 4vw, 56px);
+        }
+
         .access-shell::before {
             content: "";
             position: absolute;
@@ -80,9 +85,9 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         .access-title {
             margin: 18px 0 18px;
             color: #241821;
-            font-size: clamp(2.35rem, 5.6vw, 5.4rem);
-            font-weight: 800;
-            line-height: 0.98;
+            font-size: clamp(2rem, 4.1vw, 4rem);
+            font-weight: 760;
+            line-height: 1.06;
         }
 
         .access-copy {
@@ -422,6 +427,11 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
                 align-items: flex-start;
             }
 
+            .access-container {
+                padding-left: clamp(22px, 5vw, 42px);
+                padding-right: clamp(22px, 5vw, 42px);
+            }
+
             .access-intro {
                 margin-bottom: 28px;
             }
@@ -474,6 +484,15 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
                 padding-top: 24px;
             }
 
+            .access-container {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .access-title {
+                font-size: clamp(1.85rem, 10vw, 2.6rem);
+            }
+
             .access-card {
                 grid-template-columns: 1fr auto;
                 min-height: auto;
@@ -512,7 +531,7 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
     <?php include 'navbar.php'; ?>
 
     <main class="access-shell">
-        <div class="container">
+        <div class="container access-container">
             <div class="row align-items-center g-5">
                 <div class="col-lg-5">
                     <div class="access-intro">
