@@ -182,8 +182,8 @@ if (!empty($cartItems)) {
                     </li>
 
                     <!-- Account -->
-                    <li class="nav-item <?php echo (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) ? 'dropdown' : ''; ?>">
-                        <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
+                    <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
+                        <li class="nav-item dropdown">
                             <button id="account" type="button"
                                 class="btn btn-outline-dark dropdown-toggle customer-mobile-page-link"
                                 data-mobile-href="/Customer/userProfile.php"
@@ -197,13 +197,15 @@ if (!empty($cartItems)) {
                                 <li><a class="dropdown-item" href="/Customer/orderHistory.php">Order History</a></li>
                                 <li><a class="dropdown-item" href="/Customer/user_logout.php">Logout</a></li>
                             </ul>
-                        <?php else: ?>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
                             <a id="account" class="btn btn-outline-dark" href="/Customer/account_access.php">
                                 <i class="fa fa-user-circle-o"></i>
                                 <span>Login</span>
                             </a>
-                        <?php endif; ?>
-                    </li>
+                        </li>
+                    <?php endif; ?>
 
                 </ul>
             </div>
