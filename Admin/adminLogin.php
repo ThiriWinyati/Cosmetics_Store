@@ -6,6 +6,9 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
+$demoAdminName = "Thiri";
+$demoAdminPassword = "Thiri@2004!";
+
 function isPasswordStrong($password)
 {
     // Check if the password is at least 8 characters long
@@ -141,6 +144,38 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
             margin-bottom: 20px;
         }
 
+        .demo-login-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 14px;
+            color: #5b344d;
+            background: #fff3f8;
+            border: 1px solid #f4c6da;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        .demo-login-note strong {
+            display: block;
+            color: #c2185b;
+            margin-bottom: 2px;
+        }
+
+        .demo-login-note .demo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            color: #ffffff;
+            background: #d97cb3;
+            border-radius: 8px;
+            flex: 0 0 auto;
+        }
+
         .animation-container {
             flex: 1;
             background: linear-gradient(135deg, #f8d7da, #f1c4c9);
@@ -215,6 +250,16 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
 
         html[data-theme="dark"] .login-form .form-control::placeholder {
             color: #a9adb7;
+        }
+
+        html[data-theme="dark"] .demo-login-note {
+            color: #f4d7e5;
+            background: #2a2028;
+            border-color: #4b3443;
+        }
+
+        html[data-theme="dark"] .demo-login-note strong {
+            color: #ff86ba;
         }
 
         html[data-theme="dark"] .animation-container {
@@ -317,13 +362,20 @@ if (isset($_POST['admin_login']) && $_SERVER['REQUEST_METHOD'] == "POST") {
                 <?php if (isset($password_err)) {
                     echo "<p class='alert alert-danger'>$password_err</p>";
                 } ?>
+                <div class="demo-login-note">
+                    <span class="demo-icon" aria-hidden="true">✓</span>
+                    <span>
+                        <strong>Demo admin is ready</strong>
+                        The username and password are prefilled for portfolio visitors.
+                    </span>
+                </div>
                 <div class="mb-3">
                     <label for="admin_username" class="form-label">Username</label>
-                    <input type="text" name="admin_name" id="admin_username" class="form-control" placeholder="Enter your username" required>
+                    <input type="text" name="admin_name" id="admin_username" class="form-control" value="<?php echo htmlspecialchars($demoAdminName); ?>" placeholder="Enter your username" required>
                 </div>
                 <div class="mb-3">
                     <label for="admin_password" class="form-label">Password</label>
-                    <input type="password" name="admin_password" id="admin_password" class="form-control" placeholder="Enter your password" required>
+                    <input type="password" name="admin_password" id="admin_password" class="form-control" value="<?php echo htmlspecialchars($demoAdminPassword); ?>" placeholder="Enter your password" required>
                 </div>
                 <button type="submit" name="admin_login" class="btn btn-primary w-100">Login</button>
             </form>
