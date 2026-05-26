@@ -185,7 +185,7 @@ if (!empty($cartItems)) {
                     <li class="nav-item dropdown">
                         <button id="account" type="button"
                             class="btn btn-outline-dark dropdown-toggle customer-mobile-page-link"
-                            data-mobile-href="<?php echo (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) ? '/Customer/userProfile.php' : '/Customer/user_login.php'; ?>"
+                            data-mobile-href="<?php echo (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) ? '/Customer/userProfile.php' : '/Customer/account_access.php'; ?>"
                             data-desktop-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-user-circle-o"></i>
 
@@ -193,7 +193,7 @@ if (!empty($cartItems)) {
                                 <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
                                     Welcome, <?php echo htmlspecialchars($_SESSION['cname'] ?? 'Customer'); ?>!
                                 <?php else: ?>
-                                    Welcome, Guest!
+                                    Login
                                 <?php endif; ?>
                             </span>
                         </button>
@@ -204,7 +204,11 @@ if (!empty($cartItems)) {
                                 <li><a class="dropdown-item" href="/Customer/orderHistory.php">Order History</a></li>
                                 <li><a class="dropdown-item" href="/Customer/user_logout.php">Logout</a></li>
                             <?php else: ?>
-                                <li><a class="dropdown-item" href="/Customer/user_login.php">Login</a></li>
+                                <li><a class="dropdown-item" href="/Customer/account_access.php">Choose Access</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/Customer/user_login.php">Customer Login</a></li>
+                                <li><a class="dropdown-item" href="/Customer/user_signup.php">Customer Sign Up</a></li>
+                                <li><a class="dropdown-item" href="/Admin/adminLogin.php">Admin Login</a></li>
                             <?php endif; ?>
                         </ul>
                     </li>
