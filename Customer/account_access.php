@@ -92,6 +92,33 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
             line-height: 1.7;
         }
 
+        .access-highlights {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .access-highlights span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 38px;
+            padding: 9px 12px;
+            color: #4a3541;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(220, 100, 150, 0.18);
+            border-radius: 999px;
+            box-shadow: 0 10px 26px rgba(36, 24, 33, 0.07);
+            font-size: 0.88rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .access-highlights i {
+            color: #dc6496;
+        }
+
         .access-showcase {
             display: grid;
             grid-template-columns: 1fr 0.74fr;
@@ -142,7 +169,8 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         .access-panel-wrap {
             position: relative;
             padding: clamp(16px, 2.6vw, 26px);
-            background: rgba(255, 255, 255, 0.76);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.72));
             border: 1px solid rgba(255, 255, 255, 0.64);
             border-radius: 8px;
             box-shadow: 0 26px 70px rgba(36, 24, 33, 0.16);
@@ -184,6 +212,18 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
             white-space: nowrap;
         }
 
+        .access-route-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 8px;
+            color: #b83b75;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
         .access-panel {
             display: grid;
             gap: 12px;
@@ -203,6 +243,14 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
             border-radius: 8px;
             box-shadow: 0 12px 28px rgba(49, 27, 42, 0.06);
             transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .access-card.featured {
+            min-height: 142px;
+            background:
+                linear-gradient(90deg, rgba(255, 255, 255, 0.94), rgba(255, 246, 250, 0.82)),
+                url('/images/eyeshadows.jpg') right center / 180px auto no-repeat;
+            border-color: rgba(220, 100, 150, 0.3);
         }
 
         .access-card:hover,
@@ -229,6 +277,10 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
 
         .access-card.admin .access-icon {
             background: linear-gradient(135deg, #241821, #5e4a56);
+        }
+
+        .access-card.signup .access-icon {
+            background: linear-gradient(135deg, #7d4f6d, #dc6496);
         }
 
         .access-card h3 {
@@ -266,6 +318,37 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
             font-size: 0.88rem;
         }
 
+        .access-mini-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .access-mini-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 10px 12px;
+            color: #241821;
+            background: rgba(255, 255, 255, 0.64);
+            border: 1px solid rgba(36, 24, 33, 0.1);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 800;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .access-mini-action:hover,
+        .access-mini-action:focus {
+            color: #241821;
+            background: #ffffff;
+            transform: translateY(-2px);
+        }
+
         html[data-theme="dark"] body {
             background: #121212;
         }
@@ -289,18 +372,28 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         }
 
         html[data-theme="dark"] .access-copy,
+        html[data-theme="dark"] .access-highlights span,
         html[data-theme="dark"] .access-panel-head p,
         html[data-theme="dark"] .access-card p,
-        html[data-theme="dark"] .access-note {
+        html[data-theme="dark"] .access-note,
+        html[data-theme="dark"] .access-mini-action {
             color: #c4c4c4;
         }
 
         html[data-theme="dark"] .access-kicker,
+        html[data-theme="dark"] .access-highlights span,
         html[data-theme="dark"] .access-panel-wrap,
-        html[data-theme="dark"] .access-card {
+        html[data-theme="dark"] .access-card,
+        html[data-theme="dark"] .access-mini-action {
             background: rgba(28, 28, 31, 0.82);
             border-color: #37373d;
             box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+        }
+
+        html[data-theme="dark"] .access-card.featured {
+            background:
+                linear-gradient(90deg, rgba(28, 28, 31, 0.98), rgba(28, 28, 31, 0.84)),
+                url('/images/eyeshadows.jpg') right center / 180px auto no-repeat;
         }
 
         html[data-theme="dark"] .access-card:hover,
@@ -316,6 +409,12 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
         html[data-theme="dark"] .access-note {
             background: rgba(28, 28, 31, 0.7);
             border-color: #37373d;
+        }
+
+        html[data-theme="dark"] .access-mini-action:hover,
+        html[data-theme="dark"] .access-mini-action:focus {
+            color: #f5f5f5;
+            background: rgba(39, 39, 43, 0.96);
         }
 
         @media (max-width: 991px) {
@@ -360,6 +459,14 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
             .access-status {
                 margin-top: 12px;
             }
+
+            .access-card.featured {
+                background: rgba(255, 255, 255, 0.74);
+            }
+
+            html[data-theme="dark"] .access-card.featured {
+                background: rgba(28, 28, 31, 0.82);
+            }
         }
 
         @media (max-width: 575px) {
@@ -393,6 +500,10 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
                 grid-column: 2;
                 grid-row: 1;
             }
+
+            .access-mini-actions {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -408,6 +519,11 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
                         <span class="access-kicker"><i class="fa-solid fa-wand-magic-sparkles"></i> Portfolio Demo</span>
                         <h1 class="access-title">Choose your Charm & Grace access.</h1>
                         <p class="access-copy">Enter the storefront as a customer, create a new customer account, or open the admin dashboard login for the management side of the project.</p>
+                        <div class="access-highlights" aria-label="Demo highlights">
+                            <span><i class="fa-solid fa-bag-shopping"></i> Customer storefront</span>
+                            <span><i class="fa-solid fa-chart-simple"></i> Admin dashboard</span>
+                            <span><i class="fa-solid fa-mobile-screen-button"></i> Responsive demo</span>
+                        </div>
                         <div class="access-showcase" aria-hidden="true">
                             <div class="access-image primary"></div>
                             <div class="access-image secondary">
@@ -429,18 +545,20 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
                         </div>
 
                         <div class="access-panel" aria-label="Account access options">
-                            <a class="access-card" href="/Customer/user_login.php">
+                            <a class="access-card featured" href="/Customer/user_login.php">
                                 <span class="access-icon"><i class="fa-solid fa-right-to-bracket"></i></span>
                                 <div>
+                                    <span class="access-route-label"><i class="fa-solid fa-store"></i> Storefront</span>
                                     <h3>Customer Login</h3>
                                     <p>Use an existing customer account to shop, save wishlist items, and view orders.</p>
                                 </div>
                                 <span class="access-arrow"><i class="fa-solid fa-arrow-right"></i></span>
                             </a>
 
-                            <a class="access-card" href="/Customer/user_signup.php">
+                            <a class="access-card signup" href="/Customer/user_signup.php">
                                 <span class="access-icon"><i class="fa-solid fa-user-plus"></i></span>
                                 <div>
+                                    <span class="access-route-label"><i class="fa-solid fa-user-plus"></i> New customer</span>
                                     <h3>Customer Sign Up</h3>
                                     <p>Create a customer account for checkout, profile, wishlist, and order history features.</p>
                                 </div>
@@ -450,6 +568,7 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
                             <a class="access-card admin" href="/Admin/adminLogin.php">
                                 <span class="access-icon"><i class="fa-solid fa-chart-line"></i></span>
                                 <div>
+                                    <span class="access-route-label"><i class="fa-solid fa-user-shield"></i> Management</span>
                                     <h3>Admin Dashboard Login</h3>
                                     <p>Sign in as an admin to demonstrate product, order, customer, and dashboard tools.</p>
                                 </div>
@@ -460,6 +579,11 @@ if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
                         <div class="access-note">
                             <i class="fa-solid fa-lock"></i>
                             <span>Customer and admin areas stay separated, which makes the portfolio walkthrough easier to understand.</span>
+                        </div>
+
+                        <div class="access-mini-actions" aria-label="Quick navigation">
+                            <a class="access-mini-action" href="/Customer/user_homeIndex.php"><i class="fa-solid fa-house"></i> Back to Home</a>
+                            <a class="access-mini-action" href="/Customer/products.php"><i class="fa-solid fa-bag-shopping"></i> View Shop</a>
                         </div>
                     </div>
                 </div>
