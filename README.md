@@ -232,8 +232,3 @@ Developed by **Thiri Winyati**
 
 GitHub: [ThiriWinyati](https://github.com/ThiriWinyati)
 
----
-
-## Note
-
-This project was created for academic and learning purposes. It demonstrates the use of PHP, MySQL, database design, CRUD operations, and web development techniques for building a cosmetics eCommerce website.
