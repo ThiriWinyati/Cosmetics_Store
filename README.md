@@ -162,27 +162,53 @@ screenshots/
 └── product-management.png
 ```
 
-Then display them like this:
+## Screenshots
+
+Project screenshots are stored inside the `screenshots` folder.
 
 ### Home Page
 
-![Home Page](screenshots/home-page.png)
+![Home Page 1](screenshots/home1.png)
 
-### Product Page
+![Home Page 2](screenshots/home2.png)
 
-![Product Page](screenshots/product-page.png)
+![Home Page 3](screenshots/home3.png)
 
-### Product Details Page
+![Home Page 4](screenshots/home4.png)
 
-![Product Details Page](screenshots/product-details.png)
+![Home Page 5](screenshots/home5.png)
+
+### Shop Page
+
+![Shop Page](screenshots/shop.png)
+
+### Product Detail Pages
+
+![Product Detail Page 1](screenshots/productdetail1.png)
+
+![Product Detail Page 2](screenshots/productdetail2.png)
+
+![Product Detail Page 3](screenshots/productdetail3.png)
+
+### Login / Access Page
+
+![Login Access Page](screenshots/loginaccess.png)
 
 ### Admin Dashboard
 
-![Admin Dashboard](screenshots/admin-dashboard.png)
+![Admin Dashboard](screenshots/admindashboard.png)
 
-### Product Management Page
+### Admin Product Management
 
-![Product Management Page](screenshots/product-management.png)
+![Admin Product Management](screenshots/adminproductmgt.png)
+
+### Blog Page
+
+![Blog Page](screenshots/blog.png)
+
+### Contact Page
+
+![Contact Page](screenshots/contact.png)
 
 ---
 
