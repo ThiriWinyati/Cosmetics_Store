@@ -200,7 +200,7 @@ Project screenshots are stored inside the `screenshots` folder.
 
 ### Admin Product Management
 
-![Admin Product Management](screenshots/adminproductmgt.png)
+![Admin Product Management](screenshots/adminproductmgmt.png)
 
 ### Blog Page
 
